@@ -1,0 +1,289 @@
+#!/usr/local/bin/php
+<?php
+	/*
+	 * Create an Action, View and template for a Mojavi Module
+	 *
+	 * @author	Mark Hobson
+	 */
+
+	// Setup vars	
+	$settings_file	= dirname(__FILE__) . "/mojavi.conf";
+	$view_type_const= '';
+	$template_title	= '';
+	$file_path	= '';
+	$create_dir	= false;
+	$overwrite	= false;
+
+	// Initialize settings
+	if (file_exists($settings_file))
+	{
+		include_once($settings_file);
+	} else
+	{
+		$app_dir	= NULL;
+		$modules_dir	= NULL;
+		$action_needed	= 'y';
+		$request_method = 'GET';
+		$module_name	= NULL;
+		$action_name	= NULL;
+		$view_type	= 'Success';
+	}
+
+	// Start Output
+	writeToConsole("\nCreate Mojavi Action, View and Template:\n----------------------------------------");
+
+	// Prompt for application directory
+	$app_dir = readFromConsole("What is the path to the webapp?", $app_dir);
+	$app_dir = preg_replace('/\/$/', '', $app_dir);
+	$modules_dir = $app_dir . "/modules";
+
+	// Make sure modules directory exists
+	if (!is_dir($modules_dir))
+	{
+		writeToConsole("Error: Path " . $modules_dir . " doesn't exist.");
+		exit;
+	}
+
+	// Prompt for module name
+	$module_name = readFromConsole("What module are you creating for?", $module_name);
+
+	// Prompt for action name
+	$action_name = readFromConsole("What is the name of the action?", $action_name);
+
+	// Prompt for view type
+	$view_type = readFromConsole("What type of view are you creating?", $view_type);
+	$view_type_const = strtoupper($view_type);
+
+	// Prompt for title of template
+	$template_title = readFromConsole("What is the title of the template?");
+
+	// Prompt if we are creating an action, or just view and template
+	$action_needed = readFromConsole("Would you like to create an action?", $action_needed);
+	$action_needed = ("y" == strtolower($action_needed)) ? true : false;
+	
+	// Prompt for request method
+	if ($action_needed)
+	{
+		$request_method = readFromConsole("What request method will this action support?", $request_method);
+		$request_method = strtoupper($request_method);
+	}
+
+	// Make sure module directory exists
+	if (!is_dir($modules_dir . "/" . $module_name))
+	{
+		$create_dir = readFromConsole("Module " . $module_name . " doesn't exist.  Would you like to create it?", "y");
+		$create_dir = ("y" == strtolower($create_dir)) ? true : false;
+		if ($create_dir)
+		{
+			writeToConsole("Creating directory modules/" . $module_name . "...");
+			mkdir($modules_dir . "/" . $module_name, 0777);
+
+			writeToConsole("Creating directory modules/" . $module_name . "/config...");
+			mkdir($modules_dir . "/" . $module_name . "/config", 0777);
+
+			$file_path = $modules_dir . "/" . $module_name . "/config/module.ini";
+			writeToConsole("Creating file modules/" . $module_name . "/config/module.ini...");
+
+$config_data = <<< EOS
+[module]
+    ENABLED     = "On"
+    TITLE       = "{$module_name} Module"
+    VERSION     = ""
+    NAME        = "{$module_name}"
+    AUTHOR      = ""
+    UPDATE_URL  = ""
+    DESCRIPTION = "{$module_name} module"
+EOS;
+
+			file_put_contents($file_path, $config_data);
+		}
+	}
+
+	// Make sure actions, views and templates directories exist
+	$dirs = array("actions", "views", "templates");
+	foreach ($dirs as $dir)
+	{
+		if (!is_dir($modules_dir . "/" . $module_name . "/" . $dir))
+		{
+			writeToConsole("Creating directory modules/" . $module_name . "/" . $dir . "...");
+			mkdir($modules_dir . "/" . $module_name . "/" . $dir, 0777);
+		}
+	}
+
+	// Create Action
+	if ($action_needed)
+	{
+		$file_path = $modules_dir . "/" . $module_name . "/actions/" . $action_name . "Action.class.php";
+		if (file_exists($file_path))
+		{
+			$overwrite = readFromConsole("An action with the same name already exists.  Would you like to overwrite it?", "n");
+			$overwrite = ("y" == strtolower($overwrite)) ? true : false;
+		}
+
+		if (!file_exists($file_path) || $overwrite)
+		{
+			writeToConsole("Creating file modules/" . $module_name . "/actions/" . $action_name . "Action.class.php...");
+
+$action_data = <<< EOS
+<?php
+
+class {$action_name}Action extends BasicAction
+{
+
+	const DEBUG = MO_DEBUG;
+
+	/**
+	 * Execute the action
+	 * @return	int View to be used
+	 */
+	public function execute ()
+	{
+		return View::{$view_type_const};
+	}
+
+	// --------------------------------------------------------------------------
+
+	/**
+	 * Get the default view for the action
+	 * @return	int View to be used
+	 */
+	public function getDefaultView ()
+	{
+		return View::{$view_type_const};
+	}
+
+	// --------------------------------------------------------------------------
+
+	/**
+	 * Get the request method that the action supports
+	 * @return	int Request method
+	 */
+	public function getRequestMethods ()
+	{
+		return Request::{$request_method};
+	}
+
+	// --------------------------------------------------------------------------
+
+	/**
+	 * Get whether or not the action is secure
+	 * @return	boolean
+	 */
+	public function isSecure ()
+	{
+		return true;
+	}
+
+	// --------------------------------------------------------------------------
+
+}
+
+?>
+EOS;
+
+			file_put_contents($file_path, $action_data);
+		}
+		$overwrite = false;
+	}
+
+	// Create View
+	$file_path = $modules_dir . "/" . $module_name . "/views/" . $action_name . $view_type . "View.class.php";
+	if (file_exists($file_path))
+	{
+		$overwrite = readFromConsole("A view with the same name already exists.  Would you like to overwrite it?", "n");
+		$overwrite = ("y" == strtolower($overwrite)) ? true : false;
+	}
+
+	if (!file_exists($file_path) || $overwrite)
+	{		
+		writeToConsole("Creating file modules/" . $module_name . "/views/" . $action_name . $view_type . "View.class.php...");
+
+$view_data = <<< EOS
+<?php
+
+// include dependencies
+require_once(MO_MODULE_DIR . "/Default/views/IndexView.class.php");
+
+class {$action_name}{$view_type}View extends IndexView
+{
+
+	/**
+	 * Execute any presentation logic and set template attributes.
+	 * @return	void
+	 */
+	public function execute ()
+	{
+		// Execute parent view
+		parent::execute();
+
+		// set our template
+		\$this->setTemplate('{$action_name}{$view_type}.php');
+
+		// set the title
+		\$this->setAttribute('title', '{$template_title}');
+	}
+
+}
+
+?>
+EOS;
+
+		file_put_contents($file_path, $view_data);
+	}
+	$overwrite = false;
+
+	// Create Template
+	$file_path = $modules_dir . "/" . $module_name . "/templates/" . $action_name . $view_type . ".php";
+	if (file_exists($file_path))
+	{
+		$overwrite = readFromConsole("A template with the same name already exists.  Would you like to overwrite it?", "n");
+		$overwrite = ("y" == strtolower($overwrite)) ? true : false;
+	}
+
+	if (!file_exists($file_path) || $overwrite)
+	{
+		writeToConsole("Creating file modules/" . $module_name . "/templates/" . $action_name . $view_type . ".php...");
+		file_put_contents($file_path, "");
+	}
+	$overwrite = false;
+
+	// Save settings for next time through
+	$setting_array = array(
+		"app_dir" => @$app_dir,
+		"modules_dir" => $modules_dir,
+		"action_needed" => @($action_needed ? 'y' : 'n'),
+		"request_method" => @$request_method,
+		"module_name" => @$module_name,
+		"action_name" => @$action_name,
+		"view_type" => @$view_type
+	);
+
+	saveSettings($settings_file, $setting_array);
+
+	// Write a message to the console
+	function writeToConsole($msg, $newline = true)
+	{
+		fwrite(STDOUT, $msg . ($newline ? "\n" : ""));
+	}
+
+	// Prompt user for input from console
+	function readFromConsole($question, $default = NULL)
+	{
+		writeToConsole($question . (!is_null($default) ? " [" . $default . "] " : " "), false);
+		$response = trim(fgets(STDIN));
+		return (strlen($response) > 0 ? $response : $default);
+	}
+
+	// Store input to filesystem
+	function saveSettings($setting_path, $settings_array)
+	{
+		$settings_contents = "<?php\n";
+		foreach($settings_array as $name=>$value)
+		{
+			$settings_contents .= "$" . $name . "='" . addslashes($value) . "';\n";
+		}
+		$settings_contents .= "?>";
+		file_put_contents($setting_path, $settings_contents);
+	}
+
+?>

@@ -1,0 +1,515 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE countries [
+	<!ELEMENT countries (country+)>
+	<!ELEMENT country (states?)>
+	<!ATTLIST country id ID #REQUIRED>
+	<!ATTLIST country name CDATA #IMPLIED>
+	<!ATTLIST country abbreviation CDATA #IMPLIED>
+	<!ATTLIST country active CDATA #IMPLIED>
+	<!ELEMENT states (state+)>
+	<!ELEMENT state (#PCDATA)>
+	<!ATTLIST state name CDATA #IMPLIED>
+	<!ATTLIST state abbreviation CDATA #IMPLIED>
+	<!ATTLIST state country CDATA #IMPLIED>
+	<!ATTLIST state active CDATA #IMPLIED>
+]>
+<countries>
+	<country id="US" name="United States" abbreviation="US" active="true">
+		<states>
+			<state name="Alabama" abbreviation="AL" country="US" active="true" />
+			<state name="Alaska" abbreviation="AK" country="US" active="true" />
+			<state name="American Samoa" abbreviation="AS" country="US" active="false" />
+			<state name="Arizona" abbreviation="AZ" country="US" active="true" />
+			<state name="Arkansas" abbreviation="AR" country="US" active="true" />
+			<state name="California" abbreviation="CA" country="US" active="true" />
+			<state name="Colorado" abbreviation="CO" country="US" active="true" />
+			<state name="Connecticut" abbreviation="CT" country="US" active="true" />
+			<state name="Delaware" abbreviation="DE" country="US" active="true" />
+			<state name="District Of Columbia" abbreviation="DC" country="US" active="true" />
+			<state name="Florida" abbreviation="FL" country="US" active="true" />
+			<state name="Georgia" abbreviation="GA" country="US" active="true" />
+			<state name="Guam" abbreviation="GU" country="US" active="false" />
+			<state name="Hawaii" abbreviation="HI" country="US" active="true" />
+			<state name="Idaho" abbreviation="ID" country="US" active="true" />
+			<state name="Illinois" abbreviation="IL" country="US" active="true" />
+			<state name="Indiana" abbreviation="IN" country="US" active="true" />
+			<state name="Iowa" abbreviation="IA" country="US" active="true" />
+			<state name="Kansas" abbreviation="KS" country="US" active="true" />
+			<state name="Kentucky" abbreviation="KY" country="US" active="true" />
+			<state name="Louisiana" abbreviation="LA" country="US" active="true" />
+			<state name="Maine" abbreviation="ME" country="US" active="true" />
+			<state name="Marshall Islands" abbreviation="MH" country="US" active="false" />
+			<state name="Maryland" abbreviation="MD" country="US" active="true" />
+			<state name="Massachusetts" abbreviation="MA" country="US" active="true" />
+			<state name="Michigan" abbreviation="MI" country="US" active="true" />
+			<state name="Minnesota" abbreviation="MN" country="US" active="true" />
+			<state name="Mississippi" abbreviation="MS" country="US" active="true" />
+			<state name="Missouri" abbreviation="MO" country="US" active="true" />
+			<state name="Montana" abbreviation="MT" country="US" active="true" />
+			<state name="Nebraska" abbreviation="NE" country="US" active="true" />
+			<state name="Nevada" abbreviation="NV" country="US" active="true" />
+			<state name="New Hampshire" abbreviation="NH" country="US" active="true" />
+			<state name="New Jersey" abbreviation="NJ" country="US" active="true" />
+			<state name="New Mexico" abbreviation="NM" country="US" active="true" />
+			<state name="New York" abbreviation="NY" country="US" active="true" />
+			<state name="North Carolina" abbreviation="NC" country="US" active="true" />
+			<state name="North Dakota" abbreviation="ND" country="US" active="true" />
+			<state name="Northern Mariana Isl" abbreviation="MP" country="US" active="false" />
+			<state name="Ohio" abbreviation="OH" country="US" active="true" />
+			<state name="Oklahoma" abbreviation="OK" country="US" active="true" />
+			<state name="Oregon" abbreviation="OR" country="US" active="true" />
+			<state name="Palau" abbreviation="PW" country="US" active="false" />
+			<state name="Pennsylvania" abbreviation="PA" country="US" active="true" />
+			<state name="Puerto Rico" abbreviation="PR" country="US" active="true" />
+			<state name="Rhode Island" abbreviation="RI" country="US" active="true" />
+			<state name="South Carolina" abbreviation="SC" country="US" active="true" />
+			<state name="South Dakota" abbreviation="SD" country="US" active="true" />
+			<state name="Tennessee" abbreviation="TN" country="US" active="true" />
+			<state name="Texas" abbreviation="TX" country="US" active="true" />
+			<state name="Utah" abbreviation="UT" country="US" active="true" />
+			<state name="Vermont" abbreviation="VT" country="US" active="true" />
+			<state name="Virgin Islands" abbreviation="VI" country="US" active="false" />
+			<state name="Virginia" abbreviation="VA" country="US" active="true" />
+			<state name="Washington" abbreviation="WA" country="US" active="true" />
+			<state name="West Virginia" abbreviation="WV" country="US" active="true" />
+			<state name="Wisconsin" abbreviation="WI" country="US" active="true" />
+			<state name="Wyoming" abbreviation="WY" country="US" active="true" />
+		</states>
+	</country>
+	<country id="AF" name="Afghanistan" abbreviation="AF" active="false" />
+	<country id="AL" name="Albania" abbreviation="AL" active="false" />
+	<country id="DZ" name="Algeria" abbreviation="DZ" active="false" />
+	<country id="AS" name="American Samoa" abbreviation="AS" active="false" />
+	<country id="AD" name="Andorra " abbreviation="AD" active="false" />
+	<country id="AO" name="Angola" abbreviation="AO" active="false" />
+	<country id="AI" name="Anguilla" abbreviation="AI" active="false" />
+	<country id="AQ" name="Antarctica" abbreviation="AQ" active="false" />
+	<country id="AG" name="Antigua and Barbuda" abbreviation="AG" active="false" />
+	<country id="AR" name="Argentina" abbreviation="AR" active="false" />
+	<country id="AM" name="Armenia" abbreviation="AM" active="false" />
+	<country id="AW" name="Aruba " abbreviation="AW" active="false" />
+	<country id="AU" name="Australia " abbreviation="AU" active="true">
+		<states>
+			<state name="Australian Capital Territory" abbreviation="ACT" country="AU" active="true" />
+			<state name="New South Wales" abbreviation="NSW" country="AU" active="true" />
+			<state name="Northern Territory" abbreviation="N T" country="AU" active="true" />
+			<state name="Queensland" abbreviation="QLD" country="AU" active="true" />
+			<state name="South Australia" abbreviation="SA" country="AU" active="true" />
+			<state name="Tasmania" abbreviation="TAS" country="AU" active="true" />
+			<state name="Victoria" abbreviation="VIC" country="AU" active="true" />
+			<state name="Western Australia" abbreviation="W A" country="AU" active="true" />
+		</states>
+	</country>
+	<country id="AT" name="Austria" abbreviation="AT" active="false" />
+	<country id="AZ" name="Azerbaijan" abbreviation="AZ" active="false" />
+	<country id="BS" name="Bahamas" abbreviation="BS" active="false" />
+	<country id="BH" name="Bahrain " abbreviation="BH" active="false" />
+	<country id="BD" name="Bangladesh" abbreviation="BD" active="false" />
+	<country id="BB" name="Barbados " abbreviation="BB" active="false" />
+	<country id="BY" name="Belarus " abbreviation="BY" active="false" />
+	<country id="BE" name="Belgium" abbreviation="BE" active="false" />
+	<country id="BZ" name="Belize" abbreviation="BZ" active="false" />
+	<country id="BJ" name="Benin" abbreviation="BJ" active="false" />
+	<country id="BM" name="Bermuda" abbreviation="BM" active="false" />
+	<country id="BT" name="Bhutan" abbreviation="BT" active="false" />
+	<country id="BO" name="Bolivia" abbreviation="BO" active="false" />
+	<country id="BA" name="Bosnia and Herzegovina" abbreviation="BA" active="false" />
+	<country id="BW" name="Botswana" abbreviation="BW" active="false" />
+	<country id="BV" name="Bouvet Island" abbreviation="BV" active="false" />
+	<country id="BR" name="Brazil" abbreviation="BR" active="false" />
+	<country id="IO" name="British Indian Ocean Territory" abbreviation="IO" active="false" />
+	<country id="BN" name="Brunei Darussalam" abbreviation="BN" active="false" />
+	<country id="BG" name="Bulgaria" abbreviation="BG" active="false" />
+	<country id="BF" name="Burkina Faso" abbreviation="BF" active="false" />
+	<country id="BI" name="Burundi" abbreviation="BI" active="false" />
+	<country id="KH" name="Cambodia " abbreviation="KH" active="false" />
+	<country id="CM" name="Cameroon" abbreviation="CM" active="false" />
+	<country id="CA" name="Canada " abbreviation="CA" active="true">
+		<states>
+			<state name="Alberta" abbreviation="AB" country="CA" active="true" />
+			<state name="British Colombia" abbreviation="BC" country="CA" active="true" />
+			<state name="Manitoba" abbreviation="MB" country="CA" active="true" />
+			<state name="New Brunswick" abbreviation="NB" country="CA" active="true" />
+			<state name="Newfoundland" abbreviation="NF" country="CA" active="true" />
+			<state name="Northwest Territorie" abbreviation="NW" country="CA" active="true" />
+			<state name="Nova Scotia" abbreviation="NS" country="CA" active="true" />
+			<state name="Nunavut" abbreviation="NU" country="CA" active="true" />
+			<state name="Ontario" abbreviation="ON" country="CA" active="true" />
+			<state name="Prince Edward Island" abbreviation="PE" country="CA" active="true" />
+			<state name="Quebec" abbreviation="PQ" country="CA" active="true" />
+			<state name="Saskatchewan" abbreviation="SK" country="CA" active="true" />
+			<state name="Yukon" abbreviation="YU" country="CA" active="true" />
+		</states>
+	</country>
+	<country id="CV" name="Cape Verde" abbreviation="CV" active="false" />
+	<country id="KY" name="Cayman Islands" abbreviation="KY" active="false" />
+	<country id="CF" name="Central African Republic" abbreviation="CF" active="false" />
+	<country id="TD" name="Chad" abbreviation="TD" active="false" />
+	<country id="CL" name="Chile" abbreviation="CL" active="false" />
+	<country id="CN" name="China" abbreviation="CN" active="false" />
+	<country id="CX" name="Christmas Island" abbreviation="CX" active="false" />
+	<country id="CC" name="Cocos (Keeling Islands)" abbreviation="CC" active="false" />
+	<country id="CO" name="Colombia" abbreviation="CO" active="false" />
+	<country id="KM" name="Comoros" abbreviation="KM" active="false" />
+	<country id="CG" name="Congo " abbreviation="CG" active="false" />
+	<country id="CK" name="Cook Islands" abbreviation="CK" active="false" />
+	<country id="CR" name="Costa Rica " abbreviation="CR" active="false" />
+	<country id="CI" name="Cote D'Ivoire (Ivory Coast)" abbreviation="CI" active="false" />
+	<country id="HR" name="Croatia (Hrvatska" abbreviation="HR" active="false" />
+	<country id="CU" name="Cuba " abbreviation="CU" active="false" />
+	<country id="CY" name="Cyprus" abbreviation="CY" active="false" />
+	<country id="CZ" name="Czech Republic" abbreviation="CZ" active="false" />
+	<country id="DK" name="Denmark" abbreviation="DK" active="false" />
+	<country id="DJ" name="Djibouti" abbreviation="DJ" active="false" />
+	<country id="DM" name="Dominica" abbreviation="DM" active="false" />
+	<country id="DO" name="Dominican Republic" abbreviation="DO" active="false" />
+	<country id="TP" name="East Timor" abbreviation="TP" active="false" />
+	<country id="EC" name="Ecuador" abbreviation="EC" active="false" />
+	<country id="EG" name="Egypt " abbreviation="EG" active="false" />
+	<country id="SV" name="El Salvador " abbreviation="SV" active="false" />
+	<country id="GQ" name="Equatorial Guinea" abbreviation="GQ" active="false" />
+	<country id="ER" name="Eritrea " abbreviation="ER" active="false" />
+	<country id="EE" name="Estonia " abbreviation="EE" active="false" />
+	<country id="ET" name="Ethiopia" abbreviation="ET" active="false" />
+	<country id="FK" name="Falkland Islands (Malvinas)" abbreviation="FK" active="false" />
+	<country id="FO" name="Faroe Islands " abbreviation="FO" active="false" />
+	<country id="FJ" name="Fiji" abbreviation="FJ" active="false" />
+	<country id="FI" name="Finland" abbreviation="FI" active="false" />
+	<country id="FR" name="France" abbreviation="FR" active="false" />
+	<country id="FX" name="France, Metropolitan" abbreviation="FX" active="false" />
+	<country id="GF" name="French Guiana" abbreviation="GF" active="false" />
+	<country id="PF" name="French Polynesia" abbreviation="PF" active="false" />
+	<country id="TF" name="French Southern Territories" abbreviation="TF" active="false" />
+	<country id="GA" name="Gabon" abbreviation="GA" active="false" />
+	<country id="GM" name="Gambia" abbreviation="GM" active="false" />
+	<country id="GE" name="Georgia" abbreviation="GE" active="false" />
+	<country id="DE" name="Germany" abbreviation="DE" active="false" />
+	<country id="GH" name="Ghana" abbreviation="GH" active="false" />
+	<country id="GI" name="Gibraltar" abbreviation="GI" active="false" />
+	<country id="GR" name="Greece" abbreviation="GR" active="false" />
+	<country id="GL" name="Greenland" abbreviation="GL" active="false" />
+	<country id="GD" name="Grenada " abbreviation="GD" active="false" />
+	<country id="GP" name="Guadeloupe" abbreviation="GP" active="false" />
+	<country id="GU" name="Guam " abbreviation="GU" active="false" />
+	<country id="GT" name="Guatemala" abbreviation="GT" active="false" />
+	<country id="GN" name="Guinea" abbreviation="GN" active="false" />
+	<country id="GW" name="Guinea-Bissau" abbreviation="GW" active="false" />
+	<country id="GY" name="Guyana" abbreviation="GY" active="false" />
+	<country id="HT" name="Haiti" abbreviation="HT" active="false" />
+	<country id="HM" name="Heard and McDonald Islands" abbreviation="HM" active="false" />
+	<country id="HN" name="Honduras" abbreviation="HN" active="false" />
+	<country id="HK" name="Hong Kong" abbreviation="HK" active="false" />
+	<country id="HU" name="Hungary" abbreviation="HU" active="false" />
+	<country id="IS" name="Iceland" abbreviation="IS" active="false" />
+	<country id="IN" name="India" abbreviation="IN" active="false" />
+	<country id="ID" name="Indonesia" abbreviation="ID" active="false" />
+	<country id="IR" name="Iran" abbreviation="IR" active="false" />
+	<country id="IQ" name="Iraq" abbreviation="IQ" active="false" />
+	<country id="IE" name="Ireland" abbreviation="IE" active="true">
+		<states>
+			<state name="Antrim" abbreviation="ANT" country="IE" active="true" />
+			<state name="Armagh" abbreviation="ARM" country="IE" active="true" />
+			<state name="Carlow" abbreviation="CAR" country="IE" active="true" />
+			<state name="Cavan" abbreviation="CAV" country="IE" active="true" />
+			<state name="Clare" abbreviation="CLA" country="IE" active="true" />
+			<state name="Cork" abbreviation="COR" country="IE" active="true" />
+			<state name="Derry" abbreviation="DRY" country="IE" active="true" />
+			<state name="Donegal" abbreviation="DON" country="IE" active="true" />
+			<state name="Down" abbreviation="DOW" country="IE" active="true" />
+			<state name="Dublin" abbreviation="DUB" country="IE" active="true" />
+			<state name="Fermanagh" abbreviation="FER" country="IE" active="true" />
+			<state name="Galway" abbreviation="GAL" country="IE" active="true" />
+			<state name="Kerry" abbreviation="KER" country="IE" active="true" />
+			<state name="Kildare" abbreviation="KID" country="IE" active="true" />
+			<state name="Kilkenny" abbreviation="KIK" country="IE" active="true" />
+			<state name="Leitrim" abbreviation="LET" country="IE" active="true" />
+			<state name="Leix (Queens)" abbreviation="LEX" country="IE" active="true" />
+			<state name="Limerick" abbreviation="LIM" country="IE" active="true" />
+			<state name="Londonderry" abbreviation="LDY" country="IE" active="true" />
+			<state name="Longford" abbreviation="LOG" country="IE" active="true" />
+			<state name="Louth" abbreviation="LOU" country="IE" active="true" />
+			<state name="Mayo" abbreviation="MAY" country="IE" active="true" />
+			<state name="Meath" abbreviation="MEA" country="IE" active="true" />
+			<state name="Monaghan" abbreviation="MOG" country="IE" active="true" />
+			<state name="Offaly (Kings)" abbreviation="OFF" country="IE" active="true" />
+			<state name="Roscommon" abbreviation="ROS" country="IE" active="true" />
+			<state name="Sligo" abbreviation="SLI" country="IE" active="true" />
+			<state name="Tipperary" abbreviation="TIP" country="IE" active="true" />
+			<state name="Tyrone" abbreviation="TYR" country="IE" active="true" />
+			<state name="Waterford" abbreviation="WAT" country="IE" active="true" />
+			<state name="Westmeath" abbreviation="WEM" country="IE" active="true" />
+			<state name="Wexford" abbreviation="WEX" country="IE" active="true" />
+			<state name="Wicklow" abbreviation="WIC" country="IE" active="true" />
+		</states>
+	</country>
+	<country id="IL" name="Israel" abbreviation="IL" active="false" />
+	<country id="IT" name="Italy" abbreviation="IT" active="false" />
+	<country id="JM" name="Jamaica" abbreviation="JM" active="false" />
+	<country id="JP" name="Japan " abbreviation="JP" active="false" />
+	<country id="JO" name="Jordan " abbreviation="JO" active="false" />
+	<country id="KZ" name="Kazakhstan" abbreviation="KZ" active="false" />
+	<country id="KE" name="Kenya " abbreviation="KE" active="false" />
+	<country id="KI" name="Kiribati " abbreviation="KI" active="false" />
+	<country id="KP" name="Korea (North)" abbreviation="KP" active="false" />
+	<country id="KR" name="Korea (South)" abbreviation="KR" active="false" />
+	<country id="KW" name="Kuwait" abbreviation="KW" active="false" />
+	<country id="KG" name="Kyrgyzstan" abbreviation="KG" active="false" />
+	<country id="LA" name="Laos" abbreviation="LA" active="false" />
+	<country id="LV" name="Latvia" abbreviation="LV" active="false" />
+	<country id="LB" name="Lebanon" abbreviation="LB" active="false" />
+	<country id="LS" name="Lesotho" abbreviation="LS" active="false" />
+	<country id="LR" name="Liberia " abbreviation="LR" active="false" />
+	<country id="LY" name="Libya" abbreviation="LY" active="false" />
+	<country id="LI" name="Liechtenstein" abbreviation="LI" active="false" />
+	<country id="LT" name="Lithuania" abbreviation="LT" active="false" />
+	<country id="LU" name="Luxembourg " abbreviation="LU" active="false" />
+	<country id="MO" name="Macau" abbreviation="MO" active="false" />
+	<country id="MK" name="Macedonia" abbreviation="MK" active="false" />
+	<country id="MG" name="Madagascar" abbreviation="MG" active="false" />
+	<country id="MW" name="Malawi" abbreviation="MW" active="false" />
+	<country id="MY" name="Malaysia" abbreviation="MY" active="false" />
+	<country id="MV" name="Maldives" abbreviation="MV" active="false" />
+	<country id="ML" name="Mali" abbreviation="ML" active="false" />
+	<country id="MT" name="Malta" abbreviation="MT" active="false" />
+	<country id="MH" name="Marshall Islands" abbreviation="MH" active="false" />
+	<country id="MQ" name="Martinique" abbreviation="MQ" active="false" />
+	<country id="MR" name="Mauritania" abbreviation="MR" active="false" />
+	<country id="MU" name="Mauritius" abbreviation="MU" active="false" />
+	<country id="YT" name="Mayotte" abbreviation="YT" active="false" />
+	<country id="MX" name="Mexico" abbreviation="MX" active="true">
+	         <states>
+	                 <state name="Aguascalientes" abbreviation="AG" country="MX" active="true" />
+	                 <state name="Baja California" abbreviation="BN" country="MX" active="true" />
+	                 <state name="Baja California Sur" abbreviation="BS" country="MX" active="true" />
+	                 <state name="Campeche" abbreviation="CM" country="MX" active="true" />
+	                 <state name="Chiapas" abbreviation="CP" country="MX" active="true" />
+	                 <state name="Chihuahua" abbreviation="CH" country="MX" active="true" />
+	                 <state name="Coahuila" abbreviation="CA" country="MX" active="true" />
+	                 <state name="Colima" abbreviation="CL" country="MX" active="true" />
+	                 <state name="Distrito Federal" abbreviation="DF" country="MX" active="true" />
+	                 <state name="Durango" abbreviation="DU" country="MX" active="true" />
+	                 <state name="Guanajuato" abbreviation="GJ" country="MX" active="true" />
+	                 <state name="Guerrero" abbreviation="GR" country="MX" active="true" />
+	                 <state name="Hidalgo" abbreviation="HI" country="MX" active="true" />
+	                 <state name="Jalisco" abbreviation="JA" country="MX" active="true" />
+	                 <state name="Mexico" abbreviation="MX" country="MX" active="true" />
+	                 <state name="Michoacan" abbreviation="MC" country="MX" active="true" />
+	                 <state name="Morelos" abbreviation="MR" country="MX" active="true" />
+	                 <state name="Nayarit" abbreviation="NA" country="MX" active="true" />
+	                 <state name="Nuevo Leon" abbreviation="NL" country="MX" active="true" />
+	                 <state name="Oaxaca" abbreviation="OA" country="MX" active="true" />
+	                 <state name="Puebla" abbreviation="PU" country="MX" active="true" />
+	                 <state name="Queretaro" abbreviation="QE" country="MX" active="true" />
+	                 <state name="Quintana Roo" abbreviation="QR" country="MX" active="true" />
+	                 <state name="San Luis Potosi" abbreviation="SL" country="MX" active="true" />
+	                 <state name="Sinaloa" abbreviation="SI" country="MX" active="true" />
+	                 <state name="Sonora" abbreviation="SO" country="MX" active="true" />
+	                 <state name="Tabasco" abbreviation="TB" country="MX" active="true" />
+	                 <state name="Tamaulipas" abbreviation="TM" country="MX" active="true" />
+	                 <state name="Tlaxcala" abbreviation="TL" country="MX" active="true" />
+	                 <state name="Veracruz" abbreviation="VE" country="MX" active="true" />
+	                 <state name="Yucatan" abbreviation="YU" country="MX" active="true" />
+	                 <state name="Zacatecas" abbreviation="ZA" country="MX" active="true" />
+	         </states>
+        </country>
+        <country id="FM" name="Micronesia" abbreviation="FM" active="false" />
+	<country id="MD" name="Moldova" abbreviation="MD" active="false" />
+	<country id="MC" name="Monaco" abbreviation="MC" active="false" />
+	<country id="MN" name="Mongolia" abbreviation="MN" active="false" />
+	<country id="MS" name="Montserrat" abbreviation="MS" active="false" />
+	<country id="MA" name="Morocco" abbreviation="MA" active="false" />
+	<country id="MZ" name="Mozambique" abbreviation="MZ" active="false" />
+	<country id="MM" name="Myanmar" abbreviation="MM" active="false" />
+	<country id="NA" name="Namibia" abbreviation="NA" active="false" />
+	<country id="NR" name="Nauru" abbreviation="NR" active="false" />
+	<country id="NP" name="Nepal" abbreviation="NP" active="false" />
+	<country id="NL" name="Netherlands" abbreviation="NL" active="false" />
+	<country id="AN" name="Netherlands Antilles" abbreviation="AN" active="false" />
+	<country id="NC" name="New Caledonia" abbreviation="NC" active="false" />
+	<country id="NZ" name="New Zealand" abbreviation="NZ" active="true" />
+	<country id="NI" name="Nicaragua" abbreviation="NI" active="false" />
+	<country id="NE" name="Niger" abbreviation="NE" active="false" />
+	<country id="NG" name="Nigeria" abbreviation="NG" active="false" />
+	<country id="NU" name="Niue" abbreviation="NU" active="false" />
+	<country id="NF" name="Norfolk Island" abbreviation="NF" active="false" />
+	<country id="MP" name="Northern Mariana Islands" abbreviation="MP" active="false" />
+	<country id="NO" name="Norway" abbreviation="NO" active="false" />
+	<country id="OM" name="Oman" abbreviation="OM" active="false" />
+	<country id="PK" name="Pakistan" abbreviation="PK" active="false" />
+	<country id="PW" name="Palau" abbreviation="PW" active="false" />
+	<country id="PA" name="Panama" abbreviation="PA" active="false" />
+	<country id="PG" name="Papua New Guinea" abbreviation="PG" active="false" />
+	<country id="PY" name="Paraguay" abbreviation="PY" active="false" />
+	<country id="PE" name="Peru" abbreviation="PE" active="false" />
+	<country id="PH" name="Philippines" abbreviation="PH" active="false" />
+	<country id="PN" name="Pitcairn" abbreviation="PN" active="false" />
+	<country id="PL" name="Poland" abbreviation="PL" active="false" />
+	<country id="PT" name="Portugal" abbreviation="PT" active="false" />
+	<country id="PR" name="Puerto Rico" abbreviation="PR" active="false" />
+	<country id="QA" name="Qatar" abbreviation="QA" active="false" />
+	<country id="RE" name="Reunion" abbreviation="RE" active="false" />
+	<country id="RO" name="Romania" abbreviation="RO" active="false" />
+	<country id="RU" name="Russian Federation" abbreviation="RU" active="false" />
+	<country id="RW" name="Rwanda" abbreviation="RW" active="false" />
+	<country id="KN" name="Saint Kitts and Nevis" abbreviation="KN" active="false" />
+	<country id="LC" name="Saint Lucia" abbreviation="LC" active="false" />
+	<country id="VC" name="Saint Vincent and The Grenadines" abbreviation="VC" active="false" />
+	<country id="WS" name="Samoa" abbreviation="WS" active="false" />
+	<country id="SM" name="San Marino" abbreviation="SM" active="false" />
+	<country id="ST" name="Sao Tome and Principe " abbreviation="ST" active="false" />
+	<country id="SA" name="Saudi Arabia" abbreviation="SA" active="false" />
+	<country id="SN" name="Senegal" abbreviation="SN" active="false" />
+	<country id="SC" name="Seychelles" abbreviation="SC" active="false" />
+	<country id="SL" name="Sierra Leone" abbreviation="SL" active="false" />
+	<country id="SG" name="Singapore" abbreviation="SG" active="true" />
+	<country id="SK" name="Slovak Republic" abbreviation="SK" active="false" />
+	<country id="SI" name="Slovenia" abbreviation="SI" active="false" />
+	<country id="SB" name="Solomon Islands" abbreviation="SB" active="false" />
+	<country id="SO" name="Somalia" abbreviation="SO" active="false" />
+	<country id="ZA" name="South Africa" abbreviation="ZA" active="false" />
+	<country id="GS" name="S. Georgia and S. Sandwich Isls." abbreviation="GS" active="false" />
+	<country id="ES" name="Spain" abbreviation="ES" active="false" />
+	<country id="LK" name="Sri Lanka" abbreviation="LK" active="false" />
+	<country id="SH" name="St. Helena" abbreviation="SH" active="false" />
+	<country id="PM" name="St. Pierre and Miquelon" abbreviation="PM" active="false" />
+	<country id="SD" name="Sudan" abbreviation="SD" active="false" />
+	<country id="SR" name="Suriname" abbreviation="SR" active="false" />
+	<country id="SJ" name="Svalbard and Jan Mayen Islands" abbreviation="SJ" active="false" />
+	<country id="SZ" name="Swaziland" abbreviation="SZ" active="false" />
+	<country id="SE" name="Sweden" abbreviation="SE" active="false" />
+	<country id="CH" name="Switzerland" abbreviation="CH" active="false" />
+	<country id="SY" name="Syria" abbreviation="SY" active="false" />
+	<country id="TW" name="Taiwan" abbreviation="TW" active="false" />
+	<country id="TJ" name="Tajikistan" abbreviation="TJ" active="false" />
+	<country id="TZ" name="Tanzania" abbreviation="TZ" active="false" />
+	<country id="TH" name="Thailand" abbreviation="TH" active="false" />
+	<country id="TG" name="Togo" abbreviation="TG" active="false" />
+	<country id="TK" name="Tokelau" abbreviation="TK" active="false" />
+	<country id="TO" name="Tonga" abbreviation="TO" active="false" />
+	<country id="TT" name="Trinidad and Tobago" abbreviation="TT" active="false" />
+	<country id="TN" name="Tunisia" abbreviation="TN" active="false" />
+	<country id="TR" name="Turkey" abbreviation="TR" active="false" />
+	<country id="TM" name="Turkmenistan" abbreviation="TM" active="false" />
+	<country id="TC" name="Turks and Caicos Islands" abbreviation="TC" active="false" />
+	<country id="TV" name="Tuvalu" abbreviation="TV" active="false" />
+	<country id="UG" name="Uganda" abbreviation="UG" active="false" />
+	<country id="UA" name="Ukraine" abbreviation="UA" active="false" />
+	<country id="AE" name="United Arab Emirates" abbreviation="AE" active="false" />
+	<country id="UK" name="United Kingdom" abbreviation="UK" active="true">
+		<states>
+			<state name="Bedfordshire" abbreviation="BDF" country="UK" active="true" />
+			<state name="Berkshire" abbreviation="BRK" country="UK" active="true" />
+			<state name="Buckinghamshire" abbreviation="BKM" country="UK" active="true" />
+			<state name="Cambridgeshire" abbreviation="CAM" country="UK" active="true" />
+			<state name="Cheshire" abbreviation="CHS" country="UK" active="true" />
+			<state name="Cornwall" abbreviation="CON" country="UK" active="true" />
+			<state name="Cumberland" abbreviation="CUL" country="UK" active="true" />
+			<state name="Derbyshire" abbreviation="DBY" country="UK" active="true" />
+			<state name="Devon" abbreviation="DEV" country="UK" active="true" />
+			<state name="Dorset" abbreviation="DOR" country="UK" active="true" />
+			<state name="Durham" abbreviation="DUR" country="UK" active="true" />
+			<state name="Essex" abbreviation="ESS" country="UK" active="true" />
+			<state name="Gloucestershire" abbreviation="GLS" country="UK" active="true" />
+			<state name="Hampshire" abbreviation="HAM" country="UK" active="true" />
+			<state name="Herefordshire" abbreviation="HEF" country="UK" active="true" />
+			<state name="Hertfordshire" abbreviation="HRT" country="UK" active="true" />
+			<state name="Huntingdonshire" abbreviation="HUN" country="UK" active="true" />
+			<state name="Kent" abbreviation="KEN" country="UK" active="true" />
+			<state name="Lancashire" abbreviation="LAN" country="UK" active="true" />
+			<state name="Leicestershire" abbreviation="LEI" country="UK" active="true" />
+			<state name="Lincolnshire" abbreviation="LIN" country="UK" active="true" />
+			<state name="London" abbreviation="LND" country="UK" active="true" />
+			<state name="Middlesex" abbreviation="MDX" country="UK" active="true" />
+			<state name="Norfolk" abbreviation="NFK" country="UK" active="true" />
+			<state name="Northamptonshire" abbreviation="NTH" country="UK" active="true" />
+			<state name="Northumberland" abbreviation="NBL" country="UK" active="true" />
+			<state name="Nottinghamshire" abbreviation="NTT" country="UK" active="true" />
+			<state name="Oxfordshire" abbreviation="OXF" country="UK" active="true" />
+			<state name="Rutland" abbreviation="RUT" country="UK" active="true" />
+			<state name="Shropshire" abbreviation="SAL" country="UK" active="true" />
+			<state name="Somerset" abbreviation="SOM" country="UK" active="true" />
+			<state name="Staffordshire" abbreviation="STS" country="UK" active="true" />
+			<state name="Suffolk" abbreviation="SFK" country="UK" active="true" />
+			<state name="Surrey" abbreviation="SRY" country="UK" active="true" />
+			<state name="Sussex" abbreviation="SSX" country="UK" active="true" />
+			<state name="Warwickshire" abbreviation="WAR" country="UK" active="true" />
+			<state name="Westmoreland" abbreviation="WES" country="UK" active="true" />
+			<state name="Wiltshire" abbreviation="WIL" country="UK" active="true" />
+			<state name="Worcestershire" abbreviation="WOR" country="UK" active="true" />
+			<state name="Yorkshire" abbreviation="YKS" country="UK" active="true" />
+			<state name="YKS East Riding" abbreviation="ERY" country="UK" active="true" />
+			<state name="YKS North Riding" abbreviation="NRY" country="UK" active="true" />
+			<state name="YKS West Riding" abbreviation="WRY" country="UK" active="true" />
+			<state name="Alderney" abbreviation="ALD" country="UK" active="true" />
+			<state name="Channel Islands" abbreviation="CHI" country="UK" active="true" />
+			<state name="Guernsey" abbreviation="GSY" country="UK" active="true" />
+			<state name="Isle of Man" abbreviation="IOM" country="UK" active="true" />
+			<state name="Isle of Wight" abbreviation="IOW" country="UK" active="true" />
+			<state name="Jersey" abbreviation="JSY" country="UK" active="true" />
+			<state name="Sark" abbreviation="SRK" country="UK" active="true" />
+			<state name="Aberdeen" abbreviation="ABD" country="UK" active="true" />
+			<state name="Angus" abbreviation="ANS" country="UK" active="true" />
+			<state name="Argyll" abbreviation="ARL" country="UK" active="true" />
+			<state name="Ayr" abbreviation="AYR" country="UK" active="true" />
+			<state name="Banff" abbreviation="BAN" country="UK" active="true" />
+			<state name="Berwick" abbreviation="BEW" country="UK" active="true" />
+			<state name="Bute" abbreviation="BUT" country="UK" active="true" />
+			<state name="Caithness" abbreviation="CAI" country="UK" active="true" />
+			<state name="Clackmannon" abbreviation="CLK" country="UK" active="true" />
+			<state name="Dumfries" abbreviation="DFS" country="UK" active="true" />
+			<state name="Dunbarton" abbreviation="DNB" country="UK" active="true" />
+			<state name="East Lothian" abbreviation="ELN" country="UK" active="true" />
+			<state name="Fife" abbreviation="FIF" country="UK" active="true" />
+			<state name="Inverness" abbreviation="INV" country="UK" active="true" />
+			<state name="Kincardine" abbreviation="KCD" country="UK" active="true" />
+			<state name="Kinross" abbreviation="KRS" country="UK" active="true" />
+			<state name="Kirkcudbright" abbreviation="KKD" country="UK" active="true" />
+			<state name="Lanark" abbreviation="LKS" country="UK" active="true" />
+			<state name="Midlothian" abbreviation="MLN" country="UK" active="true" />
+			<state name="Moray" abbreviation="MOR" country="UK" active="true" />
+			<state name="Nairn" abbreviation="NAI" country="UK" active="true" />
+			<state name="Orkney" abbreviation="OKI" country="UK" active="true" />
+			<state name="Peebles" abbreviation="PEE" country="UK" active="true" />
+			<state name="Perth" abbreviation="PER" country="UK" active="true" />
+			<state name="Renfrew" abbreviation="RFW" country="UK" active="true" />
+			<state name="Ross &amp; Cromarty" abbreviation="ROC" country="UK" active="true" />
+			<state name="Roxburgh" abbreviation="ROX" country="UK" active="true" />
+			<state name="Selkirk" abbreviation="SEL" country="UK" active="true" />
+			<state name="Shetland" abbreviation="SHI" country="UK" active="true" />
+			<state name="Stirling" abbreviation="STI" country="UK" active="true" />
+			<state name="Sutherland" abbreviation="SUT" country="UK" active="true" />
+			<state name="West Lothian" abbreviation="WLN" country="UK" active="true" />
+			<state name="Wigtown" abbreviation="WIG" country="UK" active="true" />
+			<state name="Anglesey" abbreviation="AGY" country="UK" active="true" />
+			<state name="Brecknockshire" abbreviation="BRE" country="UK" active="true" />
+			<state name="Caernarvon" abbreviation="CAE" country="UK" active="true" />
+			<state name="Cardiganshire" abbreviation="CGN" country="UK" active="true" />
+			<state name="Carmarthen" abbreviation="CMN" country="UK" active="true" />
+			<state name="Denbighshire" abbreviation="DEN" country="UK" active="true" />
+			<state name="Flintshire" abbreviation="FLN" country="UK" active="true" />
+			<state name="Glamorgan" abbreviation="GLA" country="UK" active="true" />
+			<state name="Merioneth" abbreviation="MER" country="UK" active="true" />
+			<state name="Monmouthshire" abbreviation="MON" country="UK" active="true" />
+			<state name="Montgomeryshire" abbreviation="MGY" country="UK" active="true" />
+			<state name="embroke" abbreviation="PEM" country="UK" active="true" />
+			<state name="Radnorshire" abbreviation="RAD" country="UK" active="true" />
+		</states>
+	</country>
+	<country id="UM" name="US Minor Outlying Islands" abbreviation="UM" active="false" />
+	<country id="UY" name="Uruguay" abbreviation="UY" active="false" />
+	<country id="UZ" name="Uzbekistan" abbreviation="UZ" active="false" />
+	<country id="VU" name="Vanuatu" abbreviation="VU" active="false" />
+	<country id="VA" name="Vatican City State (Holy See)" abbreviation="VA" active="false" />
+	<country id="VE" name="Venezuela" abbreviation="VE" active="false" />
+	<country id="VN" name="Viet Nam" abbreviation="VN" active="false" />
+	<country id="VG" name="Virgin Islands (British)" abbreviation="VG" active="false" />
+	<country id="VI" name="Virgin Islands (US)" abbreviation="VI" active="false" />
+	<country id="WF" name="Wallis and Futuna Islands" abbreviation="WF" active="false" />
+	<country id="EH" name="Western Sahara" abbreviation="EH" active="false" />
+	<country id="YE" name="Yemen" abbreviation="YE" active="false" />
+	<country id="YU" name="Yugoslavia" abbreviation="YU" active="false" />
+	<country id="ZR" name="Zaire" abbreviation="ZR" active="false" />
+	<country id="ZM" name="Zambia" abbreviation="ZM" active="false" />
+	<country id="ZW" name="Zimbabwe" abbreviation="ZW" active="false" />
+	<country id="OT" name="Other" abbreviation="OT" active="false" />
+</countries>
