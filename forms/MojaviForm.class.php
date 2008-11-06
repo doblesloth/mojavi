@@ -51,7 +51,7 @@ abstract class MojaviForm extends MojaviObject {
 					* add***($arg0) function.  If it does not exist, then fallback to a set***($arg0)
 					*/
 					# The regex will change '_a' to 'A' or '_1' to '1'
-					$entry = preg_replace("/_([a-zA-Z0-9])/e","strtoupper('\\1')",$key);
+					$entry = preg_replace("/_([a-zA-Z0-9])/e","strtoupper('\\1')",strtolower($key));
 					if (is_callable(array($this, 'add' . ucfirst($entry)),false, $callableName)) {
 						foreach ($value as $key2 => $value1) {
 							if (substr($entry, -2) == "Id") {
@@ -61,7 +61,7 @@ abstract class MojaviForm extends MojaviObject {
 						}
 					} else {
 						# The regex will change '_a' to 'A' or '_1' to '1'
-						$entry = preg_replace("/_([a-zA-Z0-9])/e","strtoupper('\\1')",$key);
+						$entry = preg_replace("/_([a-zA-Z0-9])/e","strtoupper('\\1')",strtolower($key));
 						if (is_callable(array($this, 'set' . ucfirst($entry)),false, $callableName)) {
 							if (substr($entry, -2) == "Id") {
 								$value = IntegerTableEncoder::decodeInt($value);
@@ -71,7 +71,7 @@ abstract class MojaviForm extends MojaviObject {
 					}
 				} else {
 					# The regex will change '_a' to 'A' or '_1' to '1'
-					$entry = preg_replace("/_([a-zA-Z0-9])/e","strtoupper('\\1')",$key);
+					$entry = preg_replace("/_([a-zA-Z0-9])/e","strtoupper('\\1')",strtolower($key));
 					if (is_callable(array($this, 'set' . ucfirst($entry)),false, $callableName)) {
 						if (substr($entry, -2) == "Id") {
 							$value = IntegerTableEncoder::decodeInt($value);
@@ -90,7 +90,7 @@ abstract class MojaviForm extends MojaviObject {
 							$attribute = $arg0->attributes->item($i);
 							$entry = $attribute->nodeName;
 							# The regex will change '_a' to 'A' or '_1' to '1'
-							$entry = preg_replace("/_([a-zA-Z0-9])/e","strtoupper('\\1')",$entry);
+							$entry = preg_replace("/_([a-zA-Z0-9])/e","strtoupper('\\1')",strtolower($entry));
 							$value = $attribute->nodeValue;
 							if (is_callable(array($this, 'set' . ucfirst($entry)),false, $callableName)) {
 								if (substr($entry, -2) == "Id") {
@@ -113,7 +113,7 @@ abstract class MojaviForm extends MojaviObject {
 									}
 								}
 								# The regex will change '_a' to 'A' or '_1' to '1'
-								$entry = preg_replace("/_([a-zA-Z0-9])/e","strtoupper('\\1')",$entry);
+								$entry = preg_replace("/_([a-zA-Z0-9])/e","strtoupper('\\1')",strtolower($entry));
 								if (is_callable(array($this, 'set' . ucfirst($entry)),false, $callableName)) {
 									if (substr($entry, -2) == "Id") {
 										$value = IntegerTableEncoder::decodeInt($value);
@@ -136,7 +136,7 @@ abstract class MojaviForm extends MojaviObject {
 						* add***($arg0) function.  If it does not exist, then fallback to a set***($arg0)
 						*/
 						# The regex will change '_a' to 'A' or '_1' to '1'
-						$entry = preg_replace("/_([a-zA-Z0-9])/e","strtoupper('\\1')",$key);
+						$entry = preg_replace("/_([a-zA-Z0-9])/e","strtoupper('\\1')",strtolower($key));
 						if (is_callable(array($this, 'add' . ucfirst($entry)),false, $callableName)) {
 							foreach ($value as $key2 => $value1) {
 								if (substr($entry, -2) == "Id") {
@@ -146,7 +146,7 @@ abstract class MojaviForm extends MojaviObject {
 							}
 						} else {
 							# The regex will change '_a' to 'A' or '_1' to '1'
-							$entry = preg_replace("/_([a-zA-Z0-9])/e","strtoupper('\\1')",$key);
+							$entry = preg_replace("/_([a-zA-Z0-9])/e","strtoupper('\\1')",strtolower($key));
 							if (is_callable(array($this, 'set' . ucfirst($entry)),false, $callableName)) {
 								if (substr($entry, -2) == "Id") {
 									$value = IntegerTableEncoder::decodeInt($value);
@@ -156,7 +156,7 @@ abstract class MojaviForm extends MojaviObject {
 						}
 					} else {
 						# The regex will change '_a' to 'A' or '_1' to '1'
-						$entry = preg_replace("/_([a-zA-Z0-9])/e","strtoupper('\\1')",$key);
+						$entry = preg_replace("/_([a-zA-Z0-9])/e","strtoupper('\\1')",strtolower($key));
 						if (is_callable(array($this, 'set' . ucfirst($entry)),false, $callableName)) {
 							if (substr($entry, -2) == "Id") {
 								$value = IntegerTableEncoder::decodeInt($value);
@@ -191,7 +191,7 @@ abstract class MojaviForm extends MojaviObject {
 					* add***($arg0) function.  If it does not exist, then fallback to a set***($arg0)
 					*/
 					# The regex will change '_a' to 'A' or '_1' to '1'
-					$entry = preg_replace("/_([a-zA-Z0-9])/e","strtoupper('\\1')",$key);
+					$entry = preg_replace("/_([a-zA-Z0-9])/e","strtoupper('\\1')",strtolower($key));
 					if (is_callable(array($this, 'add' . ucfirst($entry)),false, $callableName)) {
 						foreach ($value as $key2 => $value1) {
 							if (substr($entry, -2) == "Id") {
@@ -201,7 +201,7 @@ abstract class MojaviForm extends MojaviObject {
 						}
 					} else {
 						# The regex will change '_a' to 'A' or '_1' to '1'
-						$entry = preg_replace("/_([a-zA-Z0-9])/e","strtoupper('\\1')",$key);
+						$entry = preg_replace("/_([a-zA-Z0-9])/e","strtoupper('\\1')",strtolower($key));
 						if (is_callable(array($this, 'set' . ucfirst($entry)),false, $callableName)) {
 							if (substr($entry, -2) == "Id") {
 								$value = IntegerTableEncoder::decodeInt($value);
@@ -211,7 +211,7 @@ abstract class MojaviForm extends MojaviObject {
 					}
 				} else {
 					# The regex will change '_a' to 'A' or '_1' to '1'
-					$entry = preg_replace("/_([a-zA-Z0-9])/e","strtoupper('\\1')",$key);
+					$entry = preg_replace("/_([a-zA-Z0-9])/e","strtoupper('\\1')",strtolower($key));
 					if (is_callable(array($this, 'set' . ucfirst($entry)),false, $callableName)) {
 						if (substr($entry, -2) == "Id") {
 							$value = IntegerTableEncoder::decodeInt($value);

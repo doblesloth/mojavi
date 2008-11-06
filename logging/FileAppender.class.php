@@ -63,8 +63,12 @@ class FileAppender extends Appender
 	protected function _getHandle()
 	{
 		if (is_null($this->_handle)) {
-			if (!$this->_handle = fopen($this->_filename, 'a')) {
-				throw new LoggingException("Cannot open file ({$this->_filename})");
+			if (is_writable($this->_filename)) {
+				if (!$this->_handle = fopen($this->_filename, 'a')) {
+					throw new LoggingException("Cannot open file ({$this->_filename})");
+				}
+			} else {
+				throw new LoggingException("Cannot open file for writing ({$this->_filename})");
 			}
 		}
 		
