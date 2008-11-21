@@ -12,7 +12,6 @@
 		const VALIDATION_LEVEL_FULL = 1;
 		
 		private $id;
-		private $filter;
 		private $created;
 		private $created_time;
 		private $is_deleted;
@@ -21,6 +20,7 @@
 		private $shell;
 		private $forward;
 		private $validation_level;
+		private $override_account_id;
 		
 		/*   VARS FOR REPOPULATION   */
 		private $populated;
@@ -48,7 +48,7 @@
 		 * @return string
 		 */
 		function getEncodedId() {
-			if(MO_DEBUG) {
+			if (MO_DEBUG) {
 				return $this->getId();
 			} else {
 				return IntegerTableEncoder::encodeInt($this->getId());
@@ -69,15 +69,6 @@
 			} else if (!is_array($arg0)) {
 				$this->id = IntegerTableEncoder::decodeInt($arg0);
 			}
-		}
-		
-		/**
-		 * Returns $arg0 as a decoded integer.
-		 * @param string
-		 * @return int
-		 */
-		function decode($arg0) {
-			return IntegerTableEncoder::decodeInt($arg0);
 		}		
 		
 		/**
@@ -246,6 +237,25 @@
 		function setShell($arg0) {
 			$this->shell = $arg0;
 		}
+		
+		/**
+		 * Returns the override_account_id
+		 * @return boolean
+		 */
+		function getOverrideAccountId() {
+			if (is_null($this->override_account_id) && !$this->repopulate()) {
+				$this->override_account_id = false;
+			}
+			return $this->override_account_id;
+		}
+		
+		/**
+		 * Sets the override_account_id
+		 * @param boolean
+		 */
+		function setOverrideAccountId($arg0) {
+			$this->override_account_id = $arg0;
+		}
 
 		/**
 		* Attempts to validate this form.  If any errors occur, they are
@@ -266,204 +276,6 @@
 		*/
 		function reset() {
 			return true;
-		}
-
-		/**
-		 * Returns if this item has been reconciled or not
-		 * @access public
-		 * @return string
-		 **/
-		function addFilter($arg0) {
-			$tmpFilter = $this->getFilter();
-			$tmpFilter[] = $arg0;
-			$this->setFilter($tmpFilter);
-		}
-
-		/**
-		 * Returns if this item has been reconciled or not
-		 * @access public
-		 * @return string
-		 **/
-		function getFilter() {
-			if (!is_array($this->filter)) {
-		        $this->filter = array();
-		    }
-		    return $this->filter;
-		}
-
-		/**
-		* Returns the filters as a comma delimited list.  This just calls getFilterString(",");
-		* @return string
-		* @deprecated
-		*/
-		function getFilterList() {
-			return $this->getFilterString(",");
-		}
-
-		/**
-		* Returns the filters as a comma delimited list
-		* @return string
-		*/
-		function getFilterString($glue = "\0") {
-			if (is_null($glue)) {
-				$glue = "\0";
-			} else if ($glue == "") {
-				$glue = "\0";
-			}
-			return implode($glue,$this->getFilter());
-		}
-
-		/**
-		 * Sets the filter
-		 * @param array $arg0
-		 * @return void
-		 **/
-		function setFilter($arg0){
-			if (is_array($arg0)) {
-				$this->filter = $arg0;
-			} else {
-				$this->addFilter($arg0);
-			}
-		}
-
-		/**
-		 * Sets the filter
-		 * @param array $arg0
-		 * @return void
-		 **/
-		function isFiltered($arg0){
-			foreach ($this->getFilter() as $item) {
-				if ($item == $arg0) {
-					return true;
-				}
-			}
-			return false;
-		}
-
-		/**
-		* Attempts to populate the filter
-		* @param array or object
-		*/
-		function populate($arg0) {
-			$modify_columns = true;
-			if (func_num_args() >= 2) {
-				$modify_columns = func_get_arg(1);
-			}
-			parent::populate($arg0, $modify_columns);
-			if (is_array($arg0)) {
-				if (array_key_exists("filter",$arg0)) {
-					$this->setFilter(Array());
-					if (is_array($arg0["filter"])) {
-						foreach ($arg0["filter"] as $value) {
-							$this->addFilter($value);
-						}
-					} else if (is_string($arg0["filter"])) {
-						$filters = explode("\0",$arg0["filter"]);
-						foreach ($filters as $value) {
-							$this->addFilter($value);
-						}
-					}
-				}
-			}
-		}
-
-
-		function walkGetters(){
-			$retVal = '';
-			$class = new ReflectionClass(get_class($this));
-
-			$methods = $class->getMethods();
-
-				foreach ($methods as $method)
-				{
-					if ($method->getName() != "walkGetters" && $method->getName() != "getXml" && $method->getName() != 'getFilterList' && $method->getName() != 'getFilterString') {
-						if ($method->isPublic())
-						{
-							if (strpos($method->getName(),"get") === 0)
-							{
-								$value = $this->{$method->getName()}();
-								if (is_string($value))
-								{
-									$retVal .= $method->getName().':';
-								}
-								elseif (is_integer($value))
-								{
-									$retVal .= $method->getName().':';
-								}
-								elseif (is_bool($value))
-								{
-									$retVal .= $method->getName().':';
-								}
-							}
-						}
-					}
-				}
-				return substr($retVal,0,strlen($retVal)-1);
-		}
-
-		/**
-		 * getXml - returns static details form a form in Xml format
-		 *
-		 * @param string $inner
-		 * @param string $outer
-		 * @param colon seperated string which explodes into array $items
-		 * @return xml formatted string
-		 */
-
-		function getXml($inner="",$outer="",$items="") {
-
-			$retVal = '';
-
-			$className = get_class($this);
-			$class = new ReflectionClass($className);
-
-			if (strpos($className,'Form') !== FALSE){
-				$className = strtolower(str_replace('Form','',$className));
-			}
-			$methods = $class->getMethods();
-
-			if (strlen($items) == 0){
-				$items = $this->walkGetters();
-			}
-				$itemsArray = explode(":",$items);
-
-
-	        foreach ($methods as $method) {
-	                if ($method->isPublic()) {
-	                        if (strpos($method->getName(),"get") === 0 && $method->getName() !== 'getXml' && $method->getName() !== 'walkGetters' && $method->getName() != 'getFilterList' && $method->getName() != 'getFilterString') {
-	                                $methodName = strtolower(substr($method->getName(),3));
-
-	                                if (in_array($method->getName(),$itemsArray)){
-	                                    $value = $this->{$method->getName()}();
-	                                    if (is_string($value)) {
-	                                            $retVal .= "<$methodName>" . '<![CDATA[' . htmlentities($value) . ']]>' . "</$methodName>";
-	                                    }
-	                                    if (is_int($value)){
-	                                    	$retVal .= "<$methodName>" . '<![CDATA[' . htmlentities($value) . ']]>' . "</$methodName>";
-	                                    }
-	                                    if (is_bool($value)){
-	                                    	$retVal .= "<$methodName>" . '<![CDATA[' . htmlentities($value) . ']]>' . "</$methodName>";
-	                                    }
-
-	                                }
-	                        }
-
-					}
-	        }
-			if (!empty($outer) && empty($inner)){
-				$retVal = '<'.$outer.'>'.$retVal.'</'.$outer.'>';
-			}
-			elseif (!empty($outer) && !empty($inner)) {
-				$retVal = '<'.$outer.'>'.$retVal.$inner.'</'.$outer.'>';
-			}
-			elseif (empty($inner) && empty($outer)){
-				$retVal = "<".$className.">".$retVal."</".$className.">";
-			}
-
-			if (!empty($inner) && empty($outer)){
-				$retVal = "<".$className.">".$retVal.$inner."</".$className.">";
-			}
-                return $retVal;
 		}
 
 		/******************************\

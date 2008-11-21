@@ -15,14 +15,6 @@ abstract class MojaviForm extends MojaviObject {
 	protected $modified_columns;
 
 	/**
-	 * Default constructor used to instantiate this object with error support
-	 * @param Errors $arg0
-	 */
-	function __construct($arg0 = null) {
-		
-	}
-
-	/**
 	 * Populate will parse the elements of an array (ResultSet) or XML_ELEMENT_NODE and attempt 
 	 * to populate the form.  It will convert _a to A (i.e. first_name => firstName) and will 
 	 * search for an appropriate setter (such as first_name => setFirstName).  Be aware the it 
@@ -30,17 +22,10 @@ abstract class MojaviForm extends MojaviObject {
 	 * not the same as firstname => setFirstname().
 	 * @param array $arg0
 	 */
-	function populate($arg0) {
-		$modify_columns = true;
-		if (func_num_args() >= 2) {
-			$modify_columns = func_get_arg(1);
-		}
+	function populate($arg0, $modify_columns = true) {
 		$this->setRegisterModifiedColumns($modify_columns);
 		$this->setModifiedColumns(null);
 		$this->is_populating = true;
-
-		// Normalize input
-		//$arg0 = $this->normalize($arg0);
 
 		if (is_array($arg0)) {
 			// Attempt to populate the form

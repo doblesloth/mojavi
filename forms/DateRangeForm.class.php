@@ -4,7 +4,7 @@
  * DateRangeForm takes care of formatting a date range (start and end dates).  It is
  * useful for reports.
  *
- * @version $Id$
+ * @author Mark Hobson
  * @copyright 2005
  **/
 

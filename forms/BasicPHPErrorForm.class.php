@@ -3,17 +3,7 @@
 	 * Contains functions to work with a PHP-generated error
 	 * @author Mark Hobson
 	 */
-
 	class BasicPHPErrorForm extends DateRangeForm {
-
-		const SYSTEM_MSERVE = 1;
-		const SYSTEM_LEADADMIN = 2;
-		const SYSTEM_BACKOFFICE = 3;
-		const SYSTEM_SITEGEN = 4;
-		const SYSTEM_INFOSITES = 5;
-		const SYSTEM_GGM = 6;
-		const SYSTEM_WEBSERVICE = 7;
-		const SYSTEM_BLOOSKY = 8;
 
 		private $code_error_id;
 		private $system_id;
@@ -205,37 +195,6 @@
 		function setCount($arg0) {
 			$this->count = $arg0;
 		}
-
-		/**
-		 * Translates the system_id
-		 * @return string
-		 */
-		function translateSystemType() {
-			return self::translateSystemTypeById($this->getSystemId());
-		}
-
-		/**
-		 * Translates the system_id
-		 * @return string
-		 */
-		static function translateSystemTypeById($arg0) {
-			if ($arg0 == self::SYSTEM_MSERVE) {
-				return MO_PORTAL_NAME;
-			} else if ($arg0 == self::SYSTEM_LEADADMIN) {
-				return "Leadadmin";
-			} else if ($arg0 == self::SYSTEM_BACKOFFICE) {
-				return "Backoffice";
-			} else if ($arg0 == self::SYSTEM_SITEGEN) {
-				return "Sitegen";
-			} else if ($arg0 == self::SYSTEM_INFOSITES) {
-				return "Infosites";
-			} else if ($arg0 == self::SYSTEM_GGM) {
-				return "GGM";
-			} else {
-				return "Unknown System";
-			}
-		}
-
 	}
 
 ?>
