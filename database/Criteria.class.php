@@ -2,7 +2,6 @@
 
 /**
  * Class for querying data from the database
- * @author	Matt Zabriskie (mattz@emstraffic.com)
  */
 class Criteria
 {

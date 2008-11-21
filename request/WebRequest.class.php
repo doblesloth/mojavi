@@ -99,7 +99,8 @@ class WebRequest extends Request
 	 * @param	string A file name.
 	 * @return	string
 	 *
-	 * @author	Matt Zabriskie (mattz@emstraffic.com)
+     * @author Sean Kerr (skerr@mojavi.org)
+     * @since  3.0.0
 	 */
 	public function getFileExtension ($name)
 	{

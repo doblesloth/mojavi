@@ -1,8 +1,6 @@
 <?php
 /**
  * DatabaseResultResource
- * @author Matt Handy (mhandy@emstraffic.com)
- * @copyright 2006
  * This Class Is Meant To Be Setup With A Blank Form And A MySQL Result Resource.
  * The Purpose Is To Not Store All Returned Rows In An Array, But To Loop Through The Result Resource One At A Time.
  * Usage:
