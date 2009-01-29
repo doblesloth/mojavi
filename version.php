@@ -28,9 +28,9 @@ define('MO_APP_MINOR_VERSION', '0');
 
 define('MO_APP_MICRO_VERSION', '0');
 
-define('MO_APP_BRANCH',        'dev-3.0.0');
+define('MO_APP_BRANCH',        '3.0.0');
 
-define('MO_APP_STATUS',        'DEV');
+define('MO_APP_STATUS',        'PROD');
 
 define('MO_APP_VERSION',       MO_APP_MAJOR_VERSION . '.' .
                                MO_APP_MINOR_VERSION . '.' .
