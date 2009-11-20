@@ -19,43 +19,6 @@ class StringTools {
 	}
 
 	/**
-	 * Converts a date to a MySQL formatted date (Y-m-d)
-	 * @param string $date
-	 * @return string
-	 */
-	static function convertDateToMySQL($date) {
-		$retVal = '';
-		if(strlen($date) > 0) {
-			$timestamp = strtotime($date);
-			if($timestamp !== -1 && $timestamp !== false) {
-				$retVal = date("Y-m-d", $timestamp);
-			} else {
-				$retVal = '';
-			}
-		}
-		return $retVal;
-	}
-
-	/**
-	 * Converts a date from MySQL to a given format.  Alias for <code>date('m/d/Y', strtotime($date))</code>
-	 * @param string $date
-	 * @param string $format
-	 * @return string
-	 */
-	static function convertDateFromMySQL($date, $format='m/d/Y') {
-		$retVal = '';
-		if(strlen($date) > 0) {
-			$timestamp = strtotime($date);
-			if($timestamp !== -1 && $timestamp !== false) {
-				$retVal = date($format, $timestamp);
-			} else {
-				$retVal = '';
-			}
-		}
-		return $retVal;
-	}
-
-	/**
 	 * Performs a debug backtrace that can be sent to the error log easily
 	 * @param array $backtrace
 	 * @return string

@@ -7,7 +7,7 @@
 	* 
 	* BasicForm can be instantiated with an errors object for ease of use. 
 	**/
-	class BasicForm extends Form {
+	class BasicForm extends CommonForm {
 	
 	}
 ?>

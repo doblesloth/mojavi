@@ -54,7 +54,7 @@ class DateRangeForm extends PageListForm {
 	* @return string
 	*/
 	function getFormattedStartDateOnly() {
-		return date(DateRangeForm::DATE_FORMAT_MDY, strtotime($this->getStartDate()));
+		return date(self::DATE_FORMAT_MDY, strtotime($this->getStartDate()));
 	}
 
 	/**
@@ -62,7 +62,7 @@ class DateRangeForm extends PageListForm {
 	* @return string
 	*/
 	function getFormattedEndDateOnly() {
-		return date(DateRangeForm::DATE_FORMAT_MDY, strtotime($this->getEndDate()));
+		return date(self::DATE_FORMAT_MDY, strtotime($this->getEndDate()));
 	}
 
 	/**
@@ -70,7 +70,7 @@ class DateRangeForm extends PageListForm {
 	* @return string
 	*/
 	function getFormattedStartTime() {
-		return date(DateRangeForm::DATE_FORMAT_TIME, strtotime($this->getStartDate()));
+		return date(self::DATE_FORMAT_TIME, strtotime($this->getStartDate()));
 	}
 
 	/**
@@ -78,7 +78,7 @@ class DateRangeForm extends PageListForm {
 	* @return string
 	*/
 	function getFormattedEndTime() {
-		return date(DateRangeForm::DATE_FORMAT_TIME, strtotime($this->getEndDate()));
+		return date(self::DATE_FORMAT_TIME, strtotime($this->getEndDate()));
 	}
 
 	/**
@@ -123,7 +123,7 @@ class DateRangeForm extends PageListForm {
 	*/
 	function setStartTime($arg0) {
 		$this->startTime = $arg0;
-		$this->setStartDate(date(DateRangeForm::DATE_FORMAT_MDY, strtotime($this->getStartDate())) . " " . date(DateRangeForm::DATE_FORMAT_TIME, strtotime($this->getStartTime())));
+		$this->setStartDate(date(self::DATE_FORMAT_MDY, strtotime($this->getStartDate())) . " " . date(self::DATE_FORMAT_TIME, strtotime($this->getStartTime())));
 	}
 
 	/**
@@ -176,7 +176,7 @@ class DateRangeForm extends PageListForm {
 	*/
 	function setEndTime($arg0) {
 		$this->endTime = $arg0;
-		$this->setEndDate(date(DateRangeForm::DATE_FORMAT_MDY, strtotime($this->getEndDate())) . " " . date(DateRangeForm::DATE_FORMAT_TIME, strtotime($this->getEndTime())));
+		$this->setEndDate(date(self::DATE_FORMAT_MDY, strtotime($this->getEndDate())) . " " . date(self::DATE_FORMAT_TIME, strtotime($this->getEndTime())));
 	}
 
 	/**

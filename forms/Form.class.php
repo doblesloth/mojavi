@@ -12,13 +12,13 @@
 		const VALIDATION_LEVEL_FULL = 1;
 		
 		private $id;
-		private $created;
 		private $created_time;
 		private $is_deleted;
 		private $deleted_time;
 		private $modified;
 		private $shell;
 		private $forward;
+		private $name;
 		private $validation_level;
 		private $override_account_id;
 		
@@ -95,27 +95,7 @@
 		 * @return string
 		 */
 		function getCreated() {
-			$ret_val = '';
-			if (is_null($this->created)) {
-				if(!is_null($this->created_time)) {
-					$ret_val = $this->created_time;
-				} elseif(!$this->repopulate()) {
-					$this->created = date("Y-m-d");
-					$ret_val = $this->created;
-				} else {
-					$ret_val = $this->created;
-				}
-			} else {
-				$ret_val = $this->created;
-			}
-			return $ret_val;
-		}
-		/**
-		 * Sets the created field.
-		 * @param string $arg0
-		 */
-		function setCreated($arg0) {
-			$this->created = $arg0;
+			return date("m/d/Y", strtotime($this->getCreatedTime()));
 		}
 		
 		/**
@@ -151,7 +131,7 @@
 		 */
 		function getDeletedTime() {
 			if (is_null($this->deleted_time)) {
-				$this->deleted_time = "1999-11-30";
+				$this->deleted_time = "0000-00-00";
 			}
 			return $this->deleted_time;
 		}
@@ -169,7 +149,7 @@
 		 * @return string
 		 */
 		function getCreatedTime() {
-			if (is_null($this->created_time) && !$this->repopulate()) {
+			if (is_null($this->created_time)) {
 				$this->created_time = date("Y-m-d H:i:s");
 			}
 			return $this->created_time;
@@ -187,7 +167,7 @@
 		 * @return string
 		 */
 		function getModified() {
-			if (is_null($this->modified) && !$this->repopulate()) {
+			if (is_null($this->modified)) {
 				$this->modified = date("Y-m-d H:i:s");
 			}
 			return $this->modified;
@@ -224,7 +204,7 @@
 		 * @return string
 		 */
 		function getShell() {
-			if (is_null($this->shell) && !$this->repopulate()) {
+			if (is_null($this->shell)) {
 				$this->shell = "index";
 			}
 			return $this->shell;
@@ -243,7 +223,7 @@
 		 * @return boolean
 		 */
 		function getOverrideAccountId() {
-			if (is_null($this->override_account_id) && !$this->repopulate()) {
+			if (is_null($this->override_account_id)) {
 				$this->override_account_id = false;
 			}
 			return $this->override_account_id;
@@ -276,125 +256,6 @@
 		*/
 		function reset() {
 			return true;
-		}
-
-		/******************************\
-		*   METHODS FOR REPOPULATION   *
-		\******************************/
-		/**
-		 * Repopulates this form given the module_name and the model_name.
-		 * @return bool
-		 */
-		function repopulate() {
-			$retVal = false;
-			if($this->isPopulated()) {
-				// Form Was Populated By Database.  Check For Module And Model.
-				if($this->getModuleName() != '' && $this->getModelName() != '') {
-					// Module and Model Names Found.  Instantiate Model.
-					$model = $this->getContext()->getController()->getModel($this->getModuleName(), $this->getModelName(), $this->getErrors());
-					// Repopulate This Form
-					$model->repopulate($this);
-					// Check Repopulate Flag
-					if($this->isRepopulated()) {
-						LoggerManager::error('MULTIPLE REPOPULATION ON CLASS: ' . get_class($this) . " -- " . StringTools::getDebugBacktraceForLogs(debug_backtrace()));
-					} else {
-						$this->setRepopulated(true);
-						LoggerManager::warn('CLASS REPOPULATED: ' . get_class($this) . " -- " . StringTools::getDebugBacktraceForLogs(debug_backtrace()));
-					}
-					$retVal = true;
-				} else {
-					// Module and Model Names Not Specified.  Do Not Repopulate.
-				}
-			} else {
-				// Form Was Not Populated By Database.  Do Not Repopulate.
-			}
-			return $retVal;
-		}
-
-		/**
-		 * Returns the populated field.
-		 * @return bool
-		 */
-		function getPopulated() {
-			if (is_null($this->populated)) {
-				$this->populated = false;
-			}
-			return $this->populated;
-		}
-		/**
-		 * Sets the populated field.
-		 * @param bool $arg0
-		 */
-		function setPopulated($arg0) {
-			$this->populated = $arg0;
-		}
-		/**
-		 * Aliases the getPopulated() method.
-		 * @return bool
-		 */
-		function isPopulated() {
-			return $this->getPopulated();
-		}
-
-		/**
-		 * Returns the repopulated field.
-		 * @return bool
-		 */
-		function getRepopulated() {
-			if (is_null($this->repopulated)) {
-				$this->repopulated = false;
-			}
-			return $this->repopulated;
-		}
-		/**
-		 * Sets the repopulated field.
-		 * @param bool $arg0
-		 */
-		function setRepopulated($arg0) {
-			$this->repopulated = $arg0;
-		}
-		/**
-		 * Aliases the getRepopulated method.
-		 * @return bool
-		 */
-		function isRepopulated() {
-			return $this->getRepopulated();
-		}
-
-		/**
-		 * Returns the module_name field.
-		 * @return string
-		 */
-		function getModuleName() {
-			if (is_null($this->module_name)) {
-				$this->module_name = "";
-			}
-			return $this->module_name;
-		}
-		/**
-		 * Sets the module_name field.
-		 * @param string $arg0
-		 */
-		function setModuleName($arg0) {
-			$this->module_name = $arg0;
-		}
-
-		/**
-		 * Returns the model_name field.
-		 * @return string
-		 */
-		function getModelName() {
-			if (is_null($this->model_name)) {
-				$this->model_name = "";
-			}
-			return $this->model_name;
-		}
-		/**
-		 * Sets the model_name field.
-		 * @param string $arg0
-		 */
-		function setModelName($arg0) {
-			$this->model_name = $arg0;
 		}
 	}
 ?>

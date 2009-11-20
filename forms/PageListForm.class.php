@@ -14,12 +14,11 @@
 	class PageListForm extends Form {
 
 		private $total;
-		private $itemsPerPage;
+		private $items_per_page;
 		private $keywords;
 		private $page;
-		protected $sort;
-		protected $sort_type;
-		private $category;
+		private $sort;
+		private $sort_type;
 
 		/**
 		 * constants
@@ -37,7 +36,7 @@
 		*/
 		function getTotal() {
 			if (is_null($this->total)) {
-				$this->total= 0;
+				$this->total = 0;
 			}
 			return $this->total;
 		}
@@ -104,9 +103,9 @@
 		function getItemsPerPage() {
 			if (is_null($this->itemsPerPage)) {
 				if (defined("MO_ITEMS_PER_PAGE")) {
-					$this->itemsPerPage= MO_ITEMS_PER_PAGE;
+					$this->itemsPerPage = MO_ITEMS_PER_PAGE;
 				} else {
-					$this->itemsPerPage= PageListForm::ITEMS_PER_PAGE;
+					$this->itemsPerPage = self::ITEMS_PER_PAGE;
 				}
 			}
 			return $this->itemsPerPage;
@@ -152,6 +151,7 @@
 		      return false;
 		   }
 		}
+		
 		/**
 		* Returns the number for the previous page.  If there isn't a previous page it return false.
 		* @return mixed
@@ -189,21 +189,9 @@
 		 */
 		function getSortType() {
 		   if (is_null($this->sort_type)) {
-		      $this->sort_type = PageListForm::SORT_TYPE_ASC;
+		      $this->sort_type = self::SORT_TYPE_ASC;
 		   }
 		   return $this->sort_type;
-		}
-		
-		/**
-		 * returns the opposite sort type
-		 * @return string
-		 */
-		function getOtherSortType() {
-			if ($this->getSortType() == self::SORT_TYPE_ASC) {
-				return self::SORT_TYPE_DESC;
-			} else {
-		   		return self::SORT_TYPE_ASC;
-			}
 		}
 
 		/**
@@ -219,7 +207,7 @@
 		 * @return string
 		 */
 		function translateSortType() {
-		    return PageListForm::translateSortTypeById($this->getSortType());
+		    return self::translateSortTypeById($this->getSortType());
 		}
 
 		/**
@@ -227,21 +215,11 @@
 		 * @return string
 		 */
 		static function translateSortTypeById($arg0) {
-			$retVal = '';
-			switch($arg0) {
-				case PageListForm::SORT_TYPE_ASC:
-					$retVal = 'ASC';
-					break;
-				case PageListForm::SORT_TYPE_DESC:
-					$retVal = 'DESC';
-					break;
-				case PageListForm::SORT_TYPE_NONE:
-				case PageListForm::SORT_TYPE_MAX:
-				default:
-					$retVal = '';
-					break;
+			if ($arg0 == self::SORT_TYPE_ASC) {
+				return "ASC";			
+			} else {
+				return "DESC";				
 			}
-			return $retVal;
 		}
 	}
 ?>

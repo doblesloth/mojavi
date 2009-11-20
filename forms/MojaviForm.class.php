@@ -9,9 +9,6 @@
  */
 abstract class MojaviForm extends MojaviObject {
 
-	private $errors;
-	private $is_populating = false;
-	private $register_modified_columns = true;
 	protected $modified_columns;
 
 	/**
@@ -22,10 +19,8 @@ abstract class MojaviForm extends MojaviObject {
 	 * not the same as firstname => setFirstname().
 	 * @param array $arg0
 	 */
-	function populate($arg0, $modify_columns = true) {
-		$this->setRegisterModifiedColumns($modify_columns);
+	function populate($arg0) {
 		$this->setModifiedColumns(null);
-		$this->is_populating = true;
 
 		if (is_array($arg0)) {
 			// Attempt to populate the form
@@ -66,187 +61,19 @@ abstract class MojaviForm extends MojaviObject {
 				}
 			}
 		} else if (is_object($arg0)) {
-			if (substr(get_class($arg0), 0, 3) == "DOM") {	
-				# Attempt this as an xml string
-				if ($arg0->nodeType == XML_ELEMENT_NODE) {
-					// Populate the attributes first, this come in the form of <node attribute_1="" attribute_2="" />
-					if ($arg0->hasAttributes()) {
-						for ($i=0;$i<$arg0->attributes->length;$i++) {
-							$attribute = $arg0->attributes->item($i);
-							$entry = $attribute->nodeName;
-							# The regex will change '_a' to 'A' or '_1' to '1'
-							$entry = preg_replace("/_([a-zA-Z0-9])/e","strtoupper('\\1')",strtolower($entry));
-							$value = $attribute->nodeValue;
-							if (is_callable(array($this, 'set' . ucfirst($entry)),false, $callableName)) {
-								if (substr($entry, -2) == "Id") {
-									$value = IntegerTableEncoder::decodeInt($value);
-								}
-								$this->{'set' . ucfirst($entry)}($value);
-							}
-						}
-					}
-					// Populate the child nodes next, this come in the form of <node><child_node_1>value_1</child_node_1></node>
-					if ($arg0->hasChildNodes()) {
-						for ($i=0;$i<$arg0->childNodes->length;$i++) {
-							$element = $arg0->childNodes->item($i);
-							if ($element->nodeType == XML_ELEMENT_NODE) {
-								$entry = $element->nodeName;
-								$value = $node_entry->nodeValue;
-								if ($element->hasChildNodes()) {
-									if ($element->firstChild->nodeType == XML_CDATA_SECTION_NODE) {
-										$value = $element->firstChild->nodeValue;
-									}
-								}
-								# The regex will change '_a' to 'A' or '_1' to '1'
-								$entry = preg_replace("/_([a-zA-Z0-9])/e","strtoupper('\\1')",strtolower($entry));
-								if (is_callable(array($this, 'set' . ucfirst($entry)),false, $callableName)) {
-									if (substr($entry, -2) == "Id") {
-										$value = IntegerTableEncoder::decodeInt($value);
-									}
-									$this->{'set' . ucfirst($entry)}($value);
-								}
-							}
-		
-						} // End for
-					}
-				} // End if ($arg0-nodeType)
-			} else if (get_class($arg0) == "SimpleXMLElement") {
-				$sxml_array = array();
-				$this->recurseXML($arg0, $sxml_array);
-				// Attempt to populate the form
-				foreach ($sxml_array as $key => $value) {
-					if (is_array($value)) {
-						/*
-						* If this is an array, then we need to add all the elements, so first check for an
-						* add***($arg0) function.  If it does not exist, then fallback to a set***($arg0)
-						*/
-						# The regex will change '_a' to 'A' or '_1' to '1'
-						$entry = preg_replace("/_([a-zA-Z0-9])/e","strtoupper('\\1')",strtolower($key));
-						if (is_callable(array($this, 'add' . ucfirst($entry)),false, $callableName)) {
-							foreach ($value as $key2 => $value1) {
-								if (substr($entry, -2) == "Id") {
-									$value1 = IntegerTableEncoder::decodeInt($value1);	
-								}
-								$this->{'add' . ucfirst($entry)}($value1, $key2);
-							}
-						} else {
-							# The regex will change '_a' to 'A' or '_1' to '1'
-							$entry = preg_replace("/_([a-zA-Z0-9])/e","strtoupper('\\1')",strtolower($key));
-							if (is_callable(array($this, 'set' . ucfirst($entry)),false, $callableName)) {
-								if (substr($entry, -2) == "Id") {
-									$value = IntegerTableEncoder::decodeInt($value);
-								}
-								$this->{'set' . ucfirst($entry)}($value);
-							}
-						}
-					} else {
-						# The regex will change '_a' to 'A' or '_1' to '1'
-						$entry = preg_replace("/_([a-zA-Z0-9])/e","strtoupper('\\1')",strtolower($key));
-						if (is_callable(array($this, 'set' . ucfirst($entry)),false, $callableName)) {
-							if (substr($entry, -2) == "Id") {
-								$value = IntegerTableEncoder::decodeInt($value);
-							}
-							$this->{'set' . ucfirst($entry)}($value);
-						}
-					}
-				}
-			} else {
-				# Treat the argument as an object an copy any getters to the appropriate setters
-				$methods = get_class_methods($arg0);
-				foreach ($methods as $method) {
-					# Only iterate the getters
-					if (strpos($method,"get") === 0) {
-						$method_name = substr($method,3);
-						# if this form has a setter that matches this getter (i.e. setId() would match getId()), then set it
-						if (is_callable(array($this, 'set' . $method_name),false, $callableName)) {
-							$this->{'set' . $method_name}($arg0->{$method}());
-						} 
+			# Treat the argument as an object and copy any getters to the appropriate setters
+			$methods = get_class_methods($arg0);
+			foreach ($methods as $method) {
+				# Only iterate the getters
+				if (strpos($method,"get") === 0) {
+					$method_name = substr($method,3);
+					# if this form has a setter that matches this getter (i.e. setId() would match getId()), then set it
+					if (is_callable(array($this, 'set' . $method_name),false, $callableName)) {
+						$this->{'set' . $method_name}($arg0->{$method}());
 					} 
-				} // End foreach
-			} // End if (get_class($arg0) == "DOMNode")
-		} else if (is_string($arg0)) {
-			$sxml = new SimpleXMLElement($arg0);
-			$sxml_array = array();
-			$this->recurseXML($sxml, $sxml_array);
-			// Attempt to populate the form
-			foreach ($sxml_array as $key => $value) {
-				if (is_array($value)) {
-					/*
-					* If this is an array, then we need to add all the elements, so first check for an
-					* add***($arg0) function.  If it does not exist, then fallback to a set***($arg0)
-					*/
-					# The regex will change '_a' to 'A' or '_1' to '1'
-					$entry = preg_replace("/_([a-zA-Z0-9])/e","strtoupper('\\1')",strtolower($key));
-					if (is_callable(array($this, 'add' . ucfirst($entry)),false, $callableName)) {
-						foreach ($value as $key2 => $value1) {
-							if (substr($entry, -2) == "Id") {
-								$value1 = IntegerTableEncoder::decodeInt($value1);	
-							}
-							$this->{'add' . ucfirst($entry)}($value1, $key2);
-						}
-					} else {
-						# The regex will change '_a' to 'A' or '_1' to '1'
-						$entry = preg_replace("/_([a-zA-Z0-9])/e","strtoupper('\\1')",strtolower($key));
-						if (is_callable(array($this, 'set' . ucfirst($entry)),false, $callableName)) {
-							if (substr($entry, -2) == "Id") {
-								$value = IntegerTableEncoder::decodeInt($value);
-							}
-							$this->{'set' . ucfirst($entry)}($value);
-						}
-					}
-				} else {
-					# The regex will change '_a' to 'A' or '_1' to '1'
-					$entry = preg_replace("/_([a-zA-Z0-9])/e","strtoupper('\\1')",strtolower($key));
-					if (is_callable(array($this, 'set' . ucfirst($entry)),false, $callableName)) {
-						if (substr($entry, -2) == "Id") {
-							$value = IntegerTableEncoder::decodeInt($value);
-						}
-						$this->{'set' . ucfirst($entry)}($value);
-					}
-				}
-			}
+				} 
+			} // End foreach
 		}// End is_array($arg0)
-		
-		$this->is_populating = false;
-		$this->setRegisterModifiedColumns(true);
-	}
-
-	/**
-	 * Recurses the SimpleXMLElement object and returns an associative array
-	 * @param SimpleXMLObject $xml
-	 * @param array $vals
-	 * @param string $parent
-	 * @return integer
-	 */
-	private function recurseXML($xml, &$vals, $parent="")
-	{
-		$child_count = 0;
-		foreach ($xml as $key => $value) {
-			$child_count++;    
-			$k = ($parent == "") ? (string)$key : $parent;
-			if ($this->recurseXML($value, $vals, $k) == 0) { // no children, aka "leaf node"
-				// if the key is the same as the parent, then don't use an array
-				if (trim($k) == trim((string)$key)) {
-					$vals[$k] = (string)$value;
-				} else {
-	      			$vals[$k][(string)$key] = (string)$value;
-				}
-			}	         
-		}
-		return $child_count;
-	}
-	
-	/**
-	 * Returns whether or not object is populating.
-	 *	Used for GenericForm::__call
-	 *
-	 * @return	boolean
-	 *
-	 * @author	Mark Hobson
-	 */
-	protected function isPopulating ()
-	{
-		return $this->is_populating;
 	}
 	
 	/**
@@ -273,11 +100,9 @@ abstract class MojaviForm extends MojaviObject {
 	 * @param string
 	 */
 	function addModifiedColumn($arg0) {
-		if ($this->getRegisterModifiedColumns()) {
-			$tmp_array = $this->getModifiedColumns();
-			$tmp_array[] = $arg0;
-			$this->setModifiedColumns($tmp_array);
-		}
+		$tmp_array = $this->getModifiedColumns();
+		$tmp_array[] = $arg0;
+		$this->setModifiedColumns($tmp_array);
 	}
 	
 	/**
@@ -289,22 +114,11 @@ abstract class MojaviForm extends MojaviObject {
 	}
 	
 	/**
-	 * Returns the register_modified_columns
+	 * Checks if the value is null
 	 * @return boolean
 	 */
-	function getRegisterModifiedColumns() {
-		if (is_null($this->register_modified_columns)) {
-			$this->register_modified_columns = false;
-		}
-		return $this->register_modified_columns;
-	}
-	
-	/**
-	 * Sets the register_modified_columns
-	 * @param boolean
-	 */
-	function setRegisterModifiedColumns($arg0) {
-		$this->register_modified_columns = $arg0;
+	function value_is_null($arg0) {
+		return (is_null($arg0));
 	}
 
 	/**
