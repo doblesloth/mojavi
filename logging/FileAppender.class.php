@@ -112,9 +112,12 @@ class FileAppender extends Appender
 		}
 
 		$str = sprintf("%s\n", $this->getLayout()->format($message));
-
-		if (fwrite($this->_getHandle(), $str) === FALSE) {
-			throw new LoggingException("Cannot write to file ({$this->_filename})");
+		try {
+			if (fwrite($this->_getHandle(), $str) === FALSE) {
+				throw new LoggingException("Cannot write to file ({$this->_filename})");
+			}
+		} catch (Exception $e) {
+			error_log($e->getMessage());			
 		}
 	}
 

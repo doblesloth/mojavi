@@ -11,11 +11,11 @@
 
 		const VALIDATION_LEVEL_FULL = 1;
 		
-		private $id;
-		private $created_time;
-		private $is_deleted;
-		private $deleted_time;
-		private $modified;
+		protected $id;
+		protected $created_time;
+		protected $is_deleted;
+		protected $deleted_time;
+		protected $modified;
 		private $shell;
 		private $forward;
 		private $name;
@@ -69,6 +69,7 @@
 			} else if (!is_array($arg0)) {
 				$this->id = IntegerTableEncoder::decodeInt($arg0);
 			}
+			return $this;
 		}		
 		
 		/**
@@ -88,6 +89,7 @@
 		 */
 		function setValidationLevel($arg0) {
 			$this->validation_level = $arg0;
+			return $this;
 		}
 		
 		/**
@@ -123,6 +125,7 @@
 		 */
 		function setIsDeleted($arg0) {
 			$this->is_deleted = $arg0;
+			return $this;
 		}
 		
 		/**
@@ -142,6 +145,7 @@
 		 */
 		function setDeletedTime($arg0) {
 			$this->deleted_time = $arg0;
+			return $this;
 		}
 		
 		/**
@@ -160,6 +164,7 @@
 		 */
 		function setCreatedTime($arg0) {
 			$this->created_time = $arg0;
+			return $this;
 		}
 		
 		/**
@@ -178,6 +183,7 @@
 		 */
 		function setModified($arg0) {
 			$this->modified = $arg0;
+			return $this;
 		}
 		
 		/**
@@ -197,6 +203,7 @@
 		 */
 		function setForward($arg0) {
 			$this->forward = $arg0;
+			return $this;
 		}
 		
 		/**
@@ -216,6 +223,7 @@
 		 */
 		function setShell($arg0) {
 			$this->shell = $arg0;
+			return $this;
 		}
 		
 		/**
@@ -235,6 +243,7 @@
 		 */
 		function setOverrideAccountId($arg0) {
 			$this->override_account_id = $arg0;
+			return $this;
 		}
 
 		/**
@@ -256,6 +265,15 @@
 		*/
 		function reset() {
 			return true;
+		}
+		
+		/**
+		 * Sets the populated property
+		 * @param integer $arg0
+		 */
+		function setPopulated($arg0) {
+			$this->populated = $arg0;
+			return $this;	
 		}
 	}
 ?>

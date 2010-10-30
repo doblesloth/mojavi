@@ -9,7 +9,7 @@
  */
 abstract class MojaviForm extends MojaviObject {
 
-	protected $modified_columns;
+	private $modified_columns;
 
 	/**
 	 * Populate will parse the elements of an array (ResultSet) or XML_ELEMENT_NODE and attempt 
@@ -74,6 +74,7 @@ abstract class MojaviForm extends MojaviObject {
 				} 
 			} // End foreach
 		}// End is_array($arg0)
+		return $this;
 	}
 	
 	/**
@@ -170,6 +171,20 @@ abstract class MojaviForm extends MojaviObject {
 	 */
 	public final function getContext() {
 		return Controller::getInstance()->getContext();
+	}
+	
+	/**
+	 * Converts this object to an array
+	 * @return array
+	 */
+	function toArray($deep = false) {
+		$ret_val = array();
+		$reflection = new ReflectionClass($this);
+		$properties = $reflection->getProperties(ReflectionProperty::IS_PROTECTED);
+		foreach ($properties as $property) {
+			$ret_val[$property->getName()] = $this->{$property->getName()};
+		}
+		return $ret_val;
 	}
 }
 ?>

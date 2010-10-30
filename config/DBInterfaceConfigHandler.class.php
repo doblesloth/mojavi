@@ -38,11 +38,9 @@ class DBInterfaceConfigHandler extends IniConfigHandler {
 		$data[] = "interface " . $ini['db_interface']['INTERFACE'] . " {";
 		
 		$data[] = "\t/*   LINK TYPES   */";
-		/* @var $db_model BasicFieldModel */
-		$db_model = Controller::getInstance()->getContext()->getController()->getModel($ini['db_interface']['MODULE'], $ini['db_interface']['MODEL']);
 		/* @var $db_form BasicForm */
-		$db_form = Controller::getInstance()->getContext()->getController()->getForm($ini['db_interface']['MODULE'], $ini['db_interface']['FORM']);
-		$results = $db_model->performQueryAll($db_form);
+		$db_form = new $ini['db_interface']['FORM']();
+		$results = $db_form->queryAll();
 		/* @var $db_form BasicForm */
 		foreach($results as $result) {
 			$value_method = "getId";

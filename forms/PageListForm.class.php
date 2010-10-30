@@ -19,6 +19,7 @@
 		private $page;
 		private $sort;
 		private $sort_type;
+		private $ignore_pagination;
 
 		/**
 		 * constants
@@ -48,6 +49,7 @@
 		*/
 		function setTotal($arg0) {
 			$this->total=$arg0;
+			return $this;
 		}
 
 		/**
@@ -75,6 +77,7 @@
 		*/
 		function setPage($arg0) {
 			$this->page=$arg0;
+			return $this;
 		}
 
 		/**
@@ -94,6 +97,27 @@
 		*/
 		function setKeywords($arg0) {
 			$this->keywords=$arg0;
+			return $this;
+		}
+		
+		/**
+		 * Returns the ignore_pagination
+		 * @return boolean
+		 */
+		function getIgnorePagination() {
+			if (is_null($this->ignore_pagination)) {
+				$this->ignore_pagination = false;
+			}
+			return $this->ignore_pagination;
+		}
+		
+		/**
+		 * Sets the ignore_pagination
+		 * @param $arg0 boolean
+		 */
+		function setIgnorePagination($arg0) {
+			$this->ignore_pagination = $arg0;
+			return $this;
 		}
 
 		/**
@@ -101,14 +125,14 @@
 		* @return integer
 		*/
 		function getItemsPerPage() {
-			if (is_null($this->itemsPerPage)) {
+			if (is_null($this->items_per_page)) {
 				if (defined("MO_ITEMS_PER_PAGE")) {
-					$this->itemsPerPage = MO_ITEMS_PER_PAGE;
+					$this->items_per_page = MO_ITEMS_PER_PAGE;
 				} else {
-					$this->itemsPerPage = self::ITEMS_PER_PAGE;
+					$this->items_per_page = self::ITEMS_PER_PAGE;
 				}
 			}
-			return $this->itemsPerPage;
+			return $this->items_per_page;
 		}
 
 		/**
@@ -116,7 +140,8 @@
 		* @param integer $arg0
 		*/
 		function setItemsPerPage($arg0) {
-			$this->itemsPerPage=$arg0;
+			$this->items_per_page = $arg0;
+			return $this;
 		}
 
 		/**
@@ -181,6 +206,7 @@
 		 */
 		function setSort($arg0) {
 		    $this->sort = StringTools::removeBadMySQLChars($arg0);
+		    return $this;
 		}
 
 		/**
@@ -200,6 +226,7 @@
 		 */
 		function setSortType($arg0) {
 		    $this->sort_type = $arg0;
+		    return $this;
 		}
 
 		/**

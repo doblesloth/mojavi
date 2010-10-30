@@ -39,6 +39,7 @@ class DateRangeForm extends PageListForm {
 	 */
 	function setNoEnd($arg0) {
 	    $this->noEnd = $arg0;
+	    return $this;
 	}
 
 	/**
@@ -101,6 +102,7 @@ class DateRangeForm extends PageListForm {
 	*/
 	function setStartDate($arg0) {
 		$this->startDate = $arg0;
+		return $this;
 	}
 
 	/**
@@ -124,6 +126,7 @@ class DateRangeForm extends PageListForm {
 	function setStartTime($arg0) {
 		$this->startTime = $arg0;
 		$this->setStartDate(date(self::DATE_FORMAT_MDY, strtotime($this->getStartDate())) . " " . date(self::DATE_FORMAT_TIME, strtotime($this->getStartTime())));
+		return $this;
 	}
 
 	/**
@@ -154,6 +157,7 @@ class DateRangeForm extends PageListForm {
 	*/
 	function setEndDate($arg0) {
 		$this->endDate = $arg0;
+		return $this;
 	}
 
 	/**
@@ -177,6 +181,7 @@ class DateRangeForm extends PageListForm {
 	function setEndTime($arg0) {
 		$this->endTime = $arg0;
 		$this->setEndDate(date(self::DATE_FORMAT_MDY, strtotime($this->getEndDate())) . " " . date(self::DATE_FORMAT_TIME, strtotime($this->getEndTime())));
+		return $this;
 	}
 
 	/**
@@ -196,6 +201,7 @@ class DateRangeForm extends PageListForm {
 	*/
 	function setDateFormat($arg0) {
 		$this->dateFormat = $arg0;
+		return $this;
 	}
 
 	/**

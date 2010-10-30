@@ -9,10 +9,6 @@
  */
 abstract class BasicReportModel extends Model {
 
-	function __construct($arg0) {
-		// Nothing to do here
-	}
-	
 	/**
 	 * Returns the errors object.  Normally you want to setup an error object beforehand and pass
 	 * it to all the forms and models that you use so that you can collect all the errors

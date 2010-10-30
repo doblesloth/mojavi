@@ -484,21 +484,21 @@ abstract class Controller extends MojaviObject
     {
 
         $file = MO_MODULE_DIR . '/' . $moduleName . '/models/' . $modelName .
-                'Model.class.php';
+                '.class.php';
 
         require_once($file);
 
-        $class = $modelName . 'Model';
+        $class = $moduleName . '_Model_' . $modelName;
 
         // fix for same name classes
-        $moduleClass = $moduleName . '_' . $class;
-
-        if (class_exists($moduleClass, false))
-        {
-
-            $class = $moduleClass;
-
-        }
+//        $moduleClass = $moduleName . '_' . $class;
+//
+//        if (class_exists($moduleClass, false))
+//        {
+//
+//            $class = $moduleClass;
+//
+//        }
 
         // create model instance and initialize it
         $model = new $class($errors);
@@ -524,31 +524,30 @@ abstract class Controller extends MojaviObject
     {
 		$form = null;
 		$file = null;
-    	if (file_exists(MO_MODULE_DIR . '/' . $moduleName . '/forms/' . $formName . 'Form.class.php')) {
-	       $file = MO_MODULE_DIR . '/' . $moduleName . '/forms/' . $formName . 'Form.class.php';
-		} else if (file_exists(MO_MODULE_DIR . '/' . $moduleName . '/lib/forms/' . $formName . 'Form.class.php')) {
-			$file = MO_MODULE_DIR . '/' . $moduleName . '/lib/forms/' . $formName . 'Form.class.php';
+    	if (file_exists(MO_MODULE_DIR . '/' . $moduleName . '/forms/' . $formName . '.class.php')) {
+	       $file = MO_MODULE_DIR . '/' . $moduleName . '/forms/' . $formName . '.class.php';
+		} else if (file_exists(MO_MODULE_DIR . '/' . $moduleName . '/lib/forms/' . $formName . '.class.php')) {
+			$file = MO_MODULE_DIR . '/' . $moduleName . '/lib/forms/' . $formName . '.class.php';
 		}
 
 		if (file_exists($file) && !is_dir($file)) {
 	        require_once($file);
 
-	        $class = $formName . 'Form';
-
+	        $class = $moduleName . '_Form_' . $formName;
 	        // fix for same name classes
-	        $moduleClass = $moduleName . '_' . $class;
-
-	        if (class_exists($moduleClass, false))
-	        {
-	            $class = $moduleClass;
-	        }
+//	        $moduleClass = $moduleName . '_' . $class;
+//
+//	        if (class_exists($moduleClass, false))
+//	        {
+//	            $class = $moduleClass;
+//	        }
 
 	        // create model instance and initialize it
 	        $form = new $class($errors);
 	        $form->initialize($this->context);
 		} else {
 			$error = 'Autoloading of class "%s" failed';
-        	$error = sprintf($error, $formName);
+        	$error = sprintf($error, $class);
         	throw new AutoloadException($error);
 		}
         return $form;

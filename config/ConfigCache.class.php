@@ -366,10 +366,10 @@ class ConfigCache extends MojaviObject
             $ignore = array('.', '..', 'CVS', '.svn');
 
             // create a file pointer to the module dir
-            $fp = opendir(MO_MODULE_DIR);
+            $cc_fp = opendir(MO_MODULE_DIR);
 
             // loop through the directory and grab the modules
-            while (($directory = readdir($fp)) !== false)
+            while (($directory = readdir($cc_fp)) !== false)
             {
 
                 if (!in_array($directory, $ignore))
@@ -402,7 +402,9 @@ class ConfigCache extends MojaviObject
             }
 
             // close file pointer
-            fclose($fp);
+            if (!is_int($cc_fp)) {
+            	@fclose($cc_fp);
+            }
 
         } else
         {

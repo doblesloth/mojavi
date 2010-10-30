@@ -79,19 +79,28 @@ class AutoloadConfigHandler extends IniConfigHandler
 			if (is_dir($file)) {
 				if ($dh = opendir($file)) {
 					while (($fh = readdir($dh)) !== false) {
+						
 						if (preg_match("/^\./",$fh) == 0) {
 							$tmp    = "\$classes['%s'] = '%s';";
 							$filename = $file . $fh;
-							#remove normal suffices
-							$fh_class = preg_replace("/\.class\.php/","",$fh);
-							$data[] = sprintf($tmp, $fh_class, $filename);
+							if (is_readable($filename) && !is_dir($filename)) {	
+								#remove normal suffices
+								$fh_class = preg_replace("/\.class\.php/","",$fh);
+								
+								if (strpos($class, 'MOJAVI') === false) {
+									$data[] = sprintf($tmp, $class . '_' . $fh_class, $filename);
+								} else {
+									$data[] = sprintf($tmp, $fh_class, $filename);	
+								}
+							}
 						}
 					}
 					closedir($dh);
 				}
 			} else if (is_readable($file)) {	
 	            $tmp    = "\$classes['%s'] = '%s';";
-	            $data[] = sprintf($tmp, $class, $file);
+	            $fh_class = preg_replace("/\.class\.php/","",basename($file));
+	            $data[] = sprintf($tmp, $fh_class, $file);
 			} else {
 				$tmp    = "// \$classes['%s'] = '%s';";
 	            $data[] = sprintf($tmp, $class, $file);

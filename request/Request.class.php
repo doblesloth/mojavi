@@ -51,9 +51,23 @@ abstract class Request extends ParameterHolder
 	const POST = 4;
 	
 	/**
+	 * Process validation and execution for only PUT requests.
+	 *
+	 * @since 3.0.0
+	 */
+	const PUT = 8;
+	
+	/**
+	 * Process validation and execution for only DELETE requests.
+	 *
+	 * @since 3.0.0
+	 */
+	const DELETE = 16;
+	
+	/**
 	 * Allows any request method
 	 */
-	const ANY = 6;
+	const ANY = 32;
 
 	// +-----------------------------------------------------------------------+
 	// | PRIVATE VARIABLES                                                     |
@@ -581,6 +595,8 @@ abstract class Request extends ParameterHolder
 	 * @param int One of the following constants:
 	 *            - Request::GET
 	 *            - Request::POST
+	 * 			  - Request::PUT
+	 * 			  - Request::DELETE
 	 *
 	 * @return void
 	 *
@@ -593,7 +609,7 @@ abstract class Request extends ParameterHolder
 	public function setMethod ($method)
 	{
 
-		if ($method == self::GET || $method == self::POST)
+		if ($method == self::GET || $method == self::POST || $method == self::PUT || $method == self::DELETE)
 		{
 
 			$this->method = $method;

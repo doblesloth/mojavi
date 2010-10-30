@@ -19,14 +19,6 @@
  * @since     3.0.0
  * @version   $Id: mojavi.php 645 2004-12-10 14:35:36Z seank $
  */
-
-/**
- * Include the global_funcs.php file.
- * This file should be in the same directory as this file (mojavi.php) and should contain
- * global functions for use on all projects.
- */
-require_once(dirname(__FILE__) . "/global_funcs.php");
-
 /**
  * Handles autoloading of classes that have been specified in autoload.ini.
  *
@@ -45,63 +37,60 @@ function __autoload ($class)
 
     if (!isset($classes))
     {
-
         try
         {
-
             // include the list of autoload classes
             $config = ConfigCache::checkConfig('config/autoload.ini');
-
         } catch (MojaviException $e)
         {
-
             $e->printStackTrace();
-
         } catch (Exception $e)
         {
-
             // unknown exception
             $e = new MojaviException($e->getMessage());
-
             $e->printStackTrace();
-
         }
-		
         require_once($config);
-
     }
 
-    if (!isset($classes[$class]))
-    {
-    	// Destroy the session completely
-		session_destroy();
-		
-        // unspecified class
-        $error = 'Autoloading of class "%s" failed';
-        $error = sprintf($error, $class);
-        $e = new AutoloadException($error);
-        $e->printStackTrace();
-        LoggerManager::fatal("Clearing cache because of Autoload Exception: " . $class);
-        LoggerManager::fatal($e->printStackTrace(""));
-        LoggerManager::fatal($config);
-        
-        // Clear the cache
-		ConfigCache::clear();
-        
-        if (in_array(session_name(), $_COOKIE)) {
-        	if (file_exists("/tmp/sess_" . $_COOKIE[session_name()])) {
-        		try {
-        			unlink("/tmp/sess_" . $_COOKIE[session_name()]);
-        		} catch (Exception $e) {
-        			$e = new MojaviException($e->getMessage());
-        			$e->printStackTrace("");
-        		}
-        	}
-        }
+    if (isset($classes[$class])) {
+    	// class exists, let's include it
+    	require_once($classes[$class]);
+    } else {
+    	// Split the class by underscores and look for it
+    	$class_file = str_replace('_', DIRECTORY_SEPARATOR, $class);
+    	if (file_exists(MO_LIB_DIR . DIRECTORY_SEPARATOR . $class_file . '.php')) {
+    		require_once(MO_LIB_DIR . DIRECTORY_SEPARATOR . $class_file . '.php');	
+    	} else {
+	    	// Destroy the session completely
+			session_destroy();
+			
+	        // unspecified class
+	        $error = 'Autoloading of class "%s" failed';
+	        $error = sprintf($error, $class);
+	        $e = new AutoloadException($error);
+	        $e->printStackTrace();
+	        LoggerManager::fatal("Clearing cache because of Autoload Exception: " . $class);
+	        LoggerManager::fatal($e->printStackTrace(""));
+	        LoggerManager::fatal($config);
+	        
+	        // Clear the cache
+			ConfigCache::clear();
+	        
+	        if (in_array(session_name(), $_COOKIE)) {
+	        	if (file_exists("/tmp/sess_" . $_COOKIE[session_name()])) {
+	        		try {
+	        			unlink("/tmp/sess_" . $_COOKIE[session_name()]);
+	        		} catch (Exception $e) {
+	        			$e = new MojaviException($e->getMessage());
+	        			$e->printStackTrace("");
+	        		}
+	        	}
+	        }
+    	}
     }
 
-	// class exists, let's include it
-    require_once($classes[$class]);
+	
 }
 
 try

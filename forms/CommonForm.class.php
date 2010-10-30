@@ -12,7 +12,7 @@
  * webapp, should extend this form.  If you need to change the inheritance off all the forms in a webapp, then you 
  * can change where this form points to
  */
-class CommonForm extends DateRangeForm {
+class CommonForm extends OrmForm {
 	
 }
 ?>

@@ -32,6 +32,7 @@
 		 */
 		function setCodeErrorId($arg0) {
 			$this->code_error_id = $arg0;
+			return $this;
 		}
 
 		/**
@@ -50,6 +51,7 @@
 		 */
 		function setSystemId($arg0) {
 			$this->system_id = $arg0;
+			return $this;
 		}
 
 		/**
@@ -70,6 +72,7 @@
 		function setMessage($arg0) {
 			$this->parseError($arg0);
 			$this->message = $arg0;
+			return $this;
 		}
 
 		/**
@@ -78,6 +81,7 @@
 		 */
 		function setMsg($arg0) {
 			$this->setMessage($arg0);
+			return $this;
 		}
 
 		/**
@@ -100,6 +104,7 @@
 					$this->setLineNumber($matches[4]);
 				}
 			}
+			return $this;
 		}
 
 		/**
@@ -119,6 +124,7 @@
 		 */
 		function setFilename($arg0) {
 			$this->filename = $arg0;
+			return $this;
 		}
 
 		/**
@@ -138,6 +144,7 @@
 		 */
 		function setErrorMessage($arg0) {
 			$this->error_message = $arg0;
+			return $this;
 		}
 
 		/**
@@ -157,6 +164,7 @@
 		 */
 		function setErrorLevel($arg0) {
 			$this->error_level = $arg0;
+			return $this;
 		}
 
 		/**
@@ -176,6 +184,7 @@
 		 */
 		function setLineNumber($arg0) {
 			$this->line_number = $arg0;
+			return $this;
 		}
 
 		/**
@@ -194,6 +203,7 @@
 		 */
 		function setCount($arg0) {
 			$this->count = $arg0;
+			return $this;
 		}
 	}
 

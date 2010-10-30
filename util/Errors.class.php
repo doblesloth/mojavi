@@ -36,7 +36,7 @@
  */
  class Errors extends MojaviObject {
  
- 	private $errors;
+ 	protected $errors;
  
  	/**
 	 * Add an error to the list of errors.  Takes a keyname for the first argument and 
@@ -214,6 +214,18 @@
 		$new_errors = array();
 		$this->setInternalErrors($new_errors);
 	}
+	
+	/**
+	 * Returns the errors as an array of strings
+	 * @return array
+	 */
+	function toArray() {
+		$ret_val = array();
+		foreach ($this->getErrors() as $error) {
+			$ret_val[] = $error->getMessage();
+		}
+		return $ret_val;
+	}
  }
  
  /**
@@ -264,10 +276,5 @@
 	function setMessage($arg0) {
 		$this->message = $arg0;
 	}
-	
-	function getXml() {
-		return '<error>'.$this->getMessage().'</error>';
-	}
-	
 }
 ?>

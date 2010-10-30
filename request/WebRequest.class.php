@@ -382,6 +382,14 @@ class WebRequest extends Request
                 case 'POST':
                     $this->setMethod(self::POST);
                     break;
+                    
+                case 'PUT':
+                    $this->setMethod(self::PUT);
+                    break;
+                    
+                case 'DELETE':
+                    $this->setMethod(self::DELETE);
+                    break;
 
                 default:
                     $this->setMethod(self::GET);
