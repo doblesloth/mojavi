@@ -76,7 +76,8 @@ abstract class Request extends ParameterHolder
 	private
 		$attributes = array(),
 		$errors     = null,
-		$method     = null;
+		$method     = null,
+		$rawBody	= null;
 
 	// +-----------------------------------------------------------------------+
 	// | METHODS                                                               |
@@ -625,6 +626,34 @@ abstract class Request extends ParameterHolder
 		throw new MojaviException($error);
 
 	}
+	
+	/**
+     * Return the raw body of the request, if present
+     *
+     * @return string|false Raw body, or false if not present
+     */
+    public function getRawBody()
+    {
+        if ($this->rawBody == null) {
+            $body = file_get_contents('php://input');
+
+            if (strlen(trim($body)) > 0) {
+                $this->rawBody = $body;
+            } else {
+                $this->rawBody = false;
+            }
+        }
+        return $this->rawBody;
+    }
+    
+    /**
+     * Sets the raw body of the request, if present
+     * @return Request
+     */
+    public function setRawBody($arg0) {
+    	$this->rawBody = $arg0;
+    	return $this;	
+    }
 
 	// -------------------------------------------------------------------------
 

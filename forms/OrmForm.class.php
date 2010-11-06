@@ -7,6 +7,15 @@
 class OrmForm extends DateRangeForm {
 	
 	/**
+	 * Checks if the given record exists in the database
+	 * @return boolean
+	 */
+	function exists() {
+		// For right now, just check that the id is > 0
+		return ($this->getId() > 0);	
+	}
+	
+	/**
 	 * Queries a single record from the database given a primary key
 	 * @return Form
 	 */

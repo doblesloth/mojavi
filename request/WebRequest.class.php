@@ -465,6 +465,11 @@ class WebRequest extends Request
 
         // merge POST parameters
         $this->setParametersByRef($_POST);
+        
+        // merge PUT parameters
+        $raw_params = array();
+        parse_str($this->getRawBody(), $raw_params);
+        $this->setParametersByRef($raw_params);
 
     }
 

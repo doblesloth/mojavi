@@ -93,7 +93,6 @@ class BasicConsoleController extends ConsoleController {
 				}
 
 			}
-
 			// make the first request
 			$this->forward($moduleName, $actionName);
 
