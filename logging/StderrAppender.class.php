@@ -24,7 +24,7 @@
  * @since     0.9.1
  * @version   $Id$
  */
-class StderrAppender extends FileAppender
+class StderrAppender extends ErrorLogAppender
 {
 
 	/**

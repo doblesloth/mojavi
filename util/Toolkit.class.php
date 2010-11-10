@@ -93,6 +93,27 @@ class Toolkit extends MojaviObject
         return false;
 
     }
+    
+    /**
+     * Recursively removed a directory
+     * @param string $dir
+     */
+	public static function delTree($dir) {
+		if (is_dir($dir)) {
+			$objects = scandir($dir);
+			foreach ($objects as $object) {
+				if ($object != "." && $object != "..") {
+					if (filetype($dir . DIRECTORY_SEPARATOR . $object) == "dir") {
+						Toolkit::delTree($dir . DIRECTORY_SEPARATOR . $object);
+					} else {
+						unlink($dir . DIRECTORY_SEPARATOR . $object);
+					}
+				}
+			}
+     		reset($objects);
+     		rmdir($dir);
+		}
+	} 
 
 }
 

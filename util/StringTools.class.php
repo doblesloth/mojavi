@@ -6,6 +6,15 @@
  * @copyright 2005
  */
 class StringTools {
+	
+	const CONSOLE_COLOR_RED = 1;
+	const CONSOLE_COLOR_GREEN = 2;
+	const CONSOLE_COLOR_YELLOW = 3;
+	const CONSOLE_COLOR_BLUE = 4;
+	const CONSOLE_COLOR_PURPLE = 5;
+	const CONSOLE_COLOR_CYAN = 6;
+	const CONSOLE_COLOR_WHITE = 7;
+	
 	/**
 	 * Removes characters that could potentially cause query problems and/or injection.
 	 * Removes ;, ", \r, and \n
@@ -179,6 +188,59 @@ class StringTools {
 	 */
 	static function camelCase($key) {
 		return preg_replace("/_([a-zA-Z0-9])/e","strtoupper('\\1')",$key);
+	}
+	
+	/**
+	 * Converts a string to a console colored string
+	 * @return string
+	 */
+	static function consoleColor($str = '', $color = 0) {
+		switch ($color) {
+			case self::CONSOLE_COLOR_RED:
+				return "\33[01;31m" . $str . "\033[0m";
+			case self::CONSOLE_COLOR_GREEN:
+				return "\33[01;32m" . $str . "\033[0m";
+			case self::CONSOLE_COLOR_YELLOW:
+				return "\33[01;33m" . $str . "\033[0m";
+			case self::CONSOLE_COLOR_BLUE:
+				return "\33[01;34m" . $str . "\033[0m";
+			case self::CONSOLE_COLOR_WHITE:
+				return "\33[01;37m" . $str . "\033[0m";
+			case self::CONSOLE_COLOR_PURPLE:
+				return "\33[01;35m" . $str . "\033[0m";
+			case self::CONSOLE_COLOR_CYAN:
+				return "\33[01;36m" . $str . "\033[0m";
+			default:
+				return $str;
+		}
+	}
+	
+	/**
+	 * Outputs text to the console with a set width and colored status message
+	 * @param string $line
+	 * @param string $status
+	 * @param integer $color
+	 * @param integer $width
+	 * @param integer $status_width
+	 * @return string
+	 */
+	static function consoleWrite($line = '', $status = '', $color = 0, $new_line = false, $width = 50, $status_width = 11, $do_not_echo = false) {
+		$ret_val = $line;
+		if ($status !== null) {
+			$ret_val .= str_repeat('.', $width - strlen($line));
+			$ret_val .= '[ ' . self::consoleColor(str_pad($status, $status_width, ' ', STR_PAD_LEFT), $color) . ' ]';
+		}
+		if ($do_not_echo) {
+			return $ret_val;
+		} else {
+			echo $ret_val;
+			if (!$new_line) {
+				echo str_repeat("\010", $width + $status_width + 4);	
+			} else {
+				echo "\n";	
+			}
+			return $ret_val;	
+		}
 	}
 	
 	/**
