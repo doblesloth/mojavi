@@ -21,16 +21,17 @@ abstract class MojaviForm extends MojaviObject {
 	 */
 	function populate($arg0) {
 		$this->setModifiedColumns(null);
-
 		if (is_array($arg0)) {
 			// Attempt to populate the form
 			foreach ($arg0 as $key => $value) {
+				$callableName = null;				
 				if (is_array($value)) {
 					/*
 					* If this is an array, then we need to add all the elements, so first check for an
 					* add***($arg0) function.  If it does not exist, then fallback to a set***($arg0)
 					*/
 					# The regex will change '_a' to 'A' or '_1' to '1'
+					
 					$entry = preg_replace("/_([a-zA-Z0-9])/e","strtoupper('\\1')",strtolower($key));
 					if (is_callable(array($this, 'add' . ucfirst($entry)),false, $callableName)) {
 						foreach ($value as $key2 => $value1) {
@@ -64,6 +65,7 @@ abstract class MojaviForm extends MojaviObject {
 			# Treat the argument as an object and copy any getters to the appropriate setters
 			$methods = get_class_methods($arg0);
 			foreach ($methods as $method) {
+				$callableName = null;
 				# Only iterate the getters
 				if (strpos($method,"get") === 0) {
 					$method_name = substr($method,3);
