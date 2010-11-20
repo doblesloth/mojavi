@@ -94,10 +94,11 @@ class ImageResize {
 	 * Resizes the image
 	 * @return string
 	 */
-	function resize() {
-		$source_image_contents = $this->getSourceImageLocation();
-		if (file_exists($this->getSourceImageLocation())) {
-			$source_image_contents = file_get_contents($this->getSourceImageLocation());	
+	function resize($source_image_contents = null) {
+		if ($source_image_contents == null) {
+			if (file_exists($this->getSourceImageLocation())) {
+				$source_image_contents = file_get_contents($this->getSourceImageLocation());	
+			}
 		}
 		$src_img = imagecreatefromstring($source_image_contents);
 		$src_width = imagesx($src_img);
@@ -143,6 +144,22 @@ class ImageResize {
 		$image_resize->setDestinationImageWidth($dest_width);
 		$image_resize->setDestinationImagePadding($dest_padding);
 		return $image_resize->resize();
+	}
+	
+	/**
+	 * Resizes an image and returns the image contents
+	 * @param string $image_location
+	 * @param integer $dest_width
+	 * @param integer $dest_height
+	 * @param integer $dest_padding
+	 * @return string
+	 */
+	static function resizeImageFromString($image_source_contents, $dest_width = 128, $dest_height = 128, $dest_padding = 5) {
+		$image_resize = new ImageResize();
+		$image_resize->setDestinationImageHeight($dest_height);
+		$image_resize->setDestinationImageWidth($dest_width);
+		$image_resize->setDestinationImagePadding($dest_padding);
+		return $image_resize->resize($image_source_contents);
 	}
 }
 ?>
