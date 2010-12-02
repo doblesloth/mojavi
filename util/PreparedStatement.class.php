@@ -114,12 +114,12 @@ class PreparedStatement extends MojaviObject {
 		if (!is_null($arg1)) {
 			$arg1 = preg_replace("/[^0-9\.\-]/", "", $arg1);
 			if (settype($arg1,"int")) {
-				$this->addValue(intval($arg1), $arg0, self::TYPE_LONG);
+				$this->addValue($arg1, $arg0, self::TYPE_LONG);
 			}
 		} else {
 			$arg0 = preg_replace("/[^0-9\.\-]/", "", $arg0);
 			if (settype($arg0,"int")) {
-				$this->addValue(intval($arg0), null, self::TYPE_LONG);
+				$this->addValue($arg0, null, self::TYPE_LONG);
 			}
 		}
 	}
