@@ -293,5 +293,18 @@ class StringTools {
 		// pass back as string. or simple xml object if you want!
 		return $xml->asXML();
 	}
+	
+	/**
+	 * Returns the string in between two strings
+	 * @return string
+	 */
+	static function getStringBetween($string, $start, $end){
+		$string = " " . $string;
+		$ini = strpos($string, $start);
+		if ($ini == 0) return "";
+		$ini += strlen($start);
+		$len = strpos($string, $end, $ini) - $ini;
+		return substr($string, $ini, $len); 
+	}
 }
 ?>
