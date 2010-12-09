@@ -1,4 +1,4 @@
-<?
+<?php
 /**
  * LICENSE: The MIT License
  * Copyright (c) 2010 Chris Nizzardini (http://www.cnizz.com) 
