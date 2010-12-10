@@ -125,6 +125,17 @@ class Imap
         return $array;
     }
     
+	/**
+     * returnEmailHeaderArr
+     * This returns detailed header information for the given message number
+     * @param messageNumber
+     * @return array
+     */
+    public function returnEmailRawBody($messageNumber)
+    {
+        return $this->returnRawBodyStr($messageNumber);
+    }
+    
     /**
      * returnEmailMessageArr
      * This returns the entire email for the given message number
