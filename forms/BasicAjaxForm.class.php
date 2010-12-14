@@ -122,6 +122,10 @@ class BasicAjaxForm extends CommonForm {
 			foreach ($this->getEntries() as $entry) {
 				$ret_val['entries'][] = $entry->toArray();
 			}
+		} else if (is_array($this->getEntries())) {
+			foreach ($this->getEntries() as $entry) {	
+				$ret_val['entries'][] = $entry->toArray();
+			}
 		} else {
 			$ret_val['entries'] = $this->getEntries();
 		}
