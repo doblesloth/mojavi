@@ -111,8 +111,16 @@ class Imap
         $array['subject'] = (isset($head->subject)) ? $head->subject : '';
         $array['to'] = (isset($head->toaddress)) ? $head->toaddress : '';
         $array['message_id'] = (isset($head->message_id)) ? $head->message_id : '';
-        $array['from'] = $head->from[0]->mailbox.'@'.$head->from[0]->host;
-        $array['sender'] = $head->sender[0]->mailbox.'@'.$head->sender[0]->host;
+        if (isset($head->from[0]->mailbox) && isset($head->from[0]->host)) {
+        	$array['from'] = $head->from[0]->mailbox.'@'.$head->from[0]->host;
+        } else {
+        	$array['from'] = '';
+        }
+        if (isset($head->sender[0]->mailbox) && isset($head->sender[0]->host)) {
+        	$array['sender'] = $head->sender[0]->mailbox.'@'.$head->sender[0]->host;
+        } else {
+        	$array['sender'] = '';
+        }
         $array['reply_toaddress'] = (isset($head->message_id)) ? $head->reply_toaddress : '';
         $array['size'] = (isset($head->Size)) ? $head->Size : '';
         $array['msgno'] = (isset($head->Msgno)) ? trim($head->Msgno) : 0;
