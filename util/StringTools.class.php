@@ -226,6 +226,7 @@ class StringTools {
 	 */
 	static function consoleWrite($line = '', $status = '', $color = 0, $new_line = false, $width = 50, $status_width = 11, $do_not_echo = false) {
 		$ret_val = $line;
+		$status_width = ($status_width > strlen($status)) ? $status_width : strlen($status);
 		if ($status !== null) {
 			$ret_val .= str_repeat('.', $width - strlen($line));
 			$ret_val .= '[ ' . self::consoleColor(str_pad($status, $status_width, ' ', STR_PAD_LEFT), $color) . ' ]';
