@@ -230,7 +230,7 @@ class StringTools {
 		$ret_val = $line;
 		
 		$screen_width = exec('tput cols');
-		$screen_width *= 0.75;
+		$screen_width *= 0.50;
 		$line_width = strlen($line);
 		$status_width = strlen('[ ' . $status . ' ]');
 		$dot_width = $screen_width - $line_width - $status_width;
