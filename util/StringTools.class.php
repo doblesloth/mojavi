@@ -228,17 +228,23 @@ class StringTools {
 	 */
 	static function consoleWrite($line = '', $status = '', $color = 0, $new_line = false, $width = 50, $status_width = 11, $do_not_echo = false) {
 		$ret_val = $line;
+		
+		$screen_width = exec('tput cols');
+		$line_width = strlen($line);
+		$status_width = strlen('[ ' . $status . ' ]');
+		$dot_width = $screen_width - $line_width - $status_width;
+		
 		$status_width = ($status_width > strlen($status)) ? $status_width : strlen($status);
 		if ($status !== null) {
-			$ret_val .= str_repeat('.', $width - strlen($line));
-			$ret_val .= '[ ' . self::consoleColor(str_pad($status, $status_width, ' ', STR_PAD_LEFT), $color) . ' ]';
+			$ret_val .= str_repeat('.', $dot_width);
+			$ret_val .= '[ ' . self::consoleColor($status, $color) . ' ]';
 		}
 		if ($do_not_echo) {
 			return $ret_val;
 		} else {
 			echo $ret_val;
 			if (!$new_line) {
-				echo str_repeat("\010", $width + $status_width + 4);	
+				echo str_repeat("\010", $screen_width);	
 			} else {
 				echo "\n";	
 			}
