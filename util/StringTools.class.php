@@ -15,6 +15,8 @@ class StringTools {
 	const CONSOLE_COLOR_CYAN = 6;
 	const CONSOLE_COLOR_WHITE = 7;
 	
+	static private $_word_list;
+	
 	/**
 	 * Removes characters that could potentially cause query problems and/or injection.
 	 * Removes ;, ", \r, and \n
@@ -306,6 +308,74 @@ class StringTools {
 		$ini += strlen($start);
 		$len = strpos($string, $end, $ini) - $ini;
 		return substr($string, $ini, $len); 
+	}
+	
+	/**
+	 * Returns a random word
+	 * @return string
+	 */
+	static function getRandomWord($library_file = null) {
+		if (is_null($library_file)) {
+			$library_file = dirname(__FILE__) . DIRECTORY_SEPARATOR . 'random.dict';
+		}
+		if (!is_array(self::$_word_list)) {
+			self::$_word_list = array();
+		}
+		if (file_exists($library_file) && is_readable($library_file)) {
+			if (count(self::$_word_list) == 0) {
+				self::$_word_list = file($library_file, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+				shuffle(self::$_word_list);
+			}
+			return array_shift(self::$_word_list);
+		}
+		return "";		
+	}
+	
+	/**
+	 * Encodes a string as ISO-8895-1 or UTF-8 using Quoted-Printable or Base64 encodings
+	 * @param string $scheme - Either Q for Quoted-Printable or B for Base64
+	 * @param integer $line_length
+	 * @param string $break_lines - Either \n or ""
+	 * @param string $encoding - Either UTF-8 or ISO-8895-1
+	 * @param string $arg0
+	 * @return string
+	 */
+	static function encodeString($arg0, $scheme = "Q", $encoding = "ISO-8859-1", $line_length = 76, $break_lines = "\n") {
+		$subject_parts = preg_split('//',$arg0,-1);
+		$subject_array = array();
+		foreach($subject_parts as $char) {
+			$subject_array[] = $char;
+			if (bin2hex($char) == '20') {
+				$rand = rand(1,18);
+				for ($x = 0; $x < $rand; $x++) {
+					$subject_array[] = chr(10);
+				}	
+			}
+		}
+		$padded_string = implode("", $subject_array);
+		$preferences = array(
+			"line-length" => $line_length,
+			"line-break-chars" => $break_lines,
+			"scheme" => $scheme
+		);
+		if (strtoupper($encoding) == 'UTF-8') {
+			$preferences["input-charset"] = 'ISO-8859-1';
+			$preferences["output-charset"] = $encoding;
+		} else {
+			$preferences["input-charset"] = 'UTF-8';
+			$preferences["output-charset"] = $encoding;
+		}
+		$ret_val = @iconv_mime_encode("Subject", $padded_string, $preferences);
+		return substr($ret_val, strlen("Subject: "));
+	}
+	
+	/**
+	 * ISO sizes a string to ISO-8895-1
+	 * @param string $arg0
+	 * @return string
+	 */
+	static function isoSize($arg0) {
+		return self::encodeString($arg0, "B", "ISO-8859-1", 1024, "");
 	}
 }
 ?>
