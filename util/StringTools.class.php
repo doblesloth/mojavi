@@ -237,7 +237,9 @@ class StringTools {
 		
 		$status_width = ($status_width > strlen($status)) ? $status_width : strlen($status);
 		if ($status !== null) {
-			$ret_val .= str_repeat('.', $dot_width);
+			if ($dot_width > 0) {
+				$ret_val .= str_repeat('.', $dot_width);
+			}
 			$ret_val .= '[ ' . self::consoleColor($status, $color) . ' ]';
 		}
 		if ($do_not_echo) {
@@ -245,7 +247,9 @@ class StringTools {
 		} else {
 			echo $ret_val;
 			if (!$new_line) {
-				echo str_repeat("\010", $screen_width);	
+				if ($screen_width > 0) {
+					echo str_repeat("\010", $screen_width);
+				}	
 			} else {
 				echo "\n";	
 			}
