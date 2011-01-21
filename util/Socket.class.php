@@ -49,7 +49,7 @@ class Socket {
 	 * @return resource
 	 */
 	static function closeSocket($sock) {
-		$ret_val = socket_shutdown($sock, 2);
+		$ret_val = @socket_shutdown($sock, 2);
 		// Socket close doesn't return anything, so we return the result of socket_shutdown (boolean)
 		@socket_close($sock);
 		return $ret_val;
