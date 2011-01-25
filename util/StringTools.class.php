@@ -229,7 +229,13 @@ class StringTools {
 	static function consoleWrite($line = '', $status = '', $color = 0, $new_line = false, $width = 50, $status_width = 11, $do_not_echo = false) {
 		$ret_val = $line;
 		
-		$screen_width = exec('tput cols');
+		if (trim(shell_exec('echo $TERM')) == '') {
+			$screen_width_cmd = 'tput -T xterm cols';	
+		} else {
+			$screen_width_cmd = 'tput cols';
+		}
+		
+		$screen_width = exec($screen_width_cmd);
 		$screen_width *= 0.50;
 		$line_width = strlen($line);
 		$status_width = strlen('[ ' . $status . ' ]');
