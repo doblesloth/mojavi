@@ -240,9 +240,10 @@ class StringTools {
 		if ($screen_width < 60) { $screen_width = 60; }
 		$line_width = strlen($line);
 		$status_width = strlen('[ ' . $status . ' ]');
+		$status_width = ($status_width > strlen($status)) ? $status_width : strlen($status);
 		$dot_width = $screen_width - $line_width - $status_width;
 		
-		$status_width = ($status_width > strlen($status)) ? $status_width : strlen($status);
+		
 		if ($status !== null) {
 			if ($dot_width > 0) {
 				$ret_val .= str_repeat('.', $dot_width);
@@ -254,9 +255,11 @@ class StringTools {
 		} else {
 			if (!$new_line) {
 				echo $ret_val;
-				if ($screen_width > 0) {
+				if ($screen_width > 0 && $screen_width > ($line_width + $status_width)) {
 					echo str_repeat("\010", $screen_width);
-				}	
+				} else {
+					echo str_repeat("\010", ($line_width + $status_width));
+				}
 			} else {
 				echo $ret_val;
 				echo "\n";	
