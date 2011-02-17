@@ -24,7 +24,7 @@
  * @since     0.9.1
  * @version   $Id$
  */
-class StderrAppender extends ErrorLogAppender
+class StderrAppender extends FileAppender
 {
 
 	/**
@@ -41,6 +41,32 @@ class StderrAppender extends ErrorLogAppender
 	{
 		$params['file'] = 'php://stderr';
 		return parent::initialize($params);
+	}
+	
+	/**
+	 * Write a Message to the file.
+	 * 
+	 * @param Message
+	 * 
+	 * @throws <b>LoggingException</b> if no Layout is set or the file
+	 *         cannot be written.
+	 * 
+	 * @return void
+	 * 
+	 * @author Bob Zoller (bob@agavi.org)
+	 * @since 0.9.1
+	 */
+	public function write($message)
+	{
+		if ($layout = $this->getLayout() === null) {
+			throw new LoggingException('No Layout set');
+		}
+
+		$str = sprintf("%s", $this->getLayout()->format($message));
+		if (($fp = fopen('php://stderr', 'a'))) {
+			fwrite($fp, strtr($str, array("\t" => "    ", "\r\n" => PHP_EOL, "\r" => PHP_EOL, "\n" => PHP_EOL)) . PHP_EOL);
+			fclose($fp);
+		}
 	}
 
 }

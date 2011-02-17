@@ -79,7 +79,7 @@ class ErrorLogAppender extends Appender
 		}
 
 		$str = sprintf("%s", $this->getLayout()->format($message));
-		error_log($str);
+		error_log(strtr($str, array("\t" => "    ", "\r\n" => '', "\r" => '', "\n" => '')));
 	}
 
 }
