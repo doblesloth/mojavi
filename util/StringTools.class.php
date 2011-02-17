@@ -232,11 +232,12 @@ class StringTools {
 		if (trim(shell_exec('echo $TERM')) == '') {
 			$screen_width_cmd = 'tput -T xterm cols';	
 		} else {
-			$screen_width_cmd = 'tput cols';
+			$screen_width_cmd = 'tput -T xterm cols';
 		}
 		
 		$screen_width = exec($screen_width_cmd);
 		$screen_width *= 0.50;
+		if ($screen_width < 60) { $screen_width = 60; }
 		$line_width = strlen($line);
 		$status_width = strlen('[ ' . $status . ' ]');
 		$dot_width = $screen_width - $line_width - $status_width;
@@ -251,12 +252,13 @@ class StringTools {
 		if ($do_not_echo) {
 			return $ret_val;
 		} else {
-			echo $ret_val;
 			if (!$new_line) {
+				echo $ret_val;
 				if ($screen_width > 0) {
 					echo str_repeat("\010", $screen_width);
 				}	
 			} else {
+				echo $ret_val;
 				echo "\n";	
 			}
 			return $ret_val;	
