@@ -232,7 +232,7 @@ class StringTools {
 		if (trim(shell_exec('echo $TERM')) == '') {
 			$screen_width_cmd = 'tput -T xterm cols';	
 		} else {
-			$screen_width_cmd = 'tput -T xterm cols';
+			$screen_width_cmd = 'tput cols';
 		}
 		
 		$screen_width = exec($screen_width_cmd);
