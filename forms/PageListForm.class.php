@@ -225,7 +225,15 @@
 		 * @param string $arg0
 		 */
 		function setSortType($arg0) {
-		    $this->sort_type = $arg0;
+			if (is_string($arg0)) {
+				if (strtolower($arg0) == 'desc') {
+					$this->sort_type = self::SORT_TYPE_DESC;
+				} else {
+					$this->sort_type = self::SORT_TYPE_ASC;
+				}
+			} else {
+		    	$this->sort_type = $arg0;
+			}
 		    return $this;
 		}
 
