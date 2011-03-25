@@ -489,17 +489,6 @@ abstract class Controller extends MojaviObject
         require_once($file);
 
         $class = $moduleName . '_Model_' . $modelName;
-
-        // fix for same name classes
-//        $moduleClass = $moduleName . '_' . $class;
-//
-//        if (class_exists($moduleClass, false))
-//        {
-//
-//            $class = $moduleClass;
-//
-//        }
-
         // create model instance and initialize it
         $model = new $class($errors);
         $model->initialize($this->context);
@@ -530,18 +519,10 @@ abstract class Controller extends MojaviObject
 			$file = MO_MODULE_DIR . '/' . $moduleName . '/lib/forms/' . $formName . '.class.php';
 		}
 
+		$class = $moduleName . '_Form_' . $formName;
+		
 		if (file_exists($file) && !is_dir($file)) {
 	        require_once($file);
-
-	        $class = $moduleName . '_Form_' . $formName;
-	        // fix for same name classes
-//	        $moduleClass = $moduleName . '_' . $class;
-//
-//	        if (class_exists($moduleClass, false))
-//	        {
-//	            $class = $moduleClass;
-//	        }
-
 	        // create model instance and initialize it
 	        $form = new $class($errors);
 	        $form->initialize($this->context);

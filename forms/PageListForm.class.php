@@ -18,19 +18,14 @@
 		private $keywords;
 		private $page;
 		private $sort;
-		private $sort_type;
+		private $sord;
 		private $ignore_pagination;
 
 		/**
 		 * constants
 		 */
 		const ITEMS_PER_PAGE = 20;
-		const SORT_TYPE_ASC = 0;
-		const SORT_TYPE_DESC = 1;
-		const SORT_TYPE_NONE = 2;
-		const SORT_TYPE_MAX = 3;
-
-
+		
 		/**
 		* Returns the total number of results returned
 		* @return integer
@@ -210,51 +205,26 @@
 		}
 
 		/**
-		 * returns the sort_type
+		 * Returns the sord
 		 * @return string
 		 */
-		function getSortType() {
-		   if (is_null($this->sort_type)) {
-		      $this->sort_type = self::SORT_TYPE_ASC;
-		   }
-		   return $this->sort_type;
-		}
-
-		/**
-		 * sets the sort_type
-		 * @param string $arg0
-		 */
-		function setSortType($arg0) {
-			if (is_string($arg0)) {
-				if (strtolower($arg0) == 'desc') {
-					$this->sort_type = self::SORT_TYPE_DESC;
-				} else {
-					$this->sort_type = self::SORT_TYPE_ASC;
-				}
-			} else {
-		    	$this->sort_type = $arg0;
+		function getSord() {
+			if (is_null($this->sord)) {
+				$this->sord = 'DESC';
 			}
-		    return $this;
-		}
-
-		/**
-		 * translate the sort type
-		 * @return string
-		 */
-		function translateSortType() {
-		    return self::translateSortTypeById($this->getSortType());
-		}
-
-		/**
-		 * translate the sort type
-		 * @return string
-		 */
-		static function translateSortTypeById($arg0) {
-			if ($arg0 == self::SORT_TYPE_ASC) {
-				return "ASC";			
-			} else {
-				return "DESC";				
+			if (!(strtoupper(trim($this->sord)) == 'DESC' || strtoupper(trim($this->sord)) == 'DESC')) {
+				$this->sord = 'DESC';
 			}
+			return $this->sord;
+		}
+		
+		/**
+		 * Sets the sord
+		 * @param $arg0 string
+		 */
+		function setSord($arg0) {
+			$this->sord = $arg0;
+			return $this;
 		}
 	}
 ?>
