@@ -62,11 +62,10 @@ class Socket {
 	 */
 	static function connectSocket($sock, $host, $port, &$connect_error = '', $socket_timeout = 5) {
 		$attempts = 0;
-		socket_set_nonblock($sock);
+		socket_set_block($sock);
 		while (!($connected = @socket_connect($sock, $host, $port)) && $attempts++ < $socket_timeout) {
 			$sock_error = socket_last_error();
 			if ($sock_error != SOCKET_EINPROGRESS && $sock_error != SOCKET_EALREADY) {
-				socket_set_block($sock);
 				$connect_error = socket_strerror($sock_error);
 				return false;
 			}
@@ -78,18 +77,15 @@ class Socket {
 		while (!($connect_buffer = @socket_read($sock, 4096, PHP_BINARY_READ)) && ($attempts++ < $socket_timeout)) {
 			$sock_error = socket_last_error();
 			if ($sock_error != SOCKET_EINPROGRESS && $sock_error != SOCKET_EALREADY && $sock_error != SOCKET_EAGAIN) {
-				socket_set_block($sock);
 				$connect_buffer .= socket_strerror($sock_error);
 				return false;
 			}
 			usleep(125);
 		}
 		if (!$connected) {
-			socket_set_block($sock);
 			$connect_error = socket_strerror($sock_error);
 			return false;
 		}
-		socket_set_block($sock);
 		return $connect_buffer;
 	}
 	
