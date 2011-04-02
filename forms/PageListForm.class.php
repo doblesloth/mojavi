@@ -212,7 +212,7 @@
 			if (is_null($this->sord)) {
 				$this->sord = 'DESC';
 			}
-			if (!(strtoupper(trim($this->sord)) == 'DESC' || strtoupper(trim($this->sord)) == 'DESC')) {
+			if (!(strtoupper(trim($this->sord)) == 'DESC' || strtoupper(trim($this->sord)) == 'ASC')) {
 				$this->sord = 'DESC';
 			}
 			return $this->sord;
