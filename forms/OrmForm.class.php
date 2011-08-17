@@ -12,7 +12,7 @@ class OrmForm extends DateRangeForm {
 	 */
 	function exists() {
 		// For right now, just check that the id is > 0
-		return ($this->getId() > 0);	
+		return (intval($this->getId()) > 0);	
 	}
 	
 	/**

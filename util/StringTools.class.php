@@ -218,6 +218,35 @@ class StringTools {
 	}
 	
 	/**
+	 * Converts a string to a console colored string
+	 * @return string
+	 */
+	static function consoleToHtmlColor($str = '') {
+		$str_buffer = '';
+		$str_lines = explode("\n", $str);
+		foreach ($str_lines as $str_line) {
+			if (strpos($str_line, "\010") === false) {
+				$str_buffer .= $str_line . "\n";
+			} else {
+				$str_line = substr($str_line, strrpos($str_line, "\010"));
+				$str_line = str_replace("\010", '', $str_line);
+				$str_buffer .= $str_line . "\n";
+			}
+		}
+		$str_buffer = str_replace(" ", '&nbsp;', $str_buffer);
+		$str_buffer = str_replace("\33[01;31m", '<span style="color:red;">', $str_buffer);
+		$str_buffer = str_replace("\33[01;32m", '<span style="color:green;">', $str_buffer);
+		$str_buffer = str_replace("\33[01;33m", '<span style="color:yellow;">', $str_buffer);
+		$str_buffer = str_replace("\33[01;34m", '<span style="color:blue;">', $str_buffer);
+		$str_buffer = str_replace("\33[01;37m", '<span style="color:black;">', $str_buffer);
+		$str_buffer = str_replace("\33[01;35m", '<span style="color:purple;">', $str_buffer);
+		$str_buffer = str_replace("\33[01;36m", '<span style="color:cyan;">', $str_buffer);
+		$str_buffer = str_replace("\033[0m", '</span>', $str_buffer);
+		
+		return $str_buffer;
+	}
+	
+	/**
 	 * Outputs text to the console with a set width and colored status message
 	 * @param string $line
 	 * @param string $status
@@ -267,6 +296,35 @@ class StringTools {
 			}
 			return $ret_val;	
 		}
+	}
+	
+	/**
+	 * Prompts the user for a question on the console.
+	 * @param string $question
+	 * @param string $default
+	 * @param boolean $auto_respond
+	 * @return string
+	 */
+	public static function consolePrompt($question, $default = '', $auto_respond = false) {
+		if ($auto_respond) { return $default; }
+		$response = '';
+		if (($fp = fopen("php://stdin", "r")) !== false) {
+			echo $question . ( $default != '' ? " [" . $default . "] " : " " );
+			$tmp_response = fgets($fp);
+			if (preg_match("/(\r|\r\n|\n)/", $tmp_response)) {
+				$response .= preg_replace("/(\r|\r\n|\n)/", "", $tmp_response);
+			} else {
+				$response .= $tmp_response;
+			}
+			
+			if($response == '' && $default != '') {
+				$response = $default;
+			}
+			fclose($fp);
+		} else {
+			throw new Exception('Cannot read from stdin');
+		}
+		return $response;	
 	}
 	
 	/**
