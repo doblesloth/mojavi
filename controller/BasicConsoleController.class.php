@@ -46,10 +46,6 @@ class BasicConsoleController extends ConsoleController {
 			
 			$this->parseArgs($arg_options);
 			
-			if(!$this->hasRequiredArgs($req_args) || isset($_REQUEST['help_flag'])) {
-				$this->showHelpMessage($arg_options, $req_args);
-			}
-			
 			$moduleName = @$_REQUEST['module'];
 			$actionName = @$_REQUEST['action'];
 			
@@ -93,9 +89,13 @@ class BasicConsoleController extends ConsoleController {
 				}
 
 			}
-			// make the first request
-			$this->forward($moduleName, $actionName);
-
+			
+			if (!$this->hasRequiredArgs($req_args) || isset($_REQUEST['help_flag'])) {
+				$this->getAction($moduleName, $actionName)->showHelpMessage();
+			} else {
+				// make the first request
+				$this->forward($moduleName, $actionName);
+			}
 		} catch (MojaviException $e)
 		{
 
