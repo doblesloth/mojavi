@@ -293,7 +293,18 @@ class MojaviException extends Exception
                       </html>';
 				echo $output;
                 break;
-
+            case 'console':
+        		$output .= "\n" . StringTools::consoleColor($message, StringTools::CONSOLE_COLOR_RED);
+				$output .= "\n\tfrom $class in [$file:$line]";
+				if (count($trace) > 0)
+                {
+                    foreach ($trace as $line)
+                    {
+                        $output .= "\n\t$line";
+                    }
+                }
+                echo $output . "\n";
+                break;
             case 'plain':
             default:
 				$output .= $message;

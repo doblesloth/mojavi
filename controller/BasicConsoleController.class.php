@@ -99,7 +99,7 @@ class BasicConsoleController extends ConsoleController {
 		} catch (MojaviException $e)
 		{
 
-			$e->printStackTrace();
+			$e->printStackTrace('console');
 
 		} catch (Exception $e)
 		{
@@ -107,7 +107,7 @@ class BasicConsoleController extends ConsoleController {
 			// most likely an exception from a third-party library
 			$e = new MojaviException($e->getMessage());
 
-			$e->printStackTrace();
+			$e->printStackTrace('console');
 
 		}
 
