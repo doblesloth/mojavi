@@ -482,12 +482,12 @@ abstract class Controller extends MojaviObject
      */
     public function getModel ($moduleName, $modelName, $errors = null)
     {
-
+		/*
         $file = MO_MODULE_DIR . '/' . $moduleName . '/models/' . $modelName .
                 '.class.php';
 
         require_once($file);
-
+		*/
         $class = $moduleName . '_Model_' . $modelName;
         // create model instance and initialize it
         $model = new $class($errors);
@@ -511,6 +511,7 @@ abstract class Controller extends MojaviObject
      */
     public function getForm ($moduleName, $formName, $errors = null)
     {
+		/*
 		$form = null;
 		$file = null;
     	if (file_exists(MO_MODULE_DIR . '/' . $moduleName . '/forms/' . $formName . '.class.php')) {
@@ -518,19 +519,14 @@ abstract class Controller extends MojaviObject
 		} else if (file_exists(MO_MODULE_DIR . '/' . $moduleName . '/lib/forms/' . $formName . '.class.php')) {
 			$file = MO_MODULE_DIR . '/' . $moduleName . '/lib/forms/' . $formName . '.class.php';
 		}
+		*/
 
 		$class = $moduleName . '_Form_' . $formName;
 		
-		if (file_exists($file) && !is_dir($file)) {
-	        require_once($file);
-	        // create model instance and initialize it
-	        $form = new $class($errors);
-	        $form->initialize($this->context);
-		} else {
-			$error = 'Autoloading of class "%s" failed';
-        	$error = sprintf($error, $class);
-        	throw new AutoloadException($error);
-		}
+		// create form instance and initialize it
+        $form = new $class($errors);
+        $form->initialize($this->context);
+        
         return $form;
 
     }
