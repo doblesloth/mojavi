@@ -10,7 +10,8 @@
 // +---------------------------------------------------------------------------+
 
 /**
- * ActionStackEntry represents information relating to a single Action request
+ * ActionStackEntry represents information relating to a single Action request
+
  * during a single HTTP request.
  *
  * @package    mojavi
@@ -26,118 +27,228 @@ class ActionStackEntry extends MojaviObject
 
     // +-----------------------------------------------------------------------+
     // | PRIVATE VARIABLES                                                     |
-    // +-----------------------------------------------------------------------+
-    
-    private
-        $actionInstance = null,
-        $actionName     = null,
-        $microtime      = null,
-        $moduleName     = null,
-        $presentation   = null;
-    
+    // +-----------------------------------------------------------------------+
+
+    
+
+    private
+
+        $actionInstance = null,
+
+        $actionName     = null,
+
+        $microtime      = null,
+
+        $moduleName     = null,
+
+        $presentation   = null;
+
+    
+
     // +-----------------------------------------------------------------------+
     // | METHODS                                                               |
-    // +-----------------------------------------------------------------------+
-    
-    /**
-     * Class constructor.
-     *
-     * @param string A module name.
-     * @param string An action name.
-     * @param Action An action implementation instance.
-     *
-     * @return void
-     *
-     * @author Sean Kerr (skerr@mojavi.org)
-     * @since  3.0.0
-     */
-    public function __construct ($moduleName, $actionName, $actionInstance)
-    {
-        
-        $this->actionName     = $actionName;
-        $this->actionInstance = $actionInstance;
-        $this->microtime      = microtime();
-        $this->moduleName     = $moduleName;
-        
-    }
-    
-    /**
-     * Retrieve this entry's action name.
-     *
-     * @return string An action name.
-     *
-     * @author Sean Kerr (skerr@mojavi.org)
-     * @since  3.0.0
-     */
-    public function getActionName ()
-    {
-        
-        return $this->actionName;
-    
-    }
-    
-    /**
-     * Retrieve this entry's action instance.
-     *
-     * @return Action An action implementation instance.
-     *
-     * @author Sean Kerr (skerr@mojavi.org)
-     * @since  3.0.0
-     */
-    public function getActionInstance ()
-    {
-        
-        return $this->actionInstance;
-    
-    }
-    
-    /**
-     * Retrieve this entry's microtime.
-     *
-     * @return string A string representing the microtime this entry was
-     *                created.
-     *
-     * @author Sean Kerr (skerr@mojavi.org)
-     * @since  3.0.0
-     */
-    public function getMicrotime ()
-    {
-        
-        return $this->microtime;
-    
-    }
-    
-    /**
-     * Retrieve this entry's module name.
-     *
-     * @return string A module name.
-     *
-     * @author Sean Kerr (skerr@mojavi.org)
-     * @since  3.0.0
-     */
-    public function getModuleName ()
-    {
-        
-        return $this->moduleName;
-    
-    }
-    
-    /**
-     * Retrieve this entry's rendered view presentation.
-     *
-     * This will only exist if the view has processed and the render mode
-     * is set to View::RENDER_VAR.
-     *
-     * @return string An action name.
-     *
-     * @author Sean Kerr (skerr@mojavi.org)
-     * @since  3.0.0
-     */
-    public function & getPresentation ()
-    {
-        
-        return $this->presentation;
-    
+    // +-----------------------------------------------------------------------+
+
+    
+
+    /**
+
+     * Class constructor.
+
+     *
+
+     * @param string A module name.
+
+     * @param string An action name.
+
+     * @param Action An action implementation instance.
+
+     *
+
+     * @return void
+
+     *
+
+     * @author Sean Kerr (skerr@mojavi.org)
+
+     * @since  3.0.0
+
+     */
+
+    public function __construct ($moduleName, $actionName, $actionInstance)
+
+    {
+
+        
+
+        $this->actionName     = $actionName;
+
+        $this->actionInstance = $actionInstance;
+
+        $this->microtime      = microtime();
+
+        $this->moduleName     = $moduleName;
+
+        
+
+    }
+
+    
+
+    /**
+
+     * Retrieve this entry's action name.
+
+     *
+
+     * @return string An action name.
+
+     *
+
+     * @author Sean Kerr (skerr@mojavi.org)
+
+     * @since  3.0.0
+
+     */
+
+    public function getActionName ()
+
+    {
+
+        
+
+        return $this->actionName;
+
+    
+
+    }
+
+    
+
+    /**
+
+     * Retrieve this entry's action instance.
+
+     *
+
+     * @return Action An action implementation instance.
+
+     *
+
+     * @author Sean Kerr (skerr@mojavi.org)
+
+     * @since  3.0.0
+
+     */
+
+    public function getActionInstance ()
+
+    {
+
+        
+
+        return $this->actionInstance;
+
+    
+
+    }
+
+    
+
+    /**
+
+     * Retrieve this entry's microtime.
+
+     *
+
+     * @return string A string representing the microtime this entry was
+
+     *                created.
+
+     *
+
+     * @author Sean Kerr (skerr@mojavi.org)
+
+     * @since  3.0.0
+
+     */
+
+    public function getMicrotime ()
+
+    {
+
+        
+
+        return $this->microtime;
+
+    
+
+    }
+
+    
+
+    /**
+
+     * Retrieve this entry's module name.
+
+     *
+
+     * @return string A module name.
+
+     *
+
+     * @author Sean Kerr (skerr@mojavi.org)
+
+     * @since  3.0.0
+
+     */
+
+    public function getModuleName ()
+
+    {
+
+        
+
+        return $this->moduleName;
+
+    
+
+    }
+
+    
+
+    /**
+
+     * Retrieve this entry's rendered view presentation.
+
+     *
+
+     * This will only exist if the view has processed and the render mode
+
+     * is set to View::RENDER_VAR.
+
+     *
+
+     * @return string An action name.
+
+     *
+
+     * @author Sean Kerr (skerr@mojavi.org)
+
+     * @since  3.0.0
+
+     */
+
+    public function & getPresentation ()
+
+    {
+
+        
+
+        return $this->presentation;
+
+    
+
     }
     
     /**
@@ -146,8 +257,10 @@ class ActionStackEntry extends MojaviObject
      * @param string A rendered presentation.
      *
      * @return void
-     *
-     * @author Sean Kerr (skerr@mojavi.org)
+     *
+
+     * @author Sean Kerr (skerr@mojavi.org)
+
      * @since  3.0.0
      */
     public function setPresentation (&$presentation)
