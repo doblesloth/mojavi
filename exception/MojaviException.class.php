@@ -22,6 +22,8 @@
  * @since     3.0.0
  * @version   $Id: MojaviException.class.php 707 2004-12-28 17:48:28Z seank $
  */
+require_once(MO_APP_DIR . '/util/StringTools.class.php');
+
 class MojaviException extends Exception
 {
 
@@ -86,7 +88,7 @@ class MojaviException extends Exception
      * @author Sean Kerr (skerr@mojavi.org)
      * @since  3.0.0
      */
-    public function printStackTrace ($format = 'html')
+    public function printStackTrace ($format = MO_EXCEPTION_FORMAT)
     {
 
         // exception related properties
@@ -304,6 +306,19 @@ class MojaviException extends Exception
                     }
                 }
                 echo $output . "\n";
+                break;
+            case 'json':
+            	$ret_val = array('message' => $message);
+				$output = "from $class in [$file:$line]";
+				if (count($trace) > 0)
+                {
+                    foreach ($trace as $line)
+                    {
+                        $output .= "\n$line";
+                    }
+                }
+                $ret_val['stack_trace'] = $output;
+                return json_encode($ret_val);
                 break;
             case 'plain':
             default:

@@ -40,6 +40,7 @@ function __autoload ($class)
         {
             // include the list of autoload classes
             $config = ConfigCache::checkConfig('config/autoload.ini');
+            require_once($config);
         } catch (MojaviException $e)
         {
             $e->printStackTrace();
@@ -49,7 +50,7 @@ function __autoload ($class)
             $e = new MojaviException($e->getMessage());
             $e->printStackTrace();
         }
-        require_once($config);
+        
     }
 
     if (isset($classes[$class])) {
@@ -70,9 +71,6 @@ function __autoload ($class)
 	        $error = sprintf($error, $class);
 	        $e = new AutoloadException($error);
 	        $e->printStackTrace();
-	        LoggerManager::fatal("Clearing cache because of Autoload Exception: " . $class);
-	        LoggerManager::fatal($e->printStackTrace(""));
-	        LoggerManager::fatal($config);
 	        
 	        // Clear the cache
 			ConfigCache::clear();
