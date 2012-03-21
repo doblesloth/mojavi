@@ -20,6 +20,14 @@ abstract class Migration extends MojaviObject {
 	abstract function down();
 	
 	/**
+	 * Returns the default connection name
+	 * @return string
+	 */
+	function getDefaultConnectionName() {
+		return 'default';	
+	}
+	
+	/**
 	 * Adds a new column to a table
 	 * @param $db - db name
 	 * @param $table - table name
