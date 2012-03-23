@@ -184,7 +184,20 @@ abstract class MojaviForm extends MojaviObject {
 		$reflection = new ReflectionClass($this);
 		$properties = $reflection->getProperties(ReflectionProperty::IS_PROTECTED);
 		foreach ($properties as $property) {
-			$ret_val[$property->getName()] = $this->{$property->getName()};
+			if (method_exists($this, 'get' . ucfirst(StringTools::camelCase($property->getName())))) {
+				$value = $this->{'get' . ucfirst(StringTools::camelCase($property->getName()))}();
+				if ($value instanceof MojaviForm) {
+					$ret_val[$property->getName()] = $value->toArray($deep);
+				} else if ($value instanceof DatabaseResultResource) {
+					foreach ($value as $item) {
+						$ret_val[$property->getName()][] = $item->toArray();	
+					}
+				} else {
+					$ret_val[$property->getName()] = $value;
+				}
+			} else {
+				$ret_val[$property->getName()] = $this->{$property->getName()};
+			}
 		}
 		return $ret_val;
 	}

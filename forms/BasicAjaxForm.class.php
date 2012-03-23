@@ -114,17 +114,17 @@ class BasicAjaxForm extends CommonForm {
 		$ret_val['meta']['insert_id'] = $this->getInsertId();
 		$ret_val['meta']['rows_affected'] = $this->getRowsAffected();
 		if (is_object($this->getRecord())) {
-			$ret_val['record'] = $this->getRecord()->toArray();	
+			$ret_val['record'] = $this->getRecord()->toArray($deep);	
 		} else {
 			$ret_val['record'] = $this->getRecord();
 		}
 		if (is_object($this->getEntries())) {
 			foreach ($this->getEntries() as $entry) {
-				$ret_val['entries'][] = $entry->toArray();
+				$ret_val['entries'][] = $entry->toArray($deep);
 			}
 		} else if (is_array($this->getEntries())) {
 			foreach ($this->getEntries() as $entry) {	
-				$ret_val['entries'][] = $entry->toArray();
+				$ret_val['entries'][] = $entry->toArray($deep);
 			}
 		} else {
 			$ret_val['entries'] = $this->getEntries();
