@@ -7,6 +7,8 @@ abstract class Migration extends MojaviObject {
 	
 	const DEBUG = true;
 	
+	private static $databaseManager = null;
+	
 	/**
 	 * Pushes a version up one version
 	 * @return boolean
@@ -50,10 +52,10 @@ abstract class Migration extends MojaviObject {
 		
 		// Execute Query
 	 	$retVal = false;
-		$con = $this->getContext()->getDatabaseConnection($connection_name);
+		$con = $this->getDatabaseConnection($connection_name);
 		if ($this->executeQuery($ps, $connection_name, $con, self::DEBUG))
 		{
-			$retVal = mysql_rows_affected($con);
+			$retVal = mysql_affected_rows($con);
 		}
 		return $retVal;	
 	}
@@ -78,10 +80,10 @@ abstract class Migration extends MojaviObject {
 		
 		// Execute Query
 	 	$retVal = false;
-		$con = $this->getContext()->getDatabaseConnection($connection_name);
+		$con = $this->getDatabaseConnection($connection_name);
 		if ($this->executeQuery($ps, $connection_name, $con, self::DEBUG))
 		{
-			$retVal = mysql_rows_affected($con);
+			$retVal = mysql_affected_rows($con);
 		}
 		return $retVal;	
 	}
@@ -101,10 +103,10 @@ abstract class Migration extends MojaviObject {
 		
 		// Execute Query
 	 	$retVal = false;
-		$con = $this->getContext()->getDatabaseConnection($connection_name);
+		$con = $this->getDatabaseConnection($connection_name);
 		if ($this->executeQuery($ps, $connection_name, $con, self::DEBUG))
 		{
-			$retVal = mysql_rows_affected($con);
+			$retVal = mysql_affected_rows($con);
 		}
 		return $retVal;
 	}
@@ -128,10 +130,10 @@ abstract class Migration extends MojaviObject {
 		
 		// Execute Query
 	 	$retVal = false;
-		$con = $this->getContext()->getDatabaseConnection($connection_name);
+		$con = $this->getDatabaseConnection($connection_name);
 		if ($this->executeQuery($ps, $connection_name, $con, self::DEBUG))
 		{
-			$retVal = mysql_rows_affected($con);
+			$retVal = mysql_affected_rows($con);
 		}
 		return $retVal;
 	}
@@ -157,12 +159,86 @@ abstract class Migration extends MojaviObject {
 		
 		// Execute Query
 	 	$retVal = false;
-		$con = $this->getContext()->getDatabaseConnection($connection_name);
+		$con = $this->getDatabaseConnection($connection_name);
 		if ($this->executeQuery($ps, $connection_name, $con, self::DEBUG))
 		{
-			$retVal = mysql_rows_affected($con);
+			$retVal = mysql_affected_rows($con);
 		}
 		return $retVal;
+	}
+	
+	/**
+	 * Returns the default connection name
+	 * @return string
+	 */
+	function getDefaultConnectionName() {
+		return "default";
+	}
+	
+	/**
+	 * Returns the databaseManager
+	 * @return DatabaseManager
+	 */
+	function getDatabaseManager() {
+		if (is_null(self::$databaseManager)) {
+			self::$databaseManager = new DatabaseManager();
+			self::$databaseManager->initialize();
+		}
+		return self::$databaseManager;
+	}
+	/**
+	 * Sets the databaseManager
+	 * @param DatabaseManager
+	 */
+	function setDatabaseManager($arg0) {
+		self::$databaseManager = $arg0;
+		return $this;
+	}
+	
+	/**
+	 * Returns a database connection
+	 * @param string $connection_name
+	 * @return resource
+	 */
+	function getDatabaseConnection($connection_name) {
+		try {
+			return $this->getDatabaseManager()->getDatabase($connection_name)->getConnection();
+		} catch (Exception $e) {
+			LoggerManager::fatal($e->printStackTrace (''));
+		}
+	}
+	
+	/**
+	 * Executes a query
+	 * @param PreparedStatement $ps
+	 * @param string $connection_name,
+	 * @param resource $con
+	 * @param boolean $debug
+	 * @return mixed
+	 */
+	function executeQuery($ps, $connection_name = 'default', $con = null, $debug = true) {
+		$retval = false;
+		// Connect to database
+		if (is_null($con)) {
+			if (self::DEBUG) { LoggerManager::debug(__METHOD__  . ":: Retrieving New DB Connection for '" . $connection_name . "'..."); }
+			$con = $this->getDatabaseConnection($connection_name);
+		}
+
+		// Get the prepared query
+		$query = $ps->getPreparedStatement();
+
+		if ($debug) {
+			LoggerManager::debug(__METHOD__ . " -- " . $query);
+		}
+		// Execute the query
+		$rs = mysql_query($query, $con);
+
+		if (!$rs) { 
+			throw new Exception(mysql_error ($con));
+		} else {
+			$retval = $rs;
+		}
+		return $retval;
 	}
 }
 ?>
