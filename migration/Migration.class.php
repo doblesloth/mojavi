@@ -168,14 +168,6 @@ abstract class Migration extends MojaviObject {
 	}
 	
 	/**
-	 * Returns the default connection name
-	 * @return string
-	 */
-	function getDefaultConnectionName() {
-		return "default";
-	}
-	
-	/**
 	 * Returns the databaseManager
 	 * @return DatabaseManager
 	 */
