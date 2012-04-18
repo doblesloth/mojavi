@@ -392,6 +392,24 @@ class StringTools {
 	}
 	
 	/**
+	 * Base64 and URL encodes a string
+	 * @param string $str
+	 * @return string
+	 */
+	static function base64_url_encode($str) {
+		return strtr(base64_encode($str), '+/=', '-_.');
+	}
+	
+	/**
+	 * Base64 and URL decodes a string
+	 * @param string $str
+	 * @return string
+	 */
+	static function base64_url_decode($str) {
+		return strtr(base64_decode($str), '-_.', '+/=');
+	}
+	
+	/**
 	 * Returns a random word
 	 * @return string
 	 */
