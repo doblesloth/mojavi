@@ -406,7 +406,7 @@ class StringTools {
 	 * @return string
 	 */
 	static function base64_url_decode($str) {
-		return strtr(base64_decode($str), '-_.', '+/=');
+		return base64_decode(strtr($str, '-_.', '+/='));
 	}
 	
 	/**
