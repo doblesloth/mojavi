@@ -90,12 +90,17 @@ abstract class Model extends MojaviObject
 				if (self::DEBUG) { LoggerManager::debug(__METHOD__  . ":: Retrieving New DB Connection for '" . $name . "'..."); }
 				$con = $this->getContext ()->getDatabaseConnection ($name);
 			}
+			
+			if (!mysql_ping($con)) {
+				$this->getContext()->getDatabaseManager()->getDatabase($name)->shutdown();
+				$con = $this->getContext()->getDatabaseConnection($name);	
+			}
 
 			// Get the prepared query
 			$query = $ps->getPreparedStatement ();
 
 			if($debug) {
-				LoggerManager::debug(__METHOD__ . " -- " . $query);
+				LoggerManager::debug(__METHOD__ . " :: " . $query);
 			}
 			// Execute the query
 			$rs = mysql_query ($query, $con);
