@@ -474,7 +474,7 @@ class StringTools {
 	 * @return string
 	 */
 	static function isoSize($arg0) {
-		return self::encodeString($arg0, "B", "ISO-8859-1", 1024, "");
+		return self::encodeString($arg0, "B", "ISO-8859-1//TRANSLIT", 1024, "");
 	}
 	
 	/**
