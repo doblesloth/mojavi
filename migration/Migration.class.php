@@ -7,6 +7,8 @@ abstract class Migration extends MojaviObject {
 	
 	const DEBUG = true;
 	
+	private $exceptions;
+	private $warnings;
 	private static $databaseManager = null;
 	
 	/**
@@ -20,6 +22,101 @@ abstract class Migration extends MojaviObject {
 	 * @return boolean
 	 */
 	abstract function down();
+	
+	/**
+	 * Returns the exceptions as a string
+	 * @return array
+	 */
+	function getExceptionsAsString() {
+		$ret_val = array();
+		/* @var $exception Exception */
+		foreach ($this->getExceptions() as $exception) {
+			$trace = $exception->getTrace();
+			array_shift($trace);
+			$source_file = array_shift($trace);
+			$ret_val[] = $exception->getMessage() . ' in file ' . $source_file['file'] . ' on line ' . $source_file['line'];
+		}
+		return implode("\n", $ret_val);
+	}
+	
+	/**
+	 * Returns the warnings as a string
+	 * @return array
+	 */
+	function getWarningsAsString() {
+		$ret_val = array();
+		/* @var $exception Exception */
+		foreach ($this->getWarnings() as $exception) {
+			$trace = $exception->getTrace();
+			// unshift the first file
+			array_shift($trace);
+			$source_file = array_shift($trace);
+			$ret_val[] = $exception->getMessage() . ' in file ' . $source_file['file'] . ' on line ' . $source_file['line'];
+		}
+		return implode("\n", $ret_val);
+	}
+	
+	/**
+	 * Returns the warnings
+	 * @return array
+	 */
+	function getWarnings() {
+		if (is_null($this->warnings)) {
+			$this->warnings = array();
+		}
+		return $this->warnings;
+	}
+	/**
+	 * Sets the warnings
+	 * @param array
+	 */
+	function setWarnings($arg0) {
+		$this->warnings = $arg0;
+		return $this;
+	}
+	
+	/**
+	 * Sets the warnings
+	 * @param array
+	 */
+	function addWarning($arg0) {
+		$tmp_array = $this->getWarnings();
+		$tmp_array[] = $arg0;
+		$this->setWarnings($tmp_array);
+		return $this;
+	}
+	
+	/**
+	 * Returns the exceptions
+	 * @return array
+	 */
+	function getExceptions() {
+		if (is_null($this->exceptions)) {
+			$this->exceptions = array();
+		}
+		return $this->exceptions;
+	}
+	/**
+	 * Sets the exceptions
+	 * @param array
+	 */
+	function setExceptions($arg0) {
+		$this->exceptions = $arg0;
+		return $this;
+	}
+	/**
+	 * Sets the exceptions
+	 * @param array
+	 */
+	function addException($arg0) {
+		if (strpos($arg0->getMessage(), 'Duplicate column name') === 0) {
+			return $this->addWarning($arg0);	
+		}
+		$tmp_array = $this->getExceptions();
+		$tmp_array[] = $arg0;
+		$this->setExceptions($tmp_array);
+		return $this;
+	}
 	
 	/**
 	 * Returns the default connection name
@@ -37,27 +134,32 @@ abstract class Migration extends MojaviObject {
 	 * @param $column_definition - column definition
 	 */
 	function addColumn($db, $table, $column, $col_definition, $connection_name = null) {
-		if (is_null($connection_name)) {
-			$connection_name = $this->getDefaultConnectionName();
+		try {
+			if (is_null($connection_name)) {
+				$connection_name = $this->getDefaultConnectionName();
+			}
+			
+			$qry = '
+				ALTER TABLE <<db>>.<<table>> ADD COLUMN <<column>> <<column_definition>>
+			';
+			$ps = new PreparedStatement($qry);
+			$ps->setBareString('db', $db);
+			$ps->setBareString('table', $table);
+			$ps->setBareString('column', $column);
+			$ps->setBareString('column_definition', $col_definition);
+			
+			// Execute Query
+		 	$retVal = false;
+			$con = $this->getDatabaseConnection($connection_name);
+			if ($this->executeQuery($ps, $connection_name, $con, self::DEBUG))
+			{
+				$retVal = mysql_affected_rows($con);
+			}
+			return $retVal;	
+		} catch (Exception $e) {
+			$this->addException($e);	
 		}
-		
-		$qry = '
-			ALTER TABLE <<db>>.<<table>> ADD COLUMN <<column>> <<column_definition>>
-		';
-		$ps = new PreparedStatement($qry);
-		$ps->setBareString('db', $db);
-		$ps->setBareString('table', $table);
-		$ps->setBareString('column', $column);
-		$ps->setBareString('column_definition', $col_definition);
-		
-		// Execute Query
-	 	$retVal = false;
-		$con = $this->getDatabaseConnection($connection_name);
-		if ($this->executeQuery($ps, $connection_name, $con, self::DEBUG))
-		{
-			$retVal = mysql_affected_rows($con);
-		}
-		return $retVal;	
+		return false;
 	}
 	
 	/**
@@ -67,25 +169,30 @@ abstract class Migration extends MojaviObject {
 	 * @param $column_definition - column definition
 	 */
 	function addTable($db, $table, $connection_name = null) {
-		if (is_null($connection_name)) {
-			$connection_name = $this->getDefaultConnectionName();
+		try {
+			if (is_null($connection_name)) {
+				$connection_name = $this->getDefaultConnectionName();
+			}
+			
+			$qry = '
+				CREATE TABLE IF NOT EXISTS <<db>>.<<table>>
+			';
+			$ps = new PreparedStatement($qry);
+			$ps->setBareString('db', $db);
+			$ps->setBareString('table', $table);
+			
+			// Execute Query
+		 	$retVal = false;
+			$con = $this->getDatabaseConnection($connection_name);
+			if ($this->executeQuery($ps, $connection_name, $con, self::DEBUG))
+			{
+				$retVal = mysql_affected_rows($con);
+			}
+			return $retVal;	
+		} catch (Exception $e) {
+			$this->addException($e);	
 		}
-		
-		$qry = '
-			CREATE TABLE IF NOT EXISTS <<db>>.<<table>>
-		';
-		$ps = new PreparedStatement($qry);
-		$ps->setBareString('db', $db);
-		$ps->setBareString('table', $table);
-		
-		// Execute Query
-	 	$retVal = false;
-		$con = $this->getDatabaseConnection($connection_name);
-		if ($this->executeQuery($ps, $connection_name, $con, self::DEBUG))
-		{
-			$retVal = mysql_affected_rows($con);
-		}
-		return $retVal;	
+		return false;
 	}
 	
 	/**
@@ -94,21 +201,26 @@ abstract class Migration extends MojaviObject {
 	 * @param $connection_name - connection name
 	 */
 	function runSql($table_definition, $connection_name = null) {
-		if (is_null($connection_name)) {
-			$connection_name = $this->getDefaultConnectionName();
+		try {
+			if (is_null($connection_name)) {
+				$connection_name = $this->getDefaultConnectionName();
+			}
+			
+			$qry = $table_definition;
+			$ps = new PreparedStatement($qry);
+			
+			// Execute Query
+		 	$retVal = false;
+			$con = $this->getDatabaseConnection($connection_name);
+			if ($this->executeQuery($ps, $connection_name, $con, self::DEBUG))
+			{
+				$retVal = mysql_affected_rows($con);
+			}
+			return $retVal;
+		} catch (Exception $e) {
+			$this->addException($e);	
 		}
-		
-		$qry = $table_definition;
-		$ps = new PreparedStatement($qry);
-		
-		// Execute Query
-	 	$retVal = false;
-		$con = $this->getDatabaseConnection($connection_name);
-		if ($this->executeQuery($ps, $connection_name, $con, self::DEBUG))
-		{
-			$retVal = mysql_affected_rows($con);
-		}
-		return $retVal;
+		return false;
 	}
 	
 	/**
@@ -117,25 +229,30 @@ abstract class Migration extends MojaviObject {
 	 * @param $table - table name
 	 */
 	function dropTable($db, $table, $connection_name = null) {
-		if (is_null($connection_name)) {
-			$connection_name = $this->getDefaultConnectionName();
+		try {
+			if (is_null($connection_name)) {
+				$connection_name = $this->getDefaultConnectionName();
+			}
+			
+			$qry = '
+				DROP TABLE IF EXISTS <<db>>.<<table>>
+			';
+			$ps = new PreparedStatement($qry);
+			$ps->setBareString('db', $db);
+			$ps->setBareString('table', $table);
+			
+			// Execute Query
+		 	$retVal = false;
+			$con = $this->getDatabaseConnection($connection_name);
+			if ($this->executeQuery($ps, $connection_name, $con, self::DEBUG))
+			{
+				$retVal = mysql_affected_rows($con);
+			}
+			return $retVal;
+		} catch (Exception $e) {
+			$this->addException($e);	
 		}
-		
-		$qry = '
-			DROP TABLE IF EXISTS <<db>>.<<table>>
-		';
-		$ps = new PreparedStatement($qry);
-		$ps->setBareString('db', $db);
-		$ps->setBareString('table', $table);
-		
-		// Execute Query
-	 	$retVal = false;
-		$con = $this->getDatabaseConnection($connection_name);
-		if ($this->executeQuery($ps, $connection_name, $con, self::DEBUG))
-		{
-			$retVal = mysql_affected_rows($con);
-		}
-		return $retVal;
+		return false;
 	}
 	
 	/**
@@ -145,26 +262,31 @@ abstract class Migration extends MojaviObject {
 	 * @param $column - column name
 	 */
 	function dropColumn($db, $table, $column, $connection_name = null) {
-		if (is_null($connection_name)) {
-			$connection_name = $this->getDefaultConnectionName();
+		try {
+			if (is_null($connection_name)) {
+				$connection_name = $this->getDefaultConnectionName();
+			}
+			
+			$qry = '
+				DROP TABLE <<db>>.<<table>> DROP COLUMN <<column>>
+			';
+			$ps = new PreparedStatement($qry);
+			$ps->setBareString('db', $db);
+			$ps->setBareString('table', $table);
+			$ps->setBareString('column', $column);
+			
+			// Execute Query
+		 	$retVal = false;
+			$con = $this->getDatabaseConnection($connection_name);
+			if ($this->executeQuery($ps, $connection_name, $con, self::DEBUG))
+			{
+				$retVal = mysql_affected_rows($con);
+			}
+			return $retVal;
+		} catch (Exception $e) {
+			$this->addException($e);	
 		}
-		
-		$qry = '
-			DROP TABLE <<db>>.<<table>> DROP COLUMN <<column>>
-		';
-		$ps = new PreparedStatement($qry);
-		$ps->setBareString('db', $db);
-		$ps->setBareString('table', $table);
-		$ps->setBareString('column', $column);
-		
-		// Execute Query
-	 	$retVal = false;
-		$con = $this->getDatabaseConnection($connection_name);
-		if ($this->executeQuery($ps, $connection_name, $con, self::DEBUG))
-		{
-			$retVal = mysql_affected_rows($con);
-		}
-		return $retVal;
+		return false;
 	}
 	
 	/**
