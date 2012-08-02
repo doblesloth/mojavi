@@ -113,6 +113,10 @@ class BasicAjaxForm extends CommonForm {
 		$ret_val['errors'] = $this->getErrors()->toArray();
 		$ret_val['meta']['insert_id'] = $this->getInsertId();
 		$ret_val['meta']['rows_affected'] = $this->getRowsAffected();
+		$ret_val['pagination']['page'] = $this->getPage();
+		$ret_val['pagination']['items_per_page'] = $this->getItemsPerPage();
+		$ret_val['pagination']['page_count'] = $this->getPageCount();
+		$ret_val['pagination']['total_rows'] = $this->getTotal();
 		if (is_object($this->getRecord())) {
 			$ret_val['record'] = $this->getRecord()->toArray($deep);	
 		} else {
