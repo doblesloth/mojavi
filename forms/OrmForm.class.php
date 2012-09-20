@@ -69,6 +69,19 @@ class OrmForm extends DateRangeForm {
 	}
 	
 	/**
+	 * Inserts a single record from the database given a primary key
+	 * @return integer
+	 */
+	function cleanup() {
+		$model = $this->getModel();
+		if (is_object($model)) {
+			$insert_id = $model->performCleanup($this);
+			return $insert_id;
+		} 
+		return false;
+	}
+	
+	/**
 	 * Updates a single record from the database given a primary key
 	 * @return integer
 	 */
