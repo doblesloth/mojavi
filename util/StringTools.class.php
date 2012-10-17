@@ -410,6 +410,31 @@ class StringTools {
 	}
 	
 	/**
+	 * Returns a random words
+	 * @return string
+	 */
+	static function getRandomWords($num_words = 1, $library_file = null) {
+		if (is_null($library_file)) {
+			$library_file = dirname(__FILE__) . DIRECTORY_SEPARATOR . 'random.dict';
+		}
+		if (!is_array(self::$_word_list)) {
+			self::$_word_list = array();
+		}
+		if (file_exists($library_file) && is_readable($library_file)) {
+			if (count(self::$_word_list) == 0) {
+				self::$_word_list = file($library_file, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+			}
+			shuffle(self::$_word_list);
+			if ($num_words < count(self::$_word_list)) {
+				return array_slice(self::$_word_list, 0, $num_words);
+			} else {
+				return self::$_word_list;
+			}
+		}
+		return "";		
+	}
+	
+	/**
 	 * Returns a random word
 	 * @return string
 	 */
