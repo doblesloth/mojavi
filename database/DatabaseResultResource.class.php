@@ -255,7 +255,7 @@ class DatabaseResultResource implements Iterator, Countable, ArrayAccess {
 				$row = mysql_fetch_assoc($rs);
 				$retval->populate($row);
 				$current = $this->getRowIteration();
-				if (is_null($curret)) {
+				if (is_null($current)) {
 					$current = 0;
 				}
 				mysql_data_seek($rs, $current);
