@@ -429,7 +429,9 @@ class PreparedStatement extends MojaviObject {
 			case self::TYPE_ARRAY:
 				if (is_array($value)) {
 					$arr = $value;
-					array_map("mysql_real_escape_string", $arr, array(0 => Controller::getInstance()->getContext()->getDatabaseConnection('default')));
+					foreach ($arr as $key => $val) {
+						$arr[$key] = mysql_real_escape_string($val, Controller::getInstance()->getContext()->getDatabaseConnection('default'));
+					}
 					$ret_val = "'" . implode("','", $arr) . "'";
 				} else {
 					$arr = "''";
