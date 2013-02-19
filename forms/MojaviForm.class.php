@@ -63,18 +63,31 @@ abstract class MojaviForm extends MojaviObject {
 			}
 		} else if (is_object($arg0)) {
 			# Treat the argument as an object and copy any getters to the appropriate setters
-			$methods = get_class_methods($arg0);
-			foreach ($methods as $method) {
-				$callableName = null;
-				# Only iterate the getters
-				if (strpos($method,"get") === 0) {
-					$method_name = substr($method,3);
+			$reflection = new ReflectionClass($arg0);
+			$properties = $reflection->getProperties(ReflectionProperty::IS_PROTECTED);
+			foreach ($properties as $property) {
+				$method_name = ucfirst(StringTools::camelCase($property->getName()));
+				if (method_exists($arg0, 'get' . $method_name)) {
+					$value = $arg0->{'get' . $method_name}();
 					# if this form has a setter that matches this getter (i.e. setId() would match getId()), then set it
-					if (is_callable(array($this, 'set' . $method_name),false, $callableName)) {
-						$this->{'set' . $method_name}($arg0->{$method}());
-					} 
-				} 
-			} // End foreach
+					if (is_callable(array($this, 'set' . $method_name), false, $callableName)) {
+						$this->{'set' . $method_name}($value);
+					}
+				}
+			}
+			
+//			$methods = get_class_methods($arg0);
+//			foreach ($methods as $method) {
+//				$callableName = null;
+//				# Only iterate the getters
+//				if (strpos($method,"get") === 0) {
+//					$method_name = substr($method,3);
+//					# if this form has a setter that matches this getter (i.e. setId() would match getId()), then set it
+//					if (is_callable(array($this, 'set' . $method_name),false, $callableName)) {
+//						$this->{'set' . $method_name}($arg0->{$method}());
+//					} 
+//				} 
+//			} // End foreach
 		}// End is_array($arg0)
 		return $this;
 	}
