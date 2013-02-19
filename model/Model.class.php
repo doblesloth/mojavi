@@ -91,9 +91,13 @@ abstract class Model extends MojaviObject
 				$con = $this->getContext ()->getDatabaseConnection ($name);
 			}
 			
-			if (!mysql_ping($con)) {
-				$this->getContext()->getDatabaseManager()->getDatabase($name)->shutdown();
-				$con = $this->getContext()->getDatabaseConnection($name);	
+			if (function_exists('mysql_ping')) {
+				if (!mysql_ping($con)) {
+					$this->getContext()->getDatabaseManager()->getDatabase($name)->shutdown();
+					$con = $this->getContext()->getDatabaseConnection($name);	
+				}
+			} else {
+				throw new Exception('Missing php-mysql libraries on this server');	
 			}
 
 			// Get the prepared query
