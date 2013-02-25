@@ -10,6 +10,7 @@
 class PreparedStatement extends MojaviObject {
 
 	protected $statement;
+	private $con;
 	protected $values = array();
 
 	const TYPE_STRING = 1;
@@ -31,6 +32,25 @@ class PreparedStatement extends MojaviObject {
 	 */
 	function __construct($arg0 = '') {
 		$this->statement = $arg0;
+	}
+	
+	/**
+	 * Returns the con
+	 * @return resource
+	 */
+	function getConnection() {
+		if (is_null($this->con)) {
+			$this->con = Controller::getInstance()->getContext()->getDatabaseConnection('default');
+		}
+		return $this->con;
+	}
+	/**
+	 * Sets the con
+	 * @param resource
+	 */
+	function setConnection($arg0) {
+		$this->con = $arg0;
+		return $this;
 	}
 
 	/**
@@ -424,13 +444,13 @@ class PreparedStatement extends MojaviObject {
 				break;
 			case self::TYPE_BINARY_STRING:
 			case self::TYPE_STRING:
-				$ret_val = "'" . mysql_real_escape_string($value, Controller::getInstance()->getContext()->getDatabaseConnection('default')) . "'";
+				$ret_val = "'" . mysql_real_escape_string($value, $this->getConnection()) . "'";
 				break;
 			case self::TYPE_ARRAY:
 				if (is_array($value)) {
 					$arr = $value;
 					foreach ($arr as $key => $val) {
-						$arr[$key] = mysql_real_escape_string($val, Controller::getInstance()->getContext()->getDatabaseConnection('default'));
+						$arr[$key] = mysql_real_escape_string($val, $this->getConnection());
 					}
 					$ret_val = "'" . implode("','", $arr) . "'";
 				} else {
@@ -438,7 +458,7 @@ class PreparedStatement extends MojaviObject {
 				}
 				break;
 			default:
-				$ret_val = "'" . mysql_real_escape_string($value, Controller::getInstance()->getContext()->getDatabaseConnection('default')) . "'";
+				$ret_val = "'" . mysql_real_escape_string($value, $this->getConnection()) . "'";
 				break;
 
 		}

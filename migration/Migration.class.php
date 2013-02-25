@@ -142,7 +142,7 @@ abstract class Migration extends MojaviObject {
 			$qry = '
 				ALTER TABLE <<db>>.<<table>> ADD COLUMN <<column>> <<column_definition>>
 			';
-			$ps = new PreparedStatement($qry);
+			$ps = new KeyBasedPreparedStatement($qry);
 			$ps->setBareString('db', $db);
 			$ps->setBareString('table', $table);
 			$ps->setBareString('column', $column);
@@ -163,6 +163,95 @@ abstract class Migration extends MojaviObject {
 	}
 	
 	/**
+	 * Checks if a column exists in a table
+	 * @param $db - db name
+	 * @param $table - table name
+	 * @param $column - column name
+	 */
+	function keyExists($db, $table, $key_name, $connection_name = null) {
+		$table_definition = $this->getTableDefinition($db, $table);
+		foreach ($table_definition['keys'] as $key) {
+			if (strtolower($key['Key_name']) == strtolower($key_name)) {
+				return true;	
+			}
+		}
+		return false;
+	}
+	
+	/**
+	 * Checks if a column exists in a table
+	 * @param $db - db name
+	 * @param $table - table name
+	 * @param $column - column name
+	 */
+	function columnExists($db, $table, $column_name, $connection_name = null) {
+		$table_definition = $this->getTableDefinition($db, $table);
+		foreach ($table_definition['columns'] as $column) {
+			if (strtolower($column['Field']) == strtolower($column_name)) {
+				return true;	
+			}
+		}
+		return false;
+	}
+	
+	/**
+	 * Gets the table definition for a table
+	 * @param $db - db name
+	 * @param $table - table name
+	 */
+	function getTableDefinition($db, $table, $connection_name = null) {
+		$table_definition = array('database' => $db,
+								  'table' => $table,
+								  'columns' => array(),
+								  'keys' => array());
+		try {
+			if (is_null($connection_name)) {
+				$connection_name = $this->getDefaultConnectionName();
+			}
+			
+			$qry = '
+				SHOW FULL COLUMNS FROM <<db>>.<<table>>
+			';
+			$ps = new KeyBasedPreparedStatement($qry);
+			$ps->setBareString('db', $db);
+			$ps->setBareString('table', $table);
+						
+			// Execute Query
+		 	$retVal = false;
+			$con = $this->getDatabaseConnection($connection_name);
+			if (($rs = $this->executeQuery($ps, $connection_name, $con, self::DEBUG)))
+			{
+				while (($row = mysql_fetch_array($rs, MYSQL_ASSOC)))
+				{
+					$table_definition['columns'][] = $row;
+				}
+			}
+			
+			$qry = '
+				SHOW KEYS FROM <<db>>.<<table>>
+			';
+			$ps = new KeyBasedPreparedStatement($qry);
+			$ps->setBareString('db', $db);
+			$ps->setBareString('table', $table);
+						
+			// Execute Query
+		 	$retVal = false;
+			$con = $this->getDatabaseConnection($connection_name);
+			if (($rs = $this->executeQuery($ps, $connection_name, $con, self::DEBUG)))
+			{
+				while (($row = mysql_fetch_array($rs, MYSQL_ASSOC)))
+				{
+					$table_definition['keys'][] = $row;
+				}
+			}
+			return $table_definition;	
+		} catch (Exception $e) {
+			$this->addException($e);	
+		}
+		return $table_definition;
+	}
+	
+	/**
 	 * Adds a new table
 	 * @param $db - table name
 	 * @param $table - table name
@@ -177,7 +266,7 @@ abstract class Migration extends MojaviObject {
 			$qry = '
 				CREATE TABLE IF NOT EXISTS <<db>>.<<table>>
 			';
-			$ps = new PreparedStatement($qry);
+			$ps = new KeyBasedPreparedStatement($qry);
 			$ps->setBareString('db', $db);
 			$ps->setBareString('table', $table);
 			
@@ -207,7 +296,7 @@ abstract class Migration extends MojaviObject {
 			}
 			
 			$qry = $table_definition;
-			$ps = new PreparedStatement($qry);
+			$ps = new KeyBasedPreparedStatement($qry);
 			
 			// Execute Query
 		 	$retVal = false;
@@ -237,7 +326,7 @@ abstract class Migration extends MojaviObject {
 			$qry = '
 				DROP TABLE IF EXISTS <<db>>.<<table>>
 			';
-			$ps = new PreparedStatement($qry);
+			$ps = new KeyBasedPreparedStatement($qry);
 			$ps->setBareString('db', $db);
 			$ps->setBareString('table', $table);
 			
@@ -270,7 +359,7 @@ abstract class Migration extends MojaviObject {
 			$qry = '
 				DROP TABLE <<db>>.<<table>> DROP COLUMN <<column>>
 			';
-			$ps = new PreparedStatement($qry);
+			$ps = new KeyBasedPreparedStatement($qry);
 			$ps->setBareString('db', $db);
 			$ps->setBareString('table', $table);
 			$ps->setBareString('column', $column);
@@ -337,6 +426,7 @@ abstract class Migration extends MojaviObject {
 			if (self::DEBUG) { LoggerManager::debug(__METHOD__  . ":: Retrieving New DB Connection for '" . $connection_name . "'..."); }
 			$con = $this->getDatabaseConnection($connection_name);
 		}
+		$ps->setConnection($con);
 
 		// Get the prepared query
 		$query = $ps->getPreparedStatement();
