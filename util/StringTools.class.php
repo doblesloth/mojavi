@@ -243,6 +243,15 @@ class StringTools {
 		$str_buffer = str_replace("\33[01;36m", '<span style="color:cyan;">', $str_buffer);
 		$str_buffer = str_replace("\033[0m", '</span>', $str_buffer);
 		
+		$str_buffer = str_replace("[01;31m", '<span style="color:red;">', $str_buffer);
+		$str_buffer = str_replace("[01;32m", '<span style="color:green;">', $str_buffer);
+		$str_buffer = str_replace("[01;33m", '<span style="color:yellow;">', $str_buffer);
+		$str_buffer = str_replace("[01;34m", '<span style="color:blue;">', $str_buffer);
+		$str_buffer = str_replace("[01;37m", '<span style="color:black;">', $str_buffer);
+		$str_buffer = str_replace("[01;35m", '<span style="color:purple;">', $str_buffer);
+		$str_buffer = str_replace("[01;36m", '<span style="color:cyan;">', $str_buffer);
+		$str_buffer = str_replace("[0m", '</span>', $str_buffer);
+		
 		return $str_buffer;
 	}
 	
