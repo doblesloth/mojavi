@@ -43,6 +43,19 @@ class OrmForm extends DateRangeForm {
 	}
 	
 	/**
+	 * Queries all the records from the database with available pagination
+	 * @return integer
+	 */
+	function countAll() {
+		$model = $this->getModel();
+		if (is_object($model)) {
+			$ret_val = $model->performCountAll($this);
+			return $ret_val;
+		}
+		return 0; 
+	}
+	
+	/**
 	 * Deletes a single record from the database given a primary key
 	 * @return integer
 	 */
