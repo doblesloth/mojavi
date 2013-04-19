@@ -221,6 +221,22 @@ class StringTools {
 	 * Converts a string to a console colored string
 	 * @return string
 	 */
+	static function stripColor($str = '') {
+		$str = str_replace("\33[01;31m", "", $str);
+		$str = str_replace("\33[01;32m", "", $str);
+		$str = str_replace("\33[01;33m", "", $str);
+		$str = str_replace("\33[01;34m", "", $str);
+		$str = str_replace("\33[01;37m", "", $str);
+		$str = str_replace("\33[01;35m", "", $str);
+		$str = str_replace("\33[01;36m", "", $str);
+		$str = str_replace("\033[0m", "", $str);
+		return $str;
+	}
+	
+	/**
+	 * Converts a string to a console colored string
+	 * @return string
+	 */
 	static function consoleToHtmlColor($str = '') {
 		$str_buffer = '';
 		$str_lines = explode("\n", $str);
@@ -270,13 +286,14 @@ class StringTools {
 		if (trim(shell_exec('echo $TERM')) == '') {
 			$screen_width_cmd = 'tput -T xterm cols';	
 		} else {
-			$screen_width_cmd = 'tput cols 2>&1';
+			$screen_width_cmd = 'tput cols';
 		}
 		
-		$screen_width = exec($screen_width_cmd);
-		if (intval($screen_width) == 0) { $screen_width = 120; }
-		$screen_width *= 0.50;
-		if ($screen_width < 60) { $screen_width = 60; }
+		$orig_screen_width = intval(trim(shell_exec($screen_width_cmd)));
+				
+		if (intval($orig_screen_width) == 0) { $orig_screen_width = 140; }
+		$screen_width = $orig_screen_width * 0.90;
+		if ($screen_width < 70) { $screen_width = 70; }
 		$line_width = strlen($line);
 		$status_width = strlen('[ ' . $status . ' ]');
 		$status_width = ($status_width > strlen($status)) ? $status_width : strlen($status);
@@ -301,6 +318,9 @@ class StringTools {
 				}
 			} else {
 				echo $ret_val;
+				if ($orig_screen_width - strlen(self::stripColor($ret_val)) > 0) {
+					echo str_repeat(" ", ($orig_screen_width - strlen(self::stripColor($ret_val))));
+				}
 				echo "\n";	
 			}
 			return $ret_val;	
