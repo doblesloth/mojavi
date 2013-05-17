@@ -289,10 +289,10 @@ class StringTools {
 //			$screen_width_cmd = 'tput -T xterm cols';
 //		}
 		
-		$orig_screen_width = 140;// intval(trim(shell_exec($screen_width_cmd)));
+		$orig_screen_width = 80;// intval(trim(shell_exec($screen_width_cmd)));
 				
 //		if (intval($orig_screen_width) == 0) { $orig_screen_width = 140; }
-		$screen_width = $orig_screen_width * 0.90;
+		$screen_width = $orig_screen_width;
 		if ($screen_width < 70) { $screen_width = 70; }
 		$line_width = strlen($line);
 		$status_width = strlen('[ ' . $status . ' ]');
