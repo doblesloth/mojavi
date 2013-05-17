@@ -283,15 +283,15 @@ class StringTools {
 	static function consoleWrite($line = '', $status = '', $color = 0, $new_line = false, $width = 50, $status_width = 11, $do_not_echo = false) {
 		$ret_val = $line;
 		
-		if (trim(shell_exec('echo $TERM')) == '') {
-			$screen_width_cmd = 'tput -T xterm cols';	
-		} else {
-			$screen_width_cmd = 'tput cols';
-		}
+//		if (trim(shell_exec('echo $TERM')) == '') {
+//			$screen_width_cmd = 'tput -T xterm cols';	
+//		} else {
+//			$screen_width_cmd = 'tput -T xterm cols';
+//		}
 		
-		$orig_screen_width = intval(trim(shell_exec($screen_width_cmd)));
+		$orig_screen_width = 140;// intval(trim(shell_exec($screen_width_cmd)));
 				
-		if (intval($orig_screen_width) == 0) { $orig_screen_width = 140; }
+//		if (intval($orig_screen_width) == 0) { $orig_screen_width = 140; }
 		$screen_width = $orig_screen_width * 0.90;
 		if ($screen_width < 70) { $screen_width = 70; }
 		$line_width = strlen($line);
