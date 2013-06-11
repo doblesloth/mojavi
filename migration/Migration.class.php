@@ -149,12 +149,7 @@ abstract class Migration extends MojaviObject {
 			$ps->setBareString('column_definition', $col_definition);
 			
 			// Execute Query
-		 	$retVal = false;
-			$con = $this->getDatabaseConnection($connection_name);
-			if ($this->executeQuery($ps, $connection_name, $con, self::DEBUG))
-			{
-				$retVal = mysql_affected_rows($con);
-			}
+		 	$retVal = $this->executeUpdate($ps, $connection_name);
 			return $retVal;	
 		} catch (Exception $e) {
 			$this->addException($e);	
@@ -212,7 +207,7 @@ abstract class Migration extends MojaviObject {
 			$qry = '
 				SHOW FULL COLUMNS FROM <<db>>.<<table>>
 			';
-			$ps = new KeyBasedPreparedStatement($qry);
+			$ps = new PdoPreparedStatement($qry);
 			$ps->setBareString('db', $db);
 			$ps->setBareString('table', $table);
 						
@@ -221,7 +216,7 @@ abstract class Migration extends MojaviObject {
 			$con = $this->getDatabaseConnection($connection_name);
 			if (($rs = $this->executeQuery($ps, $connection_name, $con, self::DEBUG)))
 			{
-				while (($row = mysql_fetch_array($rs, MYSQL_ASSOC)))
+				while (($row = $rs->fetch()))
 				{
 					$table_definition['columns'][] = $row;
 				}
@@ -230,7 +225,7 @@ abstract class Migration extends MojaviObject {
 			$qry = '
 				SHOW KEYS FROM <<db>>.<<table>>
 			';
-			$ps = new KeyBasedPreparedStatement($qry);
+			$ps = new PdoPreparedStatement($qry);
 			$ps->setBareString('db', $db);
 			$ps->setBareString('table', $table);
 						
@@ -239,7 +234,7 @@ abstract class Migration extends MojaviObject {
 			$con = $this->getDatabaseConnection($connection_name);
 			if (($rs = $this->executeQuery($ps, $connection_name, $con, self::DEBUG)))
 			{
-				while (($row = mysql_fetch_array($rs, MYSQL_ASSOC)))
+				while (($row = $rs->fetch()))
 				{
 					$table_definition['keys'][] = $row;
 				}
@@ -266,17 +261,12 @@ abstract class Migration extends MojaviObject {
 			$qry = '
 				CREATE TABLE IF NOT EXISTS <<db>>.<<table>>
 			';
-			$ps = new KeyBasedPreparedStatement($qry);
+			$ps = new PdoPreparedStatement($qry);
 			$ps->setBareString('db', $db);
 			$ps->setBareString('table', $table);
 			
 			// Execute Query
-		 	$retVal = false;
-			$con = $this->getDatabaseConnection($connection_name);
-			if ($this->executeQuery($ps, $connection_name, $con, self::DEBUG))
-			{
-				$retVal = mysql_affected_rows($con);
-			}
+		 	$retVal = $this->executeUpdate($ps, $connection_name);
 			return $retVal;	
 		} catch (Exception $e) {
 			$this->addException($e);	
@@ -296,15 +286,10 @@ abstract class Migration extends MojaviObject {
 			}
 			
 			$qry = $table_definition;
-			$ps = new KeyBasedPreparedStatement($qry);
+			$ps = new PdoPreparedStatement($qry);
 			
 			// Execute Query
-		 	$retVal = false;
-			$con = $this->getDatabaseConnection($connection_name);
-			if ($this->executeQuery($ps, $connection_name, $con, self::DEBUG))
-			{
-				$retVal = mysql_affected_rows($con);
-			}
+		 	$retVal = $this->executeUpdate($ps, $connection_name);
 			return $retVal;
 		} catch (Exception $e) {
 			$this->addException($e);	
@@ -326,17 +311,12 @@ abstract class Migration extends MojaviObject {
 			$qry = '
 				DROP TABLE IF EXISTS <<db>>.<<table>>
 			';
-			$ps = new KeyBasedPreparedStatement($qry);
+			$ps = new PdoPreparedStatement($qry);
 			$ps->setBareString('db', $db);
 			$ps->setBareString('table', $table);
 			
 			// Execute Query
-		 	$retVal = false;
-			$con = $this->getDatabaseConnection($connection_name);
-			if ($this->executeQuery($ps, $connection_name, $con, self::DEBUG))
-			{
-				$retVal = mysql_affected_rows($con);
-			}
+		 	$retVal = $this->executeUpdate($ps, $connection_name);
 			return $retVal;
 		} catch (Exception $e) {
 			$this->addException($e);	
@@ -359,18 +339,13 @@ abstract class Migration extends MojaviObject {
 			$qry = '
 				DROP TABLE <<db>>.<<table>> DROP COLUMN <<column>>
 			';
-			$ps = new KeyBasedPreparedStatement($qry);
+			$ps = new PdoPreparedStatement($qry);
 			$ps->setBareString('db', $db);
 			$ps->setBareString('table', $table);
 			$ps->setBareString('column', $column);
 			
 			// Execute Query
-		 	$retVal = false;
-			$con = $this->getDatabaseConnection($connection_name);
-			if ($this->executeQuery($ps, $connection_name, $con, self::DEBUG))
-			{
-				$retVal = mysql_affected_rows($con);
-			}
+		 	$retVal = $this->executeUpdate($ps, $connection_name);
 			return $retVal;
 		} catch (Exception $e) {
 			$this->addException($e);	
@@ -412,37 +387,124 @@ abstract class Migration extends MojaviObject {
 	}
 	
 	/**
-	 * Executes a query
-	 * @param PreparedStatement $ps
-	 * @param string $connection_name,
-	 * @param resource $con
-	 * @param boolean $debug
-	 * @return mixed
+	 * Execute an SQL Statement and return result to be handled by calling function.
+	 *
+	 * @param	mixed PreparedStatement or KeyBasedPreparedStatement
+	 * @param	string Name of connection to be used
+	 * @param	resource $connection Connection resource handler
+	 * @return	mixed Resource if query executed successfully, otherwise false
+	 *
+	 * @author	Mark Hobson
 	 */
-	function executeQuery($ps, $connection_name = 'default', $con = null, $debug = true) {
+	public function executeQuery (PreparedStatement $ps, $name = 'default', &$con = NULL, $debug = self::DEBUG)
+	{
 		$retval = false;
-		// Connect to database
-		if (is_null($con)) {
-			if (self::DEBUG) { LoggerManager::debug(__METHOD__  . ":: Retrieving New DB Connection for '" . $connection_name . "'..."); }
-			$con = $this->getDatabaseConnection($connection_name);
-		}
-		$ps->setConnection($con);
+		try {
 
-		// Get the prepared query
-		$query = $ps->getPreparedStatement();
+			// Connect to database
+			if (is_null($con)) {
+				if (self::DEBUG) { LoggerManager::debug(__METHOD__  . ":: Retrieving New DB Connection for '" . $name . "'..."); }
+				$con = $this->getDatabaseConnection($name);
+			}
 
-		if ($debug) {
-			LoggerManager::debug(__METHOD__ . " -- " . $query);
-		}
-		// Execute the query
-		$rs = mysql_query($query, $con);
+			// Get the prepared query
+			/* @var $sth PDOStatement */
+			$sth = $ps->getPreparedStatement($con);
 
-		if (!$rs) { 
-			throw new Exception(mysql_error ($con));
-		} else {
-			$retval = $rs;
+			if($debug) {
+				LoggerManager::debug(__METHOD__ . " :: " . $sth->queryString);
+			}
+			// Execute the query
+			$sth->execute();
+
+			$retval = $sth;
+
+		} catch (MojaviException $e) {
+			LoggerManager::fatal ($e->printStackTrace (''));
+		} catch (PDOException $e) {
+			ob_start();
+			$sth->debugDumpParams();
+			$stmt = ob_get_clean();
+						
+			$e = new MojaviException ($e->getMessage());
+			LoggerManager::fatal ($sth->queryString);
+			LoggerManager::fatal ($stmt);
+			LoggerManager::fatal ($e->printStackTrace(''));
+			throw $e;
+		} catch (Exception $e) {
+			$e = new MojaviException ($e->getMessage());
+			LoggerManager::fatal ($e->printStackTrace (''));
+
 		}
 		return $retval;
+	}
+	
+	/**
+	 * Execute an SQL Statement and return result to be handled by calling function.
+	 *
+	 * @param	mixed PreparedStatement or KeyBasedPreparedStatement
+	 * @param	string Name of connection to be used
+	 * @param	resource $connection Connection resource handler
+	 * @return	mixed Resource if query executed successfully, otherwise false
+	 *
+	 * @author	Mark Hobson
+	 */
+	public function executeUpdate (PreparedStatement $ps, $name = 'default', &$con = NULL, $debug = self::DEBUG)
+	{
+		$retval = $this->executeQuery($ps, $name, $con, $debug);
+		return $retval->rowCount();
+	}
+	
+	/**
+	 * Execute an SQL Statement and return result to be handled by calling function.
+	 *
+	 * @param	mixed PreparedStatement or KeyBasedPreparedStatement
+	 * @param	string Name of connection to be used
+	 * @param	resource $connection Connection resource handler
+	 * @return	mixed Resource if query executed successfully, otherwise false
+	 *
+	 * @author	Mark Hobson
+	 */
+	public function executeInsert (PreparedStatement $ps, $name = 'default', &$con = NULL, $debug = self::DEBUG)
+	{
+		$retval = false;
+		try {
+
+			// Connect to database
+			if (is_null($con)) {
+				if (self::DEBUG) { LoggerManager::debug(__METHOD__  . ":: Retrieving New DB Connection for '" . $name . "'..."); }
+				$con = $this->getDatabaseConnection($name);
+			}
+
+			// Get the prepared query
+			/* @var $sth PDOStatement */
+			$sth = $ps->getPreparedStatement($con);
+
+			if ($debug) {
+				LoggerManager::debug(__METHOD__ . " :: " . $sth);
+			}
+			// Execute the query
+			$sth->execute();
+			return $con->lastInsertId();
+
+		} catch (MojaviException $e) {
+			LoggerManager::fatal ($e->printStackTrace (''));
+			throw $e;
+		} catch (PDOException $e) {
+			ob_start();
+			$sth->debugDumpParams();
+			$stmt = ob_get_clean();
+						
+			$e = new MojaviException ($e->getMessage());
+			LoggerManager::fatal ($sth->queryString);
+			LoggerManager::fatal ($stmt);
+			LoggerManager::fatal ($e->printStackTrace(''));
+			throw $e;
+		} catch (Exception $e) {
+			$e = new MojaviException ($e->getMessage());
+			LoggerManager::fatal ($e->printStackTrace (''));
+			throw $e;
+		}
 	}
 }
 ?>

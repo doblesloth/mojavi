@@ -38,10 +38,9 @@ class DatabaseResultResource implements Iterator, Countable, ArrayAccess {
 	function getNextRow() {
 		$ret_val = false;
 		// Make Sure Resource Is Valid
-		if(is_object($this->getResultResource())) {
+		if(is_resource($this->getResultResource())) {
 			// Pull Out Assoc Array
-			if (($row = $this->getResultResource()->current())) {
-				$this->getResultResource()->next();
+			if($row = mysql_fetch_assoc($this->getResultResource())) {
 				$form = $this->getForm();
 				// Make Sure $form is an object
 				if(is_object($form)) {
@@ -66,8 +65,8 @@ class DatabaseResultResource implements Iterator, Countable, ArrayAccess {
 	 */
 	function getCount() {
 		$ret_val = 0;
-		if(is_object($this->getResultResource())) {
-			$ret_val = $this->getResultResource()->count();
+		if(is_resource($this->getResultResource())) {
+			$ret_val = mysql_num_rows($this->getResultResource());
 		}
 		return $ret_val;
 	}
@@ -88,7 +87,8 @@ class DatabaseResultResource implements Iterator, Countable, ArrayAccess {
 	 * @param string $keyFunction
 	 * @return array
 	 */
-	public function getArray($keyFunction = null) {
+	public function getArray($keyFunction = null){
+
 		$returnVal = array();
 		foreach($this as $key => $form) {
 
@@ -141,26 +141,17 @@ class DatabaseResultResource implements Iterator, Countable, ArrayAccess {
 
 	/**
 	 * Returns the result_resource field.
-	 * @return ArrayIterator result resource
+	 * @return database result resource
 	 */
 	function getResultResource() {
 		return $this->result_resource;
 	}
 	/**
 	 * Sets the result_resource field.
-	 * @param ArrayIterator result resource $arg0
+	 * @param database result resource $arg0
 	 */
 	function setResultResource($arg0) {
-		if ($arg0 instanceof PDOStatement) {
-			$this->result_resource = new ArrayIterator($arg0->fetchAll());	
-		} else {
-			$results = array();
-			while (($row = mysql_fetch_assoc($arg0))) {
-				$results[] = $row;
-			}
-			$this->result_resource = new ArrayIterator($results);	
-		}
-		
+		$this->result_resource = $arg0;
 	}
 
 	/**
@@ -186,7 +177,7 @@ class DatabaseResultResource implements Iterator, Countable, ArrayAccess {
 	 */
 	public function rewind() {
 		if($this->getCount() > 0) {
-			$this->getResultResource()->rewind();
+			mysql_data_seek($this->getResultResource(), 0);
 		}
 		$this->setCurrentRow(null);
 		$this->setRowIteration(null);
@@ -244,7 +235,13 @@ class DatabaseResultResource implements Iterator, Countable, ArrayAccess {
 	 * @return bool
 	 */
 	function offsetExists($offset){
-		return $this->getResultResource()->offsetExists($offset);
+
+		if(mysql_num_rows($this->getResultResource()) > $offset){
+			return TRUE;
+		} else {
+			return FALSE;
+		}
+
 	}
 
 	function offsetGet($offset){
@@ -253,12 +250,15 @@ class DatabaseResultResource implements Iterator, Countable, ArrayAccess {
 			$form = $this->getForm();
 			if(is_object($form)) {
 				$retval = clone $form;
-				$row = $this->getResultResource()->offsetGet($offset);
+				$rs = $this->getResultResource();
+				mysql_data_seek($rs, $offset);
+				$row = mysql_fetch_assoc($rs);
 				$retval->populate($row);
 				$current = $this->getRowIteration();
 				if (is_null($current)) {
 					$current = 0;
 				}
+				mysql_data_seek($rs, $current);
 			}
 		}
 		return $retval;

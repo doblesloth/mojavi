@@ -13,7 +13,7 @@ class KeyBasedPreparedStatement extends PreparedStatement {
 	 * during this process, so it can be used again and again with different values.
 	 * @return string
 	 */
-	function getPreparedStatement() {
+	function getPreparedStatement($con = null) {
 		$retVal = $this->statement;
 		
 		if(isset($this->form)) {

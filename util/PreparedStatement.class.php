@@ -71,7 +71,7 @@ class PreparedStatement extends MojaviObject {
 	 * during this process, so it can be used again and again with different values.
 	 * @return string
 	 */
-	function getPreparedStatement() {
+	function getPreparedStatement($con = null) {
 		$retVal = "";
 		$i = (array_key_exists(0,$this->values) ? 0 : 1);
 

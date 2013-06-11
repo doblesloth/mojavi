@@ -23,7 +23,7 @@
  * @since     3.0.0
  * @version   $Id: Model.class.php 449 2004-11-24 17:57:22Z seank $
  */
-abstract class Model extends PdoModel
+abstract class PdoModel extends MojaviObject
 {
 	const DEBUG = MO_DEBUG;
 	const CRITERIA_RETVAL_TYPE_ITERATOR	= 1;
@@ -36,6 +36,37 @@ abstract class Model extends PdoModel
     // +-----------------------------------------------------------------------+
     // | METHODS                                                               |
     // +-----------------------------------------------------------------------+
+
+    /**
+     * Retrieve the current application context.
+     *
+     * @return Context The current Context instance.
+     *
+     * @author Sean Kerr (skerr@mojavi.org)
+     * @since  3.0.0
+     */
+    public final function getContext ()
+    {
+		return Controller::getInstance()->getContext();
+    }
+
+    // -------------------------------------------------------------------------
+
+    /**
+     * Initialize this model.
+     *
+     * @param Context The current application context.
+     *
+     * @return bool true, if initialization completes successfully, otherwise
+     *              false.
+     *
+     * @author Sean Kerr (skerr@mojavi.org)
+     * @since  3.0.0
+     */
+    public function initialize ($context)
+    {
+        return true;
+    }
 
 	// -------------------------------------------------------------------------
 
@@ -51,10 +82,6 @@ abstract class Model extends PdoModel
 	 */
 	public function executeQuery (PreparedStatement $ps, $name = 'default', &$con = NULL, $debug = self::DEBUG)
 	{
-		if ($ps instanceof PdoPreparedStatement) {
-			return parent::executeQuery($ps, $name, $con, $debug);	
-		}
-		
 		$retval = false;
 		try {
 
@@ -64,31 +91,31 @@ abstract class Model extends PdoModel
 				$con = $this->getContext()->getDatabaseConnection($name);
 			}
 			
-			if (function_exists('mysql_ping')) {
-				if (!mysql_ping($con)) {
-					$this->getContext()->getDatabaseManager()->getDatabase($name)->shutdown();
-					$con = $this->getContext()->getDatabaseConnection($name);	
-				}
-			} else {
-				throw new Exception('Missing php-mysql libraries on this server');	
-			}
+//			if (function_exists('mysql_ping')) {
+//				if (!mysql_ping($con)) {
+//					$this->getContext()->getDatabaseManager()->getDatabase($name)->shutdown();
+//					$con = $this->getContext()->getDatabaseConnection($name);	
+//				}
+//			} else {
+//				throw new Exception('Missing php-mysql libraries on this server');	
+//			}
 
 			// Get the prepared query
 			/* @var $sth PDOStatement */
-			$query = $ps->getPreparedStatement($con);
+			$sth = $ps->getPreparedStatement($con);
 
 			if($debug) {
-				LoggerManager::debug(__METHOD__ . " :: " . $query);
+				LoggerManager::debug(__METHOD__ . " :: " . $sth->queryString);
 			}
 			// Execute the query
-//			$sth->execute();
-			$rs = mysql_query ($query, $con);
+			$sth->execute();
+//			$rs = mysql_query ($query, $con);
 
-			if (!$rs) { 
-				throw new Exception (mysql_error ($con));
-			} else {
-				$retval = $rs;
-			}
+//			if (!$rs) { 
+//				throw new Exception (mysql_error ($con));
+//			} else {
+				$retval = $sth;
+//			}
 
 		} catch (MojaviException $e) {
 
@@ -129,11 +156,8 @@ abstract class Model extends PdoModel
 	 */
 	public function executeUpdate (PreparedStatement $ps, $name = 'default', &$con = NULL, $debug = self::DEBUG)
 	{
-		if ($ps instanceof PdoPreparedStatement) {
-			return parent::executeUpdate($ps, $name, $con, $debug);	
-		}
-		$this->executeQuery($ps, $name, $con, $debug);
-		return mysql_affected_rows($con);
+		$retval = $this->executeQuery($ps, $name, $con, $debug);
+		return $retval->rowCount();
 	}
 	
 	/**
@@ -148,10 +172,6 @@ abstract class Model extends PdoModel
 	 */
 	public function executeInsert (PreparedStatement $ps, $name = 'default', &$con = NULL, $debug = self::DEBUG)
 	{
-		if ($ps instanceof PdoPreparedStatement) {
-			return parent::executeInsert($ps, $name, $con, $debug);	
-		}
-		
 		$retval = false;
 		try {
 
@@ -161,30 +181,16 @@ abstract class Model extends PdoModel
 				$con = $this->getContext()->getDatabaseConnection($name);
 			}
 
-		if (function_exists('mysql_ping')) {
-				if (!mysql_ping($con)) {
-					$this->getContext()->getDatabaseManager()->getDatabase($name)->shutdown();
-					$con = $this->getContext()->getDatabaseConnection($name);	
-				}
-			} else {
-				throw new Exception('Missing php-mysql libraries on this server');	
-			}
-
 			// Get the prepared query
 			/* @var $sth PDOStatement */
-			$query = $ps->getPreparedStatement($con);
+			$sth = $ps->getPreparedStatement($con);
 
-			if($debug) {
-				LoggerManager::debug(__METHOD__ . " :: " . $query);
+			if ($debug) {
+				LoggerManager::debug(__METHOD__ . " :: " . $sth);
 			}
 			// Execute the query
-			$rs = mysql_query ($query, $con);
-
-			if (!$rs) { 
-				throw new Exception (mysql_error ($con));
-			} else {
-				return mysql_insert_id($con);
-			}
+			$sth->execute();
+			return $con->lastInsertId();
 
 		} catch (MojaviException $e) {
 
