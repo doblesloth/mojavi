@@ -20,25 +20,26 @@ class OrmForm extends DateRangeForm {
 	 * @return Form
 	 */
 	function query() {
-		if (apc_exists(get_class($this) . "_" . $this->getId()) && $this->getId() > 0) {
-			$fetched_successfully = false;
-			$cached_result = apc_fetch(get_class($this) . "_" . $this->getId(), $fetched_successfully);
-			if ($fetched_successfully) {
-				LoggerManager::error(__METHOD__ . " :: " . "Fetching cached result for " . get_class($this) . "_" . $this->getId());
-				$this->populate($cached_result);
-				return $cached_result;
+		if (function_exists("apc_exists")) {
+			if (apc_exists(get_class($this) . "_" . $this->getId()) && $this->getId() > 0) {
+				$fetched_successfully = false;
+				$cached_result = apc_fetch(get_class($this) . "_" . $this->getId(), $fetched_successfully);
+				if ($fetched_successfully) {
+					$this->populate($cached_result);
+					return $cached_result;
+				}
 			}
 		}
 		// If we don't get a cached result, then query from the db
 		$model = $this->getModel();
 		if (is_object($model)) {
-			LoggerManager::error(__METHOD__ . " :: " . "Querying from DATABASE: " . get_class($this) . "_" . $this->getId());
 			$result = $model->performQuery($this);
 			$this->populate($result);
 			
 			if ($this->getId() > 0) {
-				LoggerManager::error(__METHOD__ . " :: " . "Saving to cache: " . get_class($this) . "_" . $this->getId());
-				apc_store(get_class($this) . "_" . $this->getId(), $result);
+				if (function_exists("apc_store")) {
+					apc_store(get_class($this) . "_" . $this->getId(), $result);
+				}
 			}
 			
 			return $result;
@@ -78,9 +79,11 @@ class OrmForm extends DateRangeForm {
 	 * @return integer
 	 */
 	function delete() {
-		if (apc_exists(get_class($this) . "_" . $this->getId()) && $this->getId() > 0) {
-			// Clear out the cache
-			apc_delete(get_class($this) . "_" . $this->getId());
+		if (function_exists("apc_exists")) {
+			if (apc_exists(get_class($this) . "_" . $this->getId()) && $this->getId() > 0) {
+				// Clear out the cache
+				apc_delete(get_class($this) . "_" . $this->getId());
+			}
 		}
 		$model = $this->getModel();
 		if (is_object($model)) {
@@ -121,9 +124,11 @@ class OrmForm extends DateRangeForm {
 	 * @return integer
 	 */
 	function update() {
-		if (apc_exists(get_class($this) . "_" . $this->getId()) && $this->getId() > 0) {
-			// Clear out the cache
-			apc_delete(get_class($this) . "_" . $this->getId());
+		if (function_exists("apc_exists")) {
+			if (apc_exists(get_class($this) . "_" . $this->getId()) && $this->getId() > 0) {
+				// Clear out the cache
+				apc_delete(get_class($this) . "_" . $this->getId());
+			}
 		}
 		$model = $this->getModel();
 		if (is_object($model)) {
