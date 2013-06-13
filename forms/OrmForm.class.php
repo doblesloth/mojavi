@@ -21,10 +21,8 @@ class OrmForm extends DateRangeForm {
 	 */
 	function clearCache() {
 		if (function_exists("apc_exists")) {
-			LoggerManager::error(__METHOD__ . " :: " . "Looking for Cache for " . get_class($this) . "_" . $this->getId());
 			if (apc_exists(get_class($this) . "_" . $this->getId()) && $this->getId() > 0) {	
 				// Clear out the cache
-				LoggerManager::error(__METHOD__ . " :: " . "Clearing Cache for " . get_class($this) . "_" . $this->getId());
 				apc_delete(get_class($this) . "_" . $this->getId());
 			}
 		} else {
