@@ -16,6 +16,20 @@ class OrmForm extends DateRangeForm {
 	}
 	
 	/**
+	 * Clears the cache for this instance, if it exists
+	 * @return boolean
+	 */
+	function clearCache() {
+		if (function_exists("apc_exists")) {
+			if (apc_exists(get_class($this) . "_" . $this->getId()) && $this->getId() > 0) {	
+				// Clear out the cache
+				apc_delete(get_class($this) . "_" . $this->getId());
+			}
+		}
+		return true;
+	}
+	
+	/**
 	 * Queries a single record from the database given a primary key
 	 * @return Form
 	 */
@@ -79,12 +93,7 @@ class OrmForm extends DateRangeForm {
 	 * @return integer
 	 */
 	function delete() {
-		if (function_exists("apc_exists")) {
-			if (apc_exists(get_class($this) . "_" . $this->getId()) && $this->getId() > 0) {
-				// Clear out the cache
-				apc_delete(get_class($this) . "_" . $this->getId());
-			}
-		}
+		$this->clearCache();
 		$model = $this->getModel();
 		if (is_object($model)) {
 			$rows_affected = $model->performDelete($this);
@@ -124,12 +133,7 @@ class OrmForm extends DateRangeForm {
 	 * @return integer
 	 */
 	function update() {
-		if (function_exists("apc_exists")) {
-			if (apc_exists(get_class($this) . "_" . $this->getId()) && $this->getId() > 0) {
-				// Clear out the cache
-				apc_delete(get_class($this) . "_" . $this->getId());
-			}
-		}
+		$this->clearCache();
 		$model = $this->getModel();
 		if (is_object($model)) {
 			$rows_affected = $model->performUpdate($this);
