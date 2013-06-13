@@ -80,7 +80,7 @@ abstract class PdoModel extends MojaviObject
 	 *
 	 * @author	Mark Hobson
 	 */
-	public function executeQuery (PreparedStatement $ps, $name = 'default', &$con = NULL, $debug = self::DEBUG)
+	public function executeQuery (PreparedStatement $ps, $name = 'default', $con = NULL, $debug = self::DEBUG)
 	{
 		$retval = false;
 		try {
@@ -90,32 +90,18 @@ abstract class PdoModel extends MojaviObject
 				if (self::DEBUG) { LoggerManager::debug(__METHOD__  . ":: Retrieving New DB Connection for '" . $name . "'..."); }
 				$con = $this->getContext()->getDatabaseConnection($name);
 			}
-			
-//			if (function_exists('mysql_ping')) {
-//				if (!mysql_ping($con)) {
-//					$this->getContext()->getDatabaseManager()->getDatabase($name)->shutdown();
-//					$con = $this->getContext()->getDatabaseConnection($name);	
-//				}
-//			} else {
-//				throw new Exception('Missing php-mysql libraries on this server');	
-//			}
 
 			// Get the prepared query
 			/* @var $sth PDOStatement */
 			$sth = $ps->getPreparedStatement($con);
 
-			if($debug) {
-				LoggerManager::debug(__METHOD__ . " :: " . $sth->queryString);
+			if ($debug) {
+				LoggerManager::error(__METHOD__ . " :: " . $ps->getDebugQueryString());
 			}
 			// Execute the query
 			$sth->execute();
-//			$rs = mysql_query ($query, $con);
 
-//			if (!$rs) { 
-//				throw new Exception (mysql_error ($con));
-//			} else {
-				$retval = $sth;
-//			}
+			$retval = $sth;
 
 		} catch (MojaviException $e) {
 
@@ -154,7 +140,7 @@ abstract class PdoModel extends MojaviObject
 	 *
 	 * @author	Mark Hobson
 	 */
-	public function executeUpdate (PreparedStatement $ps, $name = 'default', &$con = NULL, $debug = self::DEBUG)
+	public function executeUpdate (PreparedStatement $ps, $name = 'default', $con = NULL, $debug = self::DEBUG)
 	{
 		$retval = $this->executeQuery($ps, $name, $con, $debug);
 		return $retval->rowCount();
@@ -170,7 +156,7 @@ abstract class PdoModel extends MojaviObject
 	 *
 	 * @author	Mark Hobson
 	 */
-	public function executeInsert (PreparedStatement $ps, $name = 'default', &$con = NULL, $debug = self::DEBUG)
+	public function executeInsert (PreparedStatement $ps, $name = 'default', $con = NULL, $debug = self::DEBUG)
 	{
 		$retval = false;
 		try {
@@ -186,7 +172,7 @@ abstract class PdoModel extends MojaviObject
 			$sth = $ps->getPreparedStatement($con);
 
 			if ($debug) {
-				LoggerManager::debug(__METHOD__ . " :: " . $sth);
+				LoggerManager::error(__METHOD__ . " :: " . $ps->getDebugQueryString());
 			}
 			// Execute the query
 			$sth->execute();

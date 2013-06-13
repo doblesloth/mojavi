@@ -105,6 +105,14 @@ class PreparedStatement extends MojaviObject {
 
 		return $retVal;
 	}
+	
+	/**
+	 * Returns the statement with parameters replaced.  Useful for debugging.
+	 * @return string
+	 */
+	function getDebugQueryString() {
+		return $this->getPreparedStatement();	
+	}
 
 	/**
 	 * Set the $arg0-th question mark to an integer

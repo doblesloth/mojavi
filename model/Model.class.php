@@ -49,7 +49,7 @@ abstract class Model extends PdoModel
 	 *
 	 * @author	Mark Hobson
 	 */
-	public function executeQuery (PreparedStatement $ps, $name = 'default', &$con = NULL, $debug = self::DEBUG)
+	public function executeQuery (PreparedStatement $ps, $name = 'default', $con = NULL, $debug = self::DEBUG)
 	{
 		if ($ps instanceof PdoPreparedStatement) {
 			return parent::executeQuery($ps, $name, $con, $debug);	
@@ -74,14 +74,12 @@ abstract class Model extends PdoModel
 			}
 
 			// Get the prepared query
-			/* @var $sth PDOStatement */
 			$query = $ps->getPreparedStatement($con);
 
-			if($debug) {
-				LoggerManager::debug(__METHOD__ . " :: " . $query);
+			if ($debug) {
+				LoggerManager::error(__METHOD__ . " :: " . $ps->getDebugQueryString());
 			}
 			// Execute the query
-//			$sth->execute();
 			$rs = mysql_query ($query, $con);
 
 			if (!$rs) { 
@@ -96,19 +94,10 @@ abstract class Model extends PdoModel
 			LoggerManager::fatal ($e->printStackTrace (''));
 
 		} catch (PDOException $e) {
-			ob_start();
-			$sth->debugDumpParams();
-			$stmt = ob_get_clean();
-			
-			$this->getErrors ()->addError ('error', new Error ($e->getMessage() . ": " . $sth->queryString));
-			
 			$e = new MojaviException ($e->getMessage());
-			LoggerManager::fatal ($sth->queryString);
-			LoggerManager::fatal ($stmt);
 			LoggerManager::fatal ($e->printStackTrace(''));
 			throw $e;
 		} catch (Exception $e) {
-
 			$this->getErrors ()->addError ('error', new Error ($e->getMessage ()));
 			$e = new MojaviException ($e->getMessage());
 			LoggerManager::fatal ($e->printStackTrace (''));
@@ -127,7 +116,7 @@ abstract class Model extends PdoModel
 	 *
 	 * @author	Mark Hobson
 	 */
-	public function executeUpdate (PreparedStatement $ps, $name = 'default', &$con = NULL, $debug = self::DEBUG)
+	public function executeUpdate (PreparedStatement $ps, $name = 'default', $con = NULL, $debug = self::DEBUG)
 	{
 		if ($ps instanceof PdoPreparedStatement) {
 			return parent::executeUpdate($ps, $name, $con, $debug);	
@@ -146,7 +135,7 @@ abstract class Model extends PdoModel
 	 *
 	 * @author	Mark Hobson
 	 */
-	public function executeInsert (PreparedStatement $ps, $name = 'default', &$con = NULL, $debug = self::DEBUG)
+	public function executeInsert (PreparedStatement $ps, $name = 'default', $con = NULL, $debug = self::DEBUG)
 	{
 		if ($ps instanceof PdoPreparedStatement) {
 			return parent::executeInsert($ps, $name, $con, $debug);	
@@ -161,7 +150,7 @@ abstract class Model extends PdoModel
 				$con = $this->getContext()->getDatabaseConnection($name);
 			}
 
-		if (function_exists('mysql_ping')) {
+			if (function_exists('mysql_ping')) {
 				if (!mysql_ping($con)) {
 					$this->getContext()->getDatabaseManager()->getDatabase($name)->shutdown();
 					$con = $this->getContext()->getDatabaseConnection($name);	
@@ -171,11 +160,10 @@ abstract class Model extends PdoModel
 			}
 
 			// Get the prepared query
-			/* @var $sth PDOStatement */
 			$query = $ps->getPreparedStatement($con);
 
-			if($debug) {
-				LoggerManager::debug(__METHOD__ . " :: " . $query);
+			if ($debug) {
+				LoggerManager::error(__METHOD__ . " :: " . $ps->getDebugQueryString());
 			}
 			// Execute the query
 			$rs = mysql_query ($query, $con);
@@ -191,16 +179,8 @@ abstract class Model extends PdoModel
 			$this->getErrors ()->addError ('error', new Error ($e->getMessage ()));
 			LoggerManager::fatal ($e->printStackTrace (''));
 			throw $e;
-		} catch (PDOException $e) {
-			ob_start();
-			$sth->debugDumpParams();
-			$stmt = ob_get_clean();
-			
-			$this->getErrors ()->addError ('error', new Error ($e->getMessage() . ": " . $sth->queryString));
-			
+		} catch (PDOException $e) {	
 			$e = new MojaviException ($e->getMessage());
-			LoggerManager::fatal ($sth->queryString);
-			LoggerManager::fatal ($stmt);
 			LoggerManager::fatal ($e->printStackTrace(''));
 			throw $e;
 		} catch (Exception $e) {

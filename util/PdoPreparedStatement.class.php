@@ -65,6 +65,62 @@ class PdoPreparedStatement extends PreparedStatement {
 		return $dbh;
 	}
 	
+	/**
+	 * Returns the statement with parameters replaced.  Useful for debugging.
+	 * @return string
+	 */
+	function getDebugQueryString() {
+		$retVal = $this->statement;
+		
+		foreach ($this->values as $name => $value) {
+			if ($value['type'] == self::TYPE_BARE_STRING) {
+				$retVal = str_replace("<<" . $name . ">>", $value['value'], $retVal);
+			} else if ($value['type'] == self::TYPE_UNESCAPED_STRING) {
+				$retVal = str_replace("<<" . $name . ">>", $value['value'], $retVal);
+			} else {
+				if (strpos($retVal, "<<" . $name . ">>") !== false) {
+					$retVal = str_replace("<<" . $name . ">>", ":" . $name, $retVal);	
+				} else {
+					unset($this->values[$name]);
+				}
+			}	
+		}
+		
+		// Loop Through And Replace <<$name>> with $value
+		foreach ($this->values as $name => $value) {
+			if ($value['type'] == self::TYPE_FLOAT) {
+				$retVal = str_replace(":" . $name, $value["value"], $retVal);
+			} else if ($value['type'] == self::TYPE_INTEGER) {
+				$retVal = str_replace(":" . $name, $value["value"], $retVal);
+			} else if ($value['type'] == self::TYPE_LONG) {
+				$retVal = str_replace(":" . $name, $value["value"], $retVal);
+			} else if ($value['type'] == self::TYPE_DATE) {
+				$retVal = str_replace(":" . $name, str_replace("'", "\'", $value["value"]) . "'", $retVal);
+			} else if ($value['type'] == self::TYPE_TIMESTAMP) {
+				$retVal = str_replace(":" . $name, str_replace("'", "\'", $value["value"]) . "'", $retVal);
+			} else if ($value['type'] == self::TYPE_TIME) {
+				$retVal = str_replace(":" . $name, str_replace("'", "\'", $value["value"]) . "'", $retVal);
+			} else if ($value['type'] == self::TYPE_NULL) {
+				$retVal = str_replace(":" . $name, $value["value"], $retVal);
+			} else if ($value['type'] == self::TYPE_BOOLEAN) {
+				$retVal = str_replace(":" . $name, $value["value"], $retVal);
+			} else if ($value['type'] == self::TYPE_BARE_STRING) {
+				continue;
+			} else if ($value['type'] == self::TYPE_UNESCAPED_STRING) {
+				continue;
+			} else if ($value['type'] == self::TYPE_ARRAY) {
+				$retVal = str_replace(":" . $name, "'" . implode("', '", $value["value"]) . "'", $retVal);
+			} else if ($value['type'] == self::TYPE_BINARY_STRING) {
+				$retVal = str_replace(":" . $name, str_replace("'", "\'", $value["value"]) . "'", $retVal);
+			} else {
+				$retVal = str_replace(":" . $name, "'" . str_replace("'", "\'", $value["value"]) . "'", $retVal);
+			}
+
+		}
+
+		return $retVal;	
+	}
+	
 	public function setForm($arg0) {
 		$this->form = $arg0;
 	}
