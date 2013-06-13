@@ -124,11 +124,19 @@ class BasicAjaxForm extends CommonForm {
 		}
 		if (is_object($this->getEntries())) {
 			foreach ($this->getEntries() as $entry) {
-				$ret_val['entries'][] = $entry->toArray($deep);
+				if (is_object($entry)) {
+					$ret_val['entries'][] = $entry->toArray($deep);
+				} else if (is_array($entry)) {
+					$ret_val['entries'][] = $entry;
+				}
 			}
 		} else if (is_array($this->getEntries())) {
 			foreach ($this->getEntries() as $entry) {	
-				$ret_val['entries'][] = $entry->toArray($deep);
+				if (is_object($entry)) {
+					$ret_val['entries'][] = $entry->toArray($deep);
+				} else if (is_array($entry)) {
+					$ret_val['entries'][] = $entry;
+				}
 			}
 		} else {
 			$ret_val['entries'] = $this->getEntries();
