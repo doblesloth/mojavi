@@ -21,6 +21,8 @@ class PdoPreparedStatement extends PreparedStatement {
 				$retVal = str_replace("<<" . $name . ">>", $value['value'], $retVal);
 			} else if ($value['type'] == self::TYPE_UNESCAPED_STRING) {
 				$retVal = str_replace("<<" . $name . ">>", $value['value'], $retVal);
+			} else if ($value['type'] == self::TYPE_ARRAY) {
+				$retVal = str_replace("<<" . $name . ">>", "'" . implode("','", $value['value']) . "'", $retVal);
 			} else {
 				if (strpos($retVal, "<<" . $name . ">>") !== false) {
 					$retVal = str_replace("<<" . $name . ">>", ":" . $name, $retVal);	
@@ -54,7 +56,7 @@ class PdoPreparedStatement extends PreparedStatement {
 			} else if ($value['type'] == self::TYPE_UNESCAPED_STRING) {
 				continue;
 			} else if ($value['type'] == self::TYPE_ARRAY) {
-				$dbh->bindValue(":" . $name, "'" . implode("', '", $value["value"]) . "'", PDO::PARAM_STR);
+				continue;
 			} else if ($value['type'] == self::TYPE_BINARY_STRING) {
 				$dbh->bindValue(":" . $name, $value["value"], PDO::PARAM_STR);
 			} else {
