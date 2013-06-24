@@ -20,13 +20,15 @@ class OrmForm extends DateRangeForm {
 	 * @return boolean
 	 */
 	function clearCache() {
-		if (function_exists("apc_exists")) {
-			if (apc_exists(get_class($this) . "_" . $this->getId()) && $this->getId() > 0) {	
-				// Clear out the cache
-				apc_delete(get_class($this) . "_" . $this->getId());
+		if (defined('MO_USE_APC') && MO_USE_APC == '1') {
+			if (function_exists("apc_exists")) {
+				if (apc_exists(get_class($this) . "_" . $this->getId()) && $this->getId() > 0) {	
+					// Clear out the cache
+					apc_delete(get_class($this) . "_" . $this->getId());
+				}
+			} else {
+				LoggerManager::error(__METHOD__ . " :: " . "APC functions are not installed!");	
 			}
-		} else {
-			LoggerManager::error(__METHOD__ . " :: " . "APC functions are not installed!");	
 		}
 		return true;
 	}
@@ -36,13 +38,15 @@ class OrmForm extends DateRangeForm {
 	 * @return Form
 	 */
 	function query() {
-		if (function_exists("apc_exists")) {
-			if (apc_exists(get_class($this) . "_" . $this->getId()) && $this->getId() > 0) {
-				$fetched_successfully = false;
-				$cached_result = apc_fetch(get_class($this) . "_" . $this->getId(), $fetched_successfully);
-				if ($fetched_successfully) {
-					$this->populate($cached_result);
-					return $cached_result;
+		if (defined('MO_USE_APC') && MO_USE_APC == '1') {
+			if (function_exists("apc_exists")) {
+				if (apc_exists(get_class($this) . "_" . $this->getId()) && $this->getId() > 0) {
+					$fetched_successfully = false;
+					$cached_result = apc_fetch(get_class($this) . "_" . $this->getId(), $fetched_successfully);
+					if ($fetched_successfully) {
+						$this->populate($cached_result);
+						return $cached_result;
+					}
 				}
 			}
 		}
@@ -52,9 +56,11 @@ class OrmForm extends DateRangeForm {
 			$result = $model->performQuery($this);
 			$this->populate($result);
 			
-			if ($this->getId() > 0) {
-				if (function_exists("apc_store")) {
-					apc_store(get_class($this) . "_" . $this->getId(), $result, 14400);
+			if (defined('MO_USE_APC') && MO_USE_APC == '1') {
+				if ($this->getId() > 0) {
+					if (function_exists("apc_store")) {
+						apc_store(get_class($this) . "_" . $this->getId(), $result, 14400);
+					}
 				}
 			}
 			
