@@ -45,7 +45,7 @@ abstract class PdoModel extends MojaviObject
      * @author Sean Kerr (skerr@mojavi.org)
      * @since  3.0.0
      */
-    public final function getContext ()
+    public function getContext ()
     {
 		return Controller::getInstance()->getContext();
     }

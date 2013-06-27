@@ -68,7 +68,7 @@ abstract class Action extends MojaviObject
      * @since  3.0.0
 	  * @return Context
      */
-    public final function getContext ()
+    public function getContext ()
     {
     	return Controller::getInstance()->getContext();
     }
