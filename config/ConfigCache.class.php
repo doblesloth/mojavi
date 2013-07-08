@@ -451,7 +451,22 @@ class ConfigCache extends MojaviObject
             throw new CacheException($error);
 
         }
-
+        
+        if (posix_getuid() == 0) {
+	        if (defined('MO_CACHE_USER')) {
+	        	chown($cache, MO_CACHE_USER);	
+	        }
+	    	if (defined('MO_CACHE_GROUP')) {
+	        	chgrp($cache, MO_CACHE_GROUP);	
+	        }
+	        if (defined('MO_CACHE_USER') && defined('MO_CACHE_GROUP')) {
+	        	chmod($cache, 0775);
+	        } else {
+	        	chmod($cache, 0777);
+	        }
+        } else {
+	        chmod($cache, 0777);
+        }
     }
 
 }
