@@ -73,7 +73,8 @@ function __autoload ($class)
 	        $e->printStackTrace();
 	        
 	        // Clear the cache
-			ConfigCache::clear();
+	        /* Clearing the cache here can cause a bunch of bus errors in apache, so we don't do it anymore */
+			// ConfigCache::clear();
 	        
 	        if (in_array(session_name(), $_COOKIE)) {
 	        	if (file_exists("/tmp/sess_" . $_COOKIE[session_name()])) {
