@@ -298,6 +298,29 @@ abstract class Migration extends MojaviObject {
 	}
 	
 	/**
+	 * Runs raw sql
+	 * @param $table_definition - table definition
+	 * @param $connection_name - connection name
+	 */
+	function runQuery($sql, $connection_name = null) {
+		try {
+			if (is_null($connection_name)) {
+				$connection_name = $this->getDefaultConnectionName();
+			}
+			
+			$qry = $sql;
+			$ps = new PdoPreparedStatement($qry);
+			
+			// Execute Query
+		 	$retVal = $this->executeQuery($ps, $connection_name);
+			return $retVal;
+		} catch (Exception $e) {
+			$this->addException($e);	
+		}
+		return false;
+	}
+	
+	/**
 	 * Drops an existing table
 	 * @param $db - table name
 	 * @param $table - table name
