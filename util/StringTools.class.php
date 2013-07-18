@@ -240,10 +240,17 @@ class StringTools {
 	static function consoleToHtmlColor($str = '') {
 		$str_buffer = '';
 		$str_lines = explode("\n", $str);
-		foreach ($str_lines as $str_line) {
+		foreach ($str_lines as $key => $str_line) {
 			if (strpos($str_line, "\010") === false) {
+				// If this is a full line with no backspace characters, then append it
+				$str_buffer .= $str_line . "\n";
+			} else if ($key == (count($str_lines) - 1)) {
+				// If this is the last line, then append it as is (after stripping extra backspaces off it)
+				$str_line = trim($str_line, "\x00..\x1F");
+				$str_line = substr($str_line, strrpos($str_line, "\010"));
 				$str_buffer .= $str_line . "\n";
 			} else {
+				// If this line has backspace characters, then go back on the line and clear out those characters
 				$str_line = substr($str_line, strrpos($str_line, "\010"));
 				$str_line = str_replace("\010", '', $str_line);
 				$str_buffer .= $str_line . "\n";
