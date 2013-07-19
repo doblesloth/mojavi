@@ -78,7 +78,8 @@ class PdoDatabase extends Database
 			// default connection attributes
 			$attributes = array(
 				// lets generate exceptions instead of silent failures
-				PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION
+				PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+				PDO::ATTR_EMULATE_PREPARES => true
 			);
 			if($this->hasParameter('attributes')) {
 				foreach((array)$this->getParameter('attributes') as $key => $value) {
@@ -88,9 +89,9 @@ class PdoDatabase extends Database
 			foreach($attributes as $key => $value) {
 				$this->connection->setAttribute($key, $value);
 			}
-			foreach((array)$this->getParameter('init_queries') as $query) {
-				$this->connection->exec($query);
-			}
+			// since we're not an abstraction layer, we copy the connection
+	        // to the resource
+	        $this->resource = $this->connection;
 		} catch(PDOException $e) {
 			throw new DatabaseException($e->getMessage());
 		}

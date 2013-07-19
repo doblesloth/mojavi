@@ -87,7 +87,6 @@ abstract class PdoModel extends MojaviObject
 
 			// Connect to database
 			if (is_null($con)) {
-				if (self::DEBUG) { LoggerManager::debug(__METHOD__  . ":: Retrieving New DB Connection for '" . $name . "'..."); }
 				$con = $this->getContext()->getDatabaseConnection($name);
 			}
 
@@ -95,37 +94,71 @@ abstract class PdoModel extends MojaviObject
 			/* @var $sth PDOStatement */
 			$sth = $ps->getPreparedStatement($con);
 
-			if ($debug) {
-				LoggerManager::error(__METHOD__ . " :: " . $ps->getDebugQueryString());
-			}
+			// Debug the query to the log
+			if ($debug) { LoggerManager::error(__METHOD__ . " :: " . $ps->getDebugQueryString()); }
+			
 			// Execute the query
 			$sth->execute();
 
+			// Set the retval to the statement because everything worked
 			$retval = $sth;
 
 		} catch (MojaviException $e) {
-
+			// Output Mojavi Exceptions to the log, and continue
 			$this->getErrors ()->addError ('error', new Error ($e->getMessage ()));
 			LoggerManager::fatal ($e->printStackTrace (''));
-
 		} catch (PDOException $e) {
-			ob_start();
-			$sth->debugDumpParams();
-			$stmt = ob_get_clean();
-			
-			$this->getErrors ()->addError ('error', new Error ($e->getMessage() . ": " . $sth->queryString));
-			
-			$e = new MojaviException ($e->getMessage());
-			LoggerManager::fatal ($sth->queryString);
-			LoggerManager::fatal ($stmt);
-			LoggerManager::fatal ($e->printStackTrace(''));
-			throw $e;
+			// If the MySQL server has gone away, try reconnecting, otherwise throw an exception
+			if ($e->getMessage() == 'SQLSTATE[HY000]: General error: 2006 MySQL server has gone away') {
+				try {
+					$this->getContext()->getDatabaseManager()->getDatabase($name)->shutdown();
+					
+					// Connect to database
+					$con = $this->getContext()->getDatabaseConnection($name);
+					
+					// Get the prepared query
+					/* @var $sth PDOStatement */
+					$sth = $ps->getPreparedStatement($con);
+		
+					if ($debug) {
+						LoggerManager::error(__METHOD__ . " :: " . $ps->getDebugQueryString());
+					}
+					// Execute the query
+					$sth->execute();
+		
+					$retval = $sth;
+					
+				} catch (Exception $e) {
+					ob_start();
+					$sth->debugDumpParams();
+					$stmt = ob_get_clean();
+					
+					$this->getErrors ()->addError ('error', new Error ($e->getMessage() . ": " . $sth->queryString));
+					
+					$e = new MojaviException ($e->getMessage());
+					LoggerManager::fatal ($sth->queryString);
+					LoggerManager::fatal ($stmt);
+					LoggerManager::fatal ($e->printStackTrace(''));
+					throw $e;
+				}					
+			} else {
+				ob_start();
+				$sth->debugDumpParams();
+				$stmt = ob_get_clean();
+				
+				$this->getErrors ()->addError ('error', new Error ($e->getMessage() . ": " . $sth->queryString));
+				
+				$e = new MojaviException ($e->getMessage());
+				LoggerManager::fatal ($sth->queryString);
+				LoggerManager::fatal ($stmt);
+				LoggerManager::fatal ($e->printStackTrace(''));
+				throw $e;
+			}
 		} catch (Exception $e) {
-
+			// Output Normal Exceptions to the log, and continue
 			$this->getErrors ()->addError ('error', new Error ($e->getMessage ()));
 			$e = new MojaviException ($e->getMessage());
 			LoggerManager::fatal ($e->printStackTrace (''));
-
 		}
 		return $retval;
 	}
@@ -171,37 +204,74 @@ abstract class PdoModel extends MojaviObject
 			/* @var $sth PDOStatement */
 			$sth = $ps->getPreparedStatement($con);
 
-			if ($debug) {
-				LoggerManager::error(__METHOD__ . " :: " . $ps->getDebugQueryString());
-			}
+			// Debug the query to the log
+			if ($debug) { LoggerManager::error(__METHOD__ . " :: " . $ps->getDebugQueryString()); }
+			
 			// Execute the query
 			$sth->execute();
-			return $con->lastInsertId();
-
+			
+			// Return the last insert id
+			$retval = $con->lastInsertId();
 		} catch (MojaviException $e) {
-
+			// Output Mojavi Exceptions to the log and throw the Exception
 			$this->getErrors ()->addError ('error', new Error ($e->getMessage ()));
 			LoggerManager::fatal ($e->printStackTrace (''));
 			throw $e;
 		} catch (PDOException $e) {
-			ob_start();
-			$sth->debugDumpParams();
-			$stmt = ob_get_clean();
-			
-			$this->getErrors ()->addError ('error', new Error ($e->getMessage() . ": " . $sth->queryString));
-			
-			$e = new MojaviException ($e->getMessage());
-			LoggerManager::fatal ($sth->queryString);
-			LoggerManager::fatal ($stmt);
-			LoggerManager::fatal ($e->printStackTrace(''));
-			throw $e;
+			// If the MySQL server has gone away, try reconnecting, otherwise throw an exception
+			if ($e->getMessage() == 'SQLSTATE[HY000]: General error: 2006 MySQL server has gone away') {
+				try {
+					$this->getContext()->getDatabaseManager()->getDatabase($name)->shutdown();
+					
+					// Connect to database
+					$con = $this->getContext()->getDatabaseConnection($name);
+					
+					// Get the prepared query
+					/* @var $sth PDOStatement */
+					$sth = $ps->getPreparedStatement($con);
+		
+					if ($debug) {
+						LoggerManager::error(__METHOD__ . " :: " . $ps->getDebugQueryString());
+					}
+					// Execute the query
+					$sth->execute();
+		
+					$retval = $sth;
+					
+				} catch (Exception $e) {
+					ob_start();
+					$sth->debugDumpParams();
+					$stmt = ob_get_clean();
+					
+					$this->getErrors ()->addError ('error', new Error ($e->getMessage() . ": " . $sth->queryString));
+					
+					$e = new MojaviException ($e->getMessage());
+					LoggerManager::fatal ($sth->queryString);
+					LoggerManager::fatal ($stmt);
+					LoggerManager::fatal ($e->printStackTrace(''));
+					throw $e;
+				}					
+			} else {
+				ob_start();
+				$sth->debugDumpParams();
+				$stmt = ob_get_clean();
+				
+				$this->getErrors ()->addError ('error', new Error ($e->getMessage() . ": " . $sth->queryString));
+				
+				$e = new MojaviException ($e->getMessage());
+				LoggerManager::fatal ($sth->queryString);
+				LoggerManager::fatal ($stmt);
+				LoggerManager::fatal ($e->printStackTrace(''));
+				throw $e;
+			}
 		} catch (Exception $e) {
-
+			// Output Normal Exceptions to the log and throw the Exception
 			$this->getErrors ()->addError ('error', new Error ($e->getMessage ()));
 			$e = new MojaviException ($e->getMessage());
 			LoggerManager::fatal ($e->printStackTrace (''));
 			throw $e;
 		}
+		return $retval;
 	}
 
 	// -------------------------------------------------------------------------
