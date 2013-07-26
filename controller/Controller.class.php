@@ -711,7 +711,6 @@ abstract class Controller extends MojaviObject
 
         if (MO_USE_DATABASE)
         {
-
             // setup our database connections
             $this->databaseManager = new DatabaseManager();
             $this->databaseManager->initialize();

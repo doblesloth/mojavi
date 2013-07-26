@@ -20,7 +20,24 @@
  */
 abstract class ConsoleController extends Controller
 {
-
+	/**
+	 * Initializes this controller for use outside a normal context
+	 *
+	 * @return void
+	 *
+	 * @author Sean Kerr (skerr@mojavi.org)
+	 * @since  3.0.0
+	 */
+	public function loadContext()
+	{
+		// initialize the controller
+		$this->initialize();
+		
+		// get the application context
+		$context = $this->getContext();
+		
+		return true;
+	}
 }
 
 ?>

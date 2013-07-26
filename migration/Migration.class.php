@@ -5,7 +5,7 @@
  */
 abstract class Migration extends MojaviObject {
 	
-	const DEBUG = true;
+	const DEBUG = MO_DEBUG;
 	
 	private $exceptions;
 	private $warnings;
@@ -382,8 +382,9 @@ abstract class Migration extends MojaviObject {
 	 */
 	function getDatabaseManager() {
 		if (is_null(self::$databaseManager)) {
-			self::$databaseManager = new DatabaseManager();
-			self::$databaseManager->initialize();
+//			self::$databaseManager = new DatabaseManager();
+//			self::$databaseManager->initialize();
+			self::$databaseManager = Controller::getInstance()->getContext()->getDatabaseManager();
 		}
 		return self::$databaseManager;
 	}
@@ -426,7 +427,7 @@ abstract class Migration extends MojaviObject {
 
 			// Connect to database
 			if (is_null($con)) {
-				if (self::DEBUG) { LoggerManager::debug(__METHOD__  . ":: Retrieving New DB Connection for '" . $name . "'..."); }
+				if (self::DEBUG) { LoggerManager::error(__METHOD__  . ":: Retrieving New DB Connection for '" . $name . "'..."); }
 				$con = $this->getDatabaseConnection($name);
 			}
 
@@ -435,7 +436,7 @@ abstract class Migration extends MojaviObject {
 			$sth = $ps->getPreparedStatement($con);
 
 			if($debug) {
-				LoggerManager::debug(__METHOD__ . " :: " . $sth->queryString);
+				LoggerManager::error(__METHOD__ . " :: " . $sth->queryString);
 			}
 			// Execute the query
 			$sth->execute();
@@ -495,7 +496,7 @@ abstract class Migration extends MojaviObject {
 
 			// Connect to database
 			if (is_null($con)) {
-				if (self::DEBUG) { LoggerManager::debug(__METHOD__  . ":: Retrieving New DB Connection for '" . $name . "'..."); }
+				if (self::DEBUG) { LoggerManager::error(__METHOD__  . ":: Retrieving New DB Connection for '" . $name . "'..."); }
 				$con = $this->getDatabaseConnection($name);
 			}
 
@@ -504,7 +505,7 @@ abstract class Migration extends MojaviObject {
 			$sth = $ps->getPreparedStatement($con);
 
 			if ($debug) {
-				LoggerManager::debug(__METHOD__ . " :: " . $sth);
+				LoggerManager::error(__METHOD__ . " :: " . $sth);
 			}
 			// Execute the query
 			$sth->execute();

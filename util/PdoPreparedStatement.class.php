@@ -33,6 +33,9 @@ class PdoPreparedStatement extends PreparedStatement {
 		}
 		
 		/* @var $dbh PDOStatement */
+		if (is_null($con)) {
+			$con = Controller::getInstance()->getContext()->getDatabaseConnection('dao_offer');
+		}
 		$dbh = $con->prepare($retVal);
 		foreach ($this->values as $name => $value) {
 			if ($value['type'] == self::TYPE_FLOAT) {
