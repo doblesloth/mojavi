@@ -190,6 +190,35 @@ abstract class Migration extends MojaviObject {
 	}
 	
 	/**
+	 * Checks if a table exists in a db
+	 * @param $db - db name
+	 * @param $table - table name
+	 */
+	function tableExists($db, $table, $connection_name = null) {
+		// Setup Query
+	 	$query = "
+	 		SHOW TABLES LIKE <<table_name>>
+	 	";
+
+		if (is_null($connection_name)) {
+			$connection_name = $this->getDefaultConnectionName();
+		}
+	 	
+		// Setup PreparedStatement
+		$ps = new PdoPreparedStatement($query);
+		$ps->setString("db_name", $db);
+		$ps->setString("table_name", $table);
+	 	// Execute Query
+	 	$retVal = false;
+	 	$con = $this->getDatabaseConnection($connection_name);
+		if (($rs = $this->executeQuery($ps, $connection_name, $con, self::DEBUG)) !== false)
+		{
+			$retVal = $rs->rowCount();
+		}
+		return $retVal;
+	}
+	
+	/**
 	 * Gets the table definition for a table
 	 * @param $db - db name
 	 * @param $table - table name
@@ -360,7 +389,7 @@ abstract class Migration extends MojaviObject {
 			}
 			
 			$qry = '
-				DROP TABLE <<db>>.<<table>> DROP COLUMN <<column>>
+				ALTER TABLE <<db>>.<<table>> DROP COLUMN <<column>>
 			';
 			$ps = new PdoPreparedStatement($qry);
 			$ps->setBareString('db', $db);
