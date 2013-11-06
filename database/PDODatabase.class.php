@@ -72,14 +72,15 @@ class PdoDatabase extends Database
 					$options[is_string($key) && strpos($key, '::') ? constant($key) : $key] = is_string($value) && strpos($value, '::') ? constant($value) : $value;
 				}
 			}
-
+			$dsn .= ";charset=UTF8";
 			$this->connection = new PDO($dsn, $username, $password, $options);
 
 			// default connection attributes
 			$attributes = array(
 				// lets generate exceptions instead of silent failures
 				PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-				PDO::ATTR_EMULATE_PREPARES => true
+				PDO::ATTR_EMULATE_PREPARES => true,
+				PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES 'utf8'"
 			);
 			if($this->hasParameter('attributes')) {
 				foreach((array)$this->getParameter('attributes') as $key => $value) {

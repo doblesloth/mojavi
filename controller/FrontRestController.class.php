@@ -42,8 +42,7 @@ class FrontRestController extends FrontWebController
      */
     public function dispatch ()
     {
-
-            // initialize the controller
+    		// initialize the controller
             $this->initialize();
 
             // get the application context
