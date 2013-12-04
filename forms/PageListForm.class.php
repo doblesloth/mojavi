@@ -11,7 +11,7 @@
  *
  * Then you would save the pageListForm to the request and forward on to the page.
  */
-	class PageListForm extends Form {
+class PageListForm extends Form {
 
 		private $total;
 		private $items_per_page;

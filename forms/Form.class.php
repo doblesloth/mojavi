@@ -7,7 +7,7 @@
 	*
 	* BasicForm can be instantiated with an errors object for ease of use.
 	**/
-	class Form extends MojaviForm {
+class Form extends MojaviForm {
 
 		const VALIDATION_LEVEL_FULL = 1;
 		

@@ -239,7 +239,7 @@ class StringTools {
 	 */
 	static function consoleToHtmlColor($str = '') {
 		$str_buffer = '';
-		$str_lines = explode("\n", $str);
+		$str_lines = explode("\n", trim($str));
 		foreach ($str_lines as $key => $str_line) {
 			if (strpos($str_line, "\010") === false) {
 				// If this is a full line with no backspace characters, then append it
