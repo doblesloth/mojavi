@@ -190,6 +190,34 @@ abstract class Migration extends MojaviObject {
 	}
 	
 	/**
+	 * Checks if a database exists in a db
+	 * @param $db - db name
+	 * @param $table - table name
+	 */
+	function databaseExists($db, $connection_name = null) {
+		// Setup Query
+	 	$query = "
+	 		SHOW DATABASES LIKE <<db_name>>
+	 	";
+
+		if (is_null($connection_name)) {
+			$connection_name = $this->getDefaultConnectionName();
+		}
+	 	
+		// Setup PreparedStatement
+		$ps = new PdoPreparedStatement($query);
+		$ps->setString("db_name", $db);
+	 	// Execute Query
+	 	$retVal = false;
+	 	$con = $this->getDatabaseConnection($connection_name);
+		if (($rs = $this->executeQuery($ps, $connection_name, $con, self::DEBUG)) !== false)
+		{
+			$retVal = $rs->rowCount();
+		}
+		return $retVal;
+	}
+	
+	/**
 	 * Checks if a table exists in a db
 	 * @param $db - db name
 	 * @param $table - table name
