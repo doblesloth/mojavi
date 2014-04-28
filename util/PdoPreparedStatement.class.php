@@ -36,6 +36,11 @@ class PdoPreparedStatement extends PreparedStatement {
 		if (is_null($con)) {
 			$con = Controller::getInstance()->getContext()->getDatabaseConnection('default');
 		}
+		
+		if (is_null($con)) {
+			LoggerManager::error(__METHOD__ . " :: " . var_export($con, true));
+			throw new Exception('Cannot instantiate PDO object with query: ' . $retVal);
+		}
 		$dbh = $con->prepare($retVal);
 		foreach ($this->values as $name => $value) {
 			if ($value['type'] == self::TYPE_FLOAT) {
@@ -102,11 +107,11 @@ class PdoPreparedStatement extends PreparedStatement {
 			} else if ($value['type'] == self::TYPE_LONG) {
 				$retVal = str_replace(":" . $name, $value["value"], $retVal);
 			} else if ($value['type'] == self::TYPE_DATE) {
-				$retVal = str_replace(":" . $name, str_replace("'", "\'", $value["value"]) . "'", $retVal);
+				$retVal = str_replace(":" . $name, "'" . str_replace("'", "\'", $value["value"]) . "'", $retVal);
 			} else if ($value['type'] == self::TYPE_TIMESTAMP) {
-				$retVal = str_replace(":" . $name, str_replace("'", "\'", $value["value"]) . "'", $retVal);
+				$retVal = str_replace(":" . $name, "'" . str_replace("'", "\'", $value["value"]) . "'", $retVal);
 			} else if ($value['type'] == self::TYPE_TIME) {
-				$retVal = str_replace(":" . $name, str_replace("'", "\'", $value["value"]) . "'", $retVal);
+				$retVal = str_replace(":" . $name, "'" . str_replace("'", "\'", $value["value"]) . "'", $retVal);
 			} else if ($value['type'] == self::TYPE_NULL) {
 				$retVal = str_replace(":" . $name, $value["value"], $retVal);
 			} else if ($value['type'] == self::TYPE_BOOLEAN) {
@@ -118,7 +123,7 @@ class PdoPreparedStatement extends PreparedStatement {
 			} else if ($value['type'] == self::TYPE_ARRAY) {
 				continue;
 			} else if ($value['type'] == self::TYPE_BINARY_STRING) {
-				$retVal = str_replace(":" . $name, str_replace("'", "\'", $value["value"]) . "'", $retVal);
+				$retVal = str_replace(":" . $name, "'" . str_replace("'", "\'", $value["value"]) . "'", $retVal);
 			} else {
 				$retVal = str_replace(":" . $name, "'" . str_replace("'", "\'", $value["value"]) . "'", $retVal);
 			}
