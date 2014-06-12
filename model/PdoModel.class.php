@@ -96,7 +96,7 @@ abstract class PdoModel extends MojaviObject
 
 			// Debug the query to the log
 			if ($debug) { LoggerManager::error(__METHOD__ . " :: " . $ps->getDebugQueryString()); }
-			
+
 			// Execute the query
 			$sth->execute();
 
@@ -109,29 +109,29 @@ abstract class PdoModel extends MojaviObject
 				try {
 					// If the server went away, then close the connection and try again
 					$this->getContext()->getDatabaseManager()->getDatabase($name)->shutdown();
-					
+
 					// Connect to database
 					$con = $this->getContext()->getDatabaseConnection($name);
-					
+
 					// Get the prepared query
 					/* @var $sth PDOStatement */
 					$sth = $ps->getPreparedStatement($con);
-		
+
 					if ($debug) {
 						LoggerManager::error(__METHOD__ . " :: " . $ps->getDebugQueryString());
 					}
 					// Execute the query
 					$sth->execute();
-		
+
 					$retval = $sth;
-					
+
 				} catch (Exception $e) {
 					ob_start();
 					$sth->debugDumpParams();
 					$stmt = ob_get_clean();
-					
+
 					$this->getErrors ()->addError ('error', new Error ($e->getMessage() . ": " . $sth->queryString));
-					
+
 					$e = new MojaviException ($e->getMessage());
 					LoggerManager::fatal ($sth->queryString);
 					LoggerManager::fatal ($stmt);
@@ -142,43 +142,43 @@ abstract class PdoModel extends MojaviObject
 				// If there was a lock on the transaction, then try it again before failing
 				try {
 					$this->getContext()->getDatabaseManager()->getDatabase($name)->shutdown();
-					
+
 					// Connect to database
 					$con = $this->getContext()->getDatabaseConnection($name);
-					
+
 					// Get the prepared query
 					/* @var $sth PDOStatement */
 					$sth = $ps->getPreparedStatement($con);
-		
+
 					if ($debug) {
 						LoggerManager::error(__METHOD__ . " :: " . $ps->getDebugQueryString());
 					}
 					// Execute the query
 					$sth->execute();
-		
+
 					$retval = $sth;
-					
+
 				} catch (Exception $e) {
 					ob_start();
 					$sth->debugDumpParams();
 					$stmt = ob_get_clean();
-					
+
 					$this->getErrors ()->addError ('error', new Error ($e->getMessage() . ": " . $sth->queryString));
-					
+
 					$e = new MojaviException ($e->getMessage());
 					LoggerManager::fatal ($sth->queryString);
 					LoggerManager::fatal ($stmt);
 					LoggerManager::fatal ($e->printStackTrace(''));
 					throw $e;
 				}
-				
+
 			} else {
 				ob_start();
 				$sth->debugDumpParams();
 				$stmt = ob_get_clean();
-				
+
 				$this->getErrors ()->addError ('error', new Error ($e->getMessage() . ": " . $sth->queryString));
-				
+
 				$e = new MojaviException ($e->getMessage());
 				LoggerManager::fatal ($sth->queryString);
 				LoggerManager::fatal ($stmt);
@@ -197,7 +197,7 @@ abstract class PdoModel extends MojaviObject
 		}
 		return $retval;
 	}
-	
+
 	/**
 	 * Execute an SQL Statement and return result to be handled by calling function.
 	 *
@@ -213,7 +213,7 @@ abstract class PdoModel extends MojaviObject
 		$retval = $this->executeQuery($ps, $name, $con, $debug);
 		return $retval->rowCount();
 	}
-	
+
 	/**
 	 * Execute an SQL Statement and return result to be handled by calling function.
 	 *
@@ -241,10 +241,10 @@ abstract class PdoModel extends MojaviObject
 
 			// Debug the query to the log
 			if ($debug) { LoggerManager::error(__METHOD__ . " :: " . $ps->getDebugQueryString()); }
-			
+
 			// Execute the query
 			$sth->execute();
-			
+
 			// Return the last insert id
 			$retval = $con->lastInsertId();
 		} catch (PDOException $e) {
@@ -252,76 +252,78 @@ abstract class PdoModel extends MojaviObject
 			if ($e->getMessage() == 'SQLSTATE[HY000]: General error: 2006 MySQL server has gone away') {
 				try {
 					$this->getContext()->getDatabaseManager()->getDatabase($name)->shutdown();
-					
+
 					// Connect to database
 					$con = $this->getContext()->getDatabaseConnection($name);
-					
+
 					// Get the prepared query
 					/* @var $sth PDOStatement */
 					$sth = $ps->getPreparedStatement($con);
-		
+
 					if ($debug) {
 						LoggerManager::error(__METHOD__ . " :: " . $ps->getDebugQueryString());
 					}
 					// Execute the query
 					$sth->execute();
-		
-					$retval = $sth;
-					
+
+					// Return the last insert id
+			        $retval = $con->lastInsertId();
+
 				} catch (Exception $e) {
 					ob_start();
 					$sth->debugDumpParams();
 					$stmt = ob_get_clean();
-					
+
 					$this->getErrors ()->addError ('error', new Error ($e->getMessage() . ": " . $sth->queryString));
-					
-					$e = new MojaviException ($e->getMessage());
-					LoggerManager::fatal ($sth->queryString);
-					LoggerManager::fatal ($stmt);
-					LoggerManager::fatal ($e->printStackTrace(''));
-					throw $e;
-				}					
-			} else if (strpos($e->getMessage(), 'Lock wait timeout exceeded; try restarting transaction') !== false) {
-				// If there was a lock on the transaction, then try it again before failing
-				try {
-					$this->getContext()->getDatabaseManager()->getDatabase($name)->shutdown();
-					
-					// Connect to database
-					$con = $this->getContext()->getDatabaseConnection($name);
-					
-					// Get the prepared query
-					/* @var $sth PDOStatement */
-					$sth = $ps->getPreparedStatement($con);
-		
-					if ($debug) {
-						LoggerManager::error(__METHOD__ . " :: " . $ps->getDebugQueryString());
-					}
-					// Execute the query
-					$sth->execute();
-		
-					$retval = $sth;
-					
-				} catch (Exception $e) {
-					ob_start();
-					$sth->debugDumpParams();
-					$stmt = ob_get_clean();
-					
-					$this->getErrors ()->addError ('error', new Error ($e->getMessage() . ": " . $sth->queryString));
-					
+
 					$e = new MojaviException ($e->getMessage());
 					LoggerManager::fatal ($sth->queryString);
 					LoggerManager::fatal ($stmt);
 					LoggerManager::fatal ($e->printStackTrace(''));
 					throw $e;
 				}
-				
+			} else if (strpos($e->getMessage(), 'Lock wait timeout exceeded; try restarting transaction') !== false) {
+				// If there was a lock on the transaction, then try it again before failing
+				try {
+					$this->getContext()->getDatabaseManager()->getDatabase($name)->shutdown();
+
+					// Connect to database
+					$con = $this->getContext()->getDatabaseConnection($name);
+
+					// Get the prepared query
+					/* @var $sth PDOStatement */
+					$sth = $ps->getPreparedStatement($con);
+
+					if ($debug) {
+						LoggerManager::error(__METHOD__ . " :: " . $ps->getDebugQueryString());
+					}
+					// Execute the query
+					$sth->execute();
+
+					// Return the last insert id
+			        $retval = $con->lastInsertId();
+
+				} catch (Exception $e) {
+					ob_start();
+					$sth->debugDumpParams();
+					$stmt = ob_get_clean();
+
+					$this->getErrors ()->addError ('error', new Error ($e->getMessage() . ": " . $sth->queryString));
+
+					$e = new MojaviException ($e->getMessage());
+					LoggerManager::fatal ($sth->queryString);
+					LoggerManager::fatal ($stmt);
+					LoggerManager::fatal ($e->printStackTrace(''));
+					throw $e;
+				}
+
 			} else {
 				ob_start();
 				$sth->debugDumpParams();
 				$stmt = ob_get_clean();
-				
+
 				$this->getErrors ()->addError ('error', new Error ($e->getMessage() . ": " . $sth->queryString));
-				
+
 				$e = new MojaviException ($e->getMessage());
 				LoggerManager::fatal ($sth->queryString);
 				LoggerManager::fatal ($stmt);
