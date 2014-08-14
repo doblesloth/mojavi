@@ -31,8 +31,8 @@ abstract class MojaviForm extends MojaviObject {
 					* add***($arg0) function.  If it does not exist, then fallback to a set***($arg0)
 					*/
 					# The regex will change '_a' to 'A' or '_1' to '1'
-					
-					$entry = preg_replace("/_([a-zA-Z0-9])/e","strtoupper('\\1')",strtolower($key));
+					$entry = preg_replace_callback("/_([a-zA-Z0-9])/", function($matches) { return strtoupper($matches[1]); }, strtolower($key));
+					#$entry = preg_replace("/_([a-zA-Z0-9])/e","strtoupper('\\1')",strtolower($key));
 					if (is_callable(array($this, 'add' . ucfirst($entry)),false, $callableName)) {
 						foreach ($value as $key2 => $value1) {
 							if (substr($entry, -2) == "Id") {
@@ -42,7 +42,8 @@ abstract class MojaviForm extends MojaviObject {
 						}
 					} else {
 						# The regex will change '_a' to 'A' or '_1' to '1'
-						$entry = preg_replace("/_([a-zA-Z0-9])/e","strtoupper('\\1')",strtolower($key));
+						$entry = preg_replace_callback("/_([a-zA-Z0-9])/", function($matches) { return strtoupper($matches[1]); }, strtolower($key));
+						#$entry = preg_replace("/_([a-zA-Z0-9])/e","strtoupper('\\1')",strtolower($key));
 						if (is_callable(array($this, 'set' . ucfirst($entry)),false, $callableName)) {
 							if (substr($entry, -2) == "Id") {
 								$value = IntegerTableEncoder::decodeInt($value);
@@ -52,7 +53,8 @@ abstract class MojaviForm extends MojaviObject {
 					}
 				} else {
 					# The regex will change '_a' to 'A' or '_1' to '1'
-					$entry = preg_replace("/_([a-zA-Z0-9])/e","strtoupper('\\1')",strtolower($key));
+					$entry = preg_replace_callback("/_([a-zA-Z0-9])/", function($matches) { return strtoupper($matches[1]); }, strtolower($key));
+					#$entry = preg_replace("/_([a-zA-Z0-9])/e","strtoupper('\\1')",strtolower($key));
 					if (is_callable(array($this, 'set' . ucfirst($entry)),false, $callableName)) {
 						if (substr($entry, -2) == "Id") {
 							$value = IntegerTableEncoder::decodeInt($value);
@@ -67,10 +69,10 @@ abstract class MojaviForm extends MojaviObject {
 			$properties = $reflection->getProperties(ReflectionProperty::IS_PROTECTED);
 			foreach ($properties as $property) {
 				$method_name = ucfirst(StringTools::camelCase($property->getName()));
-				if (method_exists($arg0, 'get' . $method_name)) {
-					$value = $arg0->{'get' . $method_name}();
-					# if this form has a setter that matches this getter (i.e. setId() would match getId()), then set it
-					if (is_callable(array($this, 'set' . $method_name), false, $callableName)) {
+				if (is_callable(array($this, 'set' . $method_name), false, $callableName)) {
+					if (method_exists($arg0, 'get' . $method_name)) {
+						$value = $arg0->{'get' . $method_name}();
+						# if this form has a setter that matches this getter (i.e. setId() would match getId()), then set it
 						$this->{'set' . $method_name}($value);
 					}
 				}

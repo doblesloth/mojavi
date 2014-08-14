@@ -189,7 +189,8 @@ class StringTools {
 	 * @return camel cased string
 	 */
 	static function camelCase($key) {
-		return preg_replace("/_([a-zA-Z0-9])/e","strtoupper('\\1')",$key);
+		return preg_replace_callback("/_([a-zA-Z0-9])/", function($matches) { return strtoupper($matches[1]); }, strtolower($key));
+		#return preg_replace("/_([a-zA-Z0-9])/e","strtoupper('\\1')",$key);
 	}
 	
 	/**
