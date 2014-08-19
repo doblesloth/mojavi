@@ -142,7 +142,7 @@ abstract class Migration extends MojaviObject {
 			$qry = '
 				ALTER TABLE <<db>>.<<table>> ADD COLUMN <<column>> <<column_definition>>
 			';
-			$ps = new KeyBasedPreparedStatement($qry);
+			$ps = new PdoPreparedStatement($qry);
 			$ps->setBareString('db', $db);
 			$ps->setBareString('table', $table);
 			$ps->setBareString('column', $column);
@@ -271,9 +271,9 @@ abstract class Migration extends MojaviObject {
 			// Execute Query
 		 	$retVal = false;
 			$con = $this->getDatabaseConnection($connection_name);
-			if (($rs = $this->executeQuery($ps, $connection_name, $con, self::DEBUG)))
+			if (($rs = $this->executeQuery($ps, $connection_name, $con, self::DEBUG)) !== false)
 			{
-				while (($row = $rs->fetch()))
+				while (($row = $rs->fetch()) !== false)
 				{
 					$table_definition['columns'][] = $row;
 				}
@@ -289,9 +289,9 @@ abstract class Migration extends MojaviObject {
 			// Execute Query
 		 	$retVal = false;
 			$con = $this->getDatabaseConnection($connection_name);
-			if (($rs = $this->executeQuery($ps, $connection_name, $con, self::DEBUG)))
+			if (($rs = $this->executeQuery($ps, $connection_name, $con, self::DEBUG)) !== false)
 			{
-				while (($row = $rs->fetch()))
+				while (($row = $rs->fetch()) !== false)
 				{
 					$table_definition['keys'][] = $row;
 				}
