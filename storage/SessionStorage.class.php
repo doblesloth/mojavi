@@ -68,12 +68,10 @@ class SessionStorage extends Storage
 
         if ($this->getParameter('auto_start', true))
         {
-
             // start our session
-            session_start();
+			session_start();
 
         }
-
     }
 
     // -------------------------------------------------------------------------
@@ -95,7 +93,6 @@ class SessionStorage extends Storage
     {
 
         $retval = null;
-
         if (isset($_SESSION[$key]))
         {
         	$retval = $_SESSION[$key];
@@ -124,12 +121,11 @@ class SessionStorage extends Storage
     {
 
         $retval = null;
-
         if (isset($_SESSION[$key]))
         {
 
             $retval =& $_SESSION[$key];
-
+            
             unset($_SESSION[$key]);
 
         }
