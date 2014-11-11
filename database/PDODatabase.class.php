@@ -66,6 +66,8 @@ class PdoDatabase extends Database
 			$password = $this->getParameter('password');
 
 			$options = array();
+			// Enable local infile access
+			$options[PDO::MYSQL_ATTR_LOCAL_INFILE] = true;
 
 			if($this->hasParameter('options')) {
 				foreach((array)$this->getParameter('options') as $key => $value) {
@@ -80,8 +82,7 @@ class PdoDatabase extends Database
 				// lets generate exceptions instead of silent failures
 				PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
 				PDO::ATTR_EMULATE_PREPARES => true,
-				PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES 'utf8'",
-				PDO::MYSQL_ATTR_LOCAL_INFILE => "1"
+				PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES 'utf8'"
 			);
 			if($this->hasParameter('attributes')) {
 				foreach((array)$this->getParameter('attributes') as $key => $value) {
