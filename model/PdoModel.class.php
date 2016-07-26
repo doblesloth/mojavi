@@ -28,6 +28,8 @@ abstract class PdoModel extends MojaviObject
 	const DEBUG = MO_DEBUG;
 	const CRITERIA_RETVAL_TYPE_ITERATOR	= 1;
 	const CRITERIA_RETVAL_TYPE_FORM		= 2;
+	const RETRY_TRANSACTION_LIMIT       = 5; // How many times to re-attempt a transaction
+	const RETRY_TRANSACTION_SLEEP       = 200; // How long to sleep between retrying failed transactions
 
     // +-----------------------------------------------------------------------+
     // | PRIVATE VARIABLES                                                     |
@@ -83,119 +85,71 @@ abstract class PdoModel extends MojaviObject
 	public function executeQuery (PreparedStatement $ps, $name = 'default', $con = NULL, $debug = self::DEBUG)
 	{
 		$retval = false;
-		try {
+		// Retry transactions up to five times
+		for ($i=0;$i<self::RETRY_TRANSACTION_LIMIT;$i++) {
+			try {
 
-			// Connect to database
-			if (is_null($con)) {
-				$con = $this->getContext()->getDatabaseConnection($name);
-			}
-
-			// Get the prepared query
-			/* @var $sth PDOStatement */
-			$sth = $ps->getPreparedStatement($con);
-
-			// Debug the query to the log
-			if ($debug) { LoggerManager::error(__METHOD__ . " :: " . $ps->getDebugQueryString()); }
-
-			// Execute the query
-			$sth->execute();
-
-			// Set the retval to the statement because everything worked
-			$retval = $sth;
-
-		} catch (PDOException $e) {
-			// If the MySQL server has gone away, try reconnecting, otherwise throw an exception
-			if ($e->getMessage() == 'SQLSTATE[HY000]: General error: 2006 MySQL server has gone away') {
-				try {
-					// If the server went away, then close the connection and try again
-					$this->getContext()->getDatabaseManager()->getDatabase($name)->shutdown();
-
-					// Connect to database
+				// Connect to database
+				if (is_null($con)) {
 					$con = $this->getContext()->getDatabaseConnection($name);
-
-					// Get the prepared query
-					/* @var $sth PDOStatement */
-					$sth = $ps->getPreparedStatement($con);
-
-					if ($debug) {
-						LoggerManager::error(__METHOD__ . " :: " . $ps->getDebugQueryString());
-					}
-					// Execute the query
-					$sth->execute();
-
-					$retval = $sth;
-
-				} catch (Exception $e) {
-					ob_start();
-					$sth->debugDumpParams();
-					$stmt = ob_get_clean();
-
-					$this->getErrors ()->addError ('error', new Error ($e->getMessage() . ": " . $sth->queryString));
-
-					$e = new MojaviException ($e->getMessage());
-					LoggerManager::fatal ($sth->queryString);
-					LoggerManager::fatal ($stmt);
-					LoggerManager::fatal ($e->printStackTrace(''));
-					throw $e;
-				}
-			} else if (strpos($e->getMessage(), 'Lock wait timeout exceeded; try restarting transaction') !== false) {
-				// If there was a lock on the transaction, then try it again before failing
-				try {
-					$this->getContext()->getDatabaseManager()->getDatabase($name)->shutdown();
-
-					// Connect to database
-					$con = $this->getContext()->getDatabaseConnection($name);
-
-					// Get the prepared query
-					/* @var $sth PDOStatement */
-					$sth = $ps->getPreparedStatement($con);
-
-					if ($debug) {
-						LoggerManager::error(__METHOD__ . " :: " . $ps->getDebugQueryString());
-					}
-					// Execute the query
-					$sth->execute();
-
-					$retval = $sth;
-
-				} catch (Exception $e) {
-					ob_start();
-					$sth->debugDumpParams();
-					$stmt = ob_get_clean();
-
-					$this->getErrors ()->addError ('error', new Error ($e->getMessage() . ": " . $sth->queryString));
-
-					$e = new MojaviException ($e->getMessage());
-					LoggerManager::fatal ($sth->queryString);
-					LoggerManager::fatal ($stmt);
-					LoggerManager::fatal ($e->printStackTrace(''));
-					throw $e;
 				}
 
-			} else {
-				ob_start();
-				$sth->debugDumpParams();
-				$stmt = ob_get_clean();
+				// Get the prepared query
+				/* @var $sth PDOStatement */
+				$sth = $ps->getPreparedStatement($con);
 
-				$this->getErrors ()->addError ('error', new Error ($e->getMessage() . ": " . $sth->queryString));
+				// Debug the query to the log
+				if ($debug) {
+					LoggerManager::error(__METHOD__ . " :: (ATTEMPT " . $i . ") " . $ps->getDebugQueryString());
+				}
 
+				// Execute the query
+				$sth->execute();
+
+				// Set the retval to the statement because everything worked
+				$retval = $sth;
+
+				return $retval;
+
+
+			} catch (PDOException $e) {
+				// If the MySQL server has gone away, try reconnecting, otherwise throw an exception
+				if ($e->getMessage() == 'SQLSTATE[HY000]: General error: 2006 MySQL server has gone away') {
+					try {
+						// If the server went away, then close the connection and try again
+						$this->getContext()->getDatabaseManager()->getDatabase($name)->shutdown();
+						// Give the server time to recover
+						usleep(self::RETRY_TRANSACTION_SLEEP);
+					} catch (Exception $e) {
+						// We can ignore this error because it'll be caught when we retry the transaction
+					}
+				} else if (strpos($e->getMessage(), 'try restarting transaction') !== false) {
+					// If there was a lock on the transaction, then try it again before failing
+					try {
+						$this->getContext()->getDatabaseManager()->getDatabase($name)->shutdown();
+						// Give the server time to recover
+						usleep(self::RETRY_TRANSACTION_SLEEP);
+					} catch (Exception $e) {
+						// We can ignore this error because it'll be caught when we retry the transaction
+					}
+				} else {
+					LoggerManager::fatal($e->printStackTrace(''));
+					usleep(self::RETRY_TRANSACTION_SLEEP);
+				}
+			} catch (MojaviException $e) {
+				// Output Mojavi Exceptions to the log, and continue
+				$this->getErrors()->addError('error', new Error ($e->getMessage()));
+				LoggerManager::fatal($e->printStackTrace(''));
+				usleep(self::RETRY_TRANSACTION_SLEEP);
+			} catch (Exception $e) {
+				// Output Normal Exceptions to the log, and continue
+				$this->getErrors()->addError('error', new Error ($e->getMessage()));
 				$e = new MojaviException ($e->getMessage());
-				LoggerManager::fatal ($sth->queryString);
-				LoggerManager::fatal ($stmt);
-				LoggerManager::fatal ($e->printStackTrace(''));
-				throw $e;
+				LoggerManager::fatal($e->printStackTrace(''));
+				usleep(self::RETRY_TRANSACTION_SLEEP);
 			}
-		} catch (MojaviException $e) {
-			// Output Mojavi Exceptions to the log, and continue
-			$this->getErrors ()->addError ('error', new Error ($e->getMessage ()));
-			LoggerManager::fatal ($e->printStackTrace (''));
-		} catch (Exception $e) {
-			// Output Normal Exceptions to the log, and continue
-			$this->getErrors ()->addError ('error', new Error ($e->getMessage ()));
-			$e = new MojaviException ($e->getMessage());
-			LoggerManager::fatal ($e->printStackTrace (''));
 		}
-		return $retval;
+		throw new \Exception('Could not execute statement in timely manner.  try restarting transaction');
 	}
 
 	/**
