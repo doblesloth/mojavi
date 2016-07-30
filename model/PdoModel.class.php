@@ -116,6 +116,9 @@ abstract class PdoModel extends MojaviObject
 				// If the MySQL server has gone away, try reconnecting, otherwise throw an exception
 				if ($e->getMessage() == 'SQLSTATE[HY000]: General error: 2006 MySQL server has gone away') {
 					try {
+						LoggerManager::error(__METHOD__ . " :: (ATTEMPT " . $i . ") " . $e->getMessage());
+						LoggerManager::error(__METHOD__ . " :: (ATTEMPT " . $i . ") " . $ps->getDebugQueryString());
+						LoggerManager::error(__METHOD__ . " :: (ATTEMPT " . $i . ") RESTARTING TRANSACTION");
 						// If the server went away, then close the connection and try again
 						$this->getContext()->getDatabaseManager()->getDatabase($name)->shutdown();
 						// Give the server time to recover
@@ -128,6 +131,9 @@ abstract class PdoModel extends MojaviObject
 				} else if (strpos($e->getMessage(), 'try restarting transaction') !== false) {
 					// If there was a lock on the transaction, then try it again before failing
 					try {
+						LoggerManager::error(__METHOD__ . " :: (ATTEMPT " . $i . ") " . $e->getMessage());
+						LoggerManager::error(__METHOD__ . " :: (ATTEMPT " . $i . ") " . $ps->getDebugQueryString());
+						LoggerManager::error(__METHOD__ . " :: (ATTEMPT " . $i . ") RESTARTING TRANSACTION");
 						$this->getContext()->getDatabaseManager()->getDatabase($name)->shutdown();
 						// Give the server time to recover
 						usleep(self::RETRY_TRANSACTION_SLEEP);
@@ -137,7 +143,10 @@ abstract class PdoModel extends MojaviObject
 						// We can ignore this error because it'll be caught when we retry the transaction
 					}
 				} else {
-					LoggerManager::fatal($e->printStackTrace(''));
+					LoggerManager::fatal(__METHOD__ . " :: (ATTEMPT " . $i . ") " . $e->getMessage());
+					LoggerManager::fatal(__METHOD__ . " :: (ATTEMPT " . $i . ") " . $e->printStackTrace(''));
+					LoggerManager::fatal(__METHOD__ . " :: (ATTEMPT " . $i . ") " . $ps->getDebugQueryString());
+					LoggerManager::fatal(__METHOD__ . " :: (ATTEMPT " . $i . ") RESTARTING TRANSACTION");
 					usleep(self::RETRY_TRANSACTION_SLEEP);
 				}
 			} catch (MojaviException $e) {
