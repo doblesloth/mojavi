@@ -120,6 +120,8 @@ abstract class PdoModel extends MojaviObject
 						$this->getContext()->getDatabaseManager()->getDatabase($name)->shutdown();
 						// Give the server time to recover
 						usleep(self::RETRY_TRANSACTION_SLEEP);
+						// Reconnect to the server and try again
+						$con = $this->getContext()->getDatabaseConnection($name);
 					} catch (Exception $e) {
 						// We can ignore this error because it'll be caught when we retry the transaction
 					}
@@ -129,6 +131,8 @@ abstract class PdoModel extends MojaviObject
 						$this->getContext()->getDatabaseManager()->getDatabase($name)->shutdown();
 						// Give the server time to recover
 						usleep(self::RETRY_TRANSACTION_SLEEP);
+						// Reconnect to the server and try again
+						$con = $this->getContext()->getDatabaseConnection($name);
 					} catch (Exception $e) {
 						// We can ignore this error because it'll be caught when we retry the transaction
 					}
