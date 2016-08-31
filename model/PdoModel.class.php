@@ -144,7 +144,7 @@ abstract class PdoModel extends MojaviObject
 					}
 				} else {
 					LoggerManager::fatal(__METHOD__ . " :: (ATTEMPT " . $i . ") " . $e->getMessage());
-					LoggerManager::fatal(__METHOD__ . " :: (ATTEMPT " . $i . ") " . $e->printStackTrace(''));
+					LoggerManager::fatal(__METHOD__ . " :: (ATTEMPT " . $i . ") " . $e->getTraceAsString());
 					LoggerManager::fatal(__METHOD__ . " :: (ATTEMPT " . $i . ") " . $ps->getDebugQueryString());
 					LoggerManager::fatal(__METHOD__ . " :: (ATTEMPT " . $i . ") RESTARTING TRANSACTION");
 					usleep(self::RETRY_TRANSACTION_SLEEP);
@@ -152,13 +152,13 @@ abstract class PdoModel extends MojaviObject
 			} catch (MojaviException $e) {
 				// Output Mojavi Exceptions to the log, and continue
 				$this->getErrors()->addError('error', new Error ($e->getMessage()));
-				LoggerManager::fatal($e->printStackTrace(''));
+				LoggerManager::fatal($e->getTraceAsString());
 				usleep(self::RETRY_TRANSACTION_SLEEP);
 			} catch (Exception $e) {
 				// Output Normal Exceptions to the log, and continue
 				$this->getErrors()->addError('error', new Error ($e->getMessage()));
 				$e = new MojaviException ($e->getMessage());
-				LoggerManager::fatal($e->printStackTrace(''));
+				LoggerManager::fatal($e->getTraceAsString());
 				usleep(self::RETRY_TRANSACTION_SLEEP);
 			}
 		}
@@ -246,7 +246,7 @@ abstract class PdoModel extends MojaviObject
 					$e = new MojaviException ($e->getMessage());
 					LoggerManager::fatal ($sth->queryString);
 					LoggerManager::fatal ($stmt);
-					LoggerManager::fatal ($e->printStackTrace(''));
+					LoggerManager::fatal ($e->getTraceAsString());
 					throw $e;
 				}
 			} else if (strpos($e->getMessage(), 'Lock wait timeout exceeded; try restarting transaction') !== false) {
@@ -280,7 +280,7 @@ abstract class PdoModel extends MojaviObject
 					$e = new MojaviException ($e->getMessage());
 					LoggerManager::fatal ($sth->queryString);
 					LoggerManager::fatal ($stmt);
-					LoggerManager::fatal ($e->printStackTrace(''));
+					LoggerManager::fatal ($e->getTraceAsString());
 					throw $e;
 				}
 
@@ -294,19 +294,19 @@ abstract class PdoModel extends MojaviObject
 				$e = new MojaviException ($e->getMessage());
 				LoggerManager::fatal ($sth->queryString);
 				LoggerManager::fatal ($stmt);
-				LoggerManager::fatal ($e->printStackTrace(''));
+				LoggerManager::fatal ($e->getTraceAsString());
 				throw $e;
 			}
 		} catch (MojaviException $e) {
 			// Output Mojavi Exceptions to the log and throw the Exception
 			$this->getErrors ()->addError ('error', new Error ($e->getMessage ()));
-			LoggerManager::fatal ($e->printStackTrace (''));
+			LoggerManager::fatal ($e->getTraceAsString());
 			throw $e;
 		} catch (Exception $e) {
 			// Output Normal Exceptions to the log and throw the Exception
 			$this->getErrors ()->addError ('error', new Error ($e->getMessage ()));
 			$e = new MojaviException ($e->getMessage());
-			LoggerManager::fatal ($e->printStackTrace (''));
+			LoggerManager::fatal ($e->getTraceAsString());
 			throw $e;
 		}
 		return $retval;

@@ -91,16 +91,16 @@ abstract class Model extends PdoModel
 		} catch (MojaviException $e) {
 
 			$this->getErrors ()->addError ('error', new Error ($e->getMessage ()));
-			LoggerManager::fatal ($e->printStackTrace (''));
+			LoggerManager::fatal ($e->getTraceAsString());
 
 		} catch (PDOException $e) {
 			$e = new MojaviException ($e->getMessage());
-			LoggerManager::fatal ($e->printStackTrace(''));
+			LoggerManager::fatal ($e->getTraceAsString());
 			throw $e;
 		} catch (Exception $e) {
 			$this->getErrors ()->addError ('error', new Error ($e->getMessage ()));
 			$e = new MojaviException ($e->getMessage());
-			LoggerManager::fatal ($e->printStackTrace (''));
+			LoggerManager::fatal ($e->getTraceAsString());
 
 		}
 		return $retval;
@@ -177,17 +177,17 @@ abstract class Model extends PdoModel
 		} catch (MojaviException $e) {
 
 			$this->getErrors ()->addError ('error', new Error ($e->getMessage ()));
-			LoggerManager::fatal ($e->printStackTrace (''));
+			LoggerManager::fatal ($e->getTraceAsString());
 			throw $e;
 		} catch (PDOException $e) {	
 			$e = new MojaviException ($e->getMessage());
-			LoggerManager::fatal ($e->printStackTrace(''));
+			LoggerManager::fatal ($e->getTraceAsString());
 			throw $e;
 		} catch (Exception $e) {
 
 			$this->getErrors ()->addError ('error', new Error ($e->getMessage ()));
 			$e = new MojaviException ($e->getMessage());
-			LoggerManager::fatal ($e->printStackTrace (''));
+			LoggerManager::fatal ($e->getTraceAsString());
 			throw $e;
 		}
 	}
